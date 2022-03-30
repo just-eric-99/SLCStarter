@@ -58,7 +58,7 @@ public class SLCEmulatorStarter extends SLCStarter {
                 touchDisplayEmulator = new TouchDisplayEmulator("TouchDisplayHandler", slcEmulatorStarter);
 
                 // start emulator GUIs
-                    barcodeReaderEmulator.start();
+                barcodeReaderEmulator.start();
                 touchDisplayEmulator.start();
             } catch (Exception e) {
                 System.out.println("Emulators: start failed");
@@ -73,7 +73,7 @@ public class SLCEmulatorStarter extends SLCStarter {
             // start threads
             new Thread(timer).start();
             new Thread(slc).start();
-                new Thread(barcodeReaderEmulator).start();
+            new Thread(barcodeReaderEmulator).start();
             new Thread(touchDisplayEmulator).start();
         } // start
     } // Emulators
