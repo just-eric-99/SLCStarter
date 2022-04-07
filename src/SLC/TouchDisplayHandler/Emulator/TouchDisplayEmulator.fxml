@@ -5,12 +5,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLC.TouchDisplayHandler.Emulator.TouchDisplayEmulatorController">
     <children>
         <AnchorPane prefHeight="480.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20">
             <children>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="480.0" onMouseClicked="#td_mouseClick" stroke="BLACK" strokeType="OUTSIDE" width="640" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0" />
+              <Label layoutX="232.0" layoutY="31.0" text="Smart Locker Service">
+                  <font>
+                      <Font name="System Bold" size="20.0" />
+                  </font>
+              </Label>
+              <Text layoutX="191.0" layoutY="438.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click Any to Start">
+                  <font>
+                      <Font size="36.0" />
+                  </font>
+              </Text>
             </children>
         </AnchorPane>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d7d7d7" height="50.0" stroke="TRANSPARENT" strokeType="INSIDE" width="680.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -37,11 +48,19 @@
                     </items>
                 </ChoiceBox>
                 <Label text="Screen Switcher (for hacking): " GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                <ChoiceBox fx:id="screenSwitcherCBox" prefHeight="25.0" prefWidth="177.0" value="Blank" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                <ChoiceBox fx:id="screenSwitcherCBox" prefHeight="25.0" prefWidth="177.0" value="Welcome Page" GridPane.columnIndex="3" GridPane.rowIndex="0">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Blank" />
+                            <String fx:value="Welcome Page" />
                             <String fx:value="Main Menu" />
+                            <String fx:value="Enter Passcode" />
+                            <String fx:value="Payment" />
+                            <String fx:value="Payment Failed" />
+                            <String fx:value="Payment Succeeded" />
+                            <String fx:value="Scan Barcode" />
+                            <String fx:value="Show Locker" />
+                            <String fx:value="Locker Not Close" />
+                            <String fx:value="Server Down" />
                             <String fx:value="Confirmation" />
                         </FXCollections>
                     </items>

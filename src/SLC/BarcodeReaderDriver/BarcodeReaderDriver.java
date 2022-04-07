@@ -11,7 +11,7 @@ public class BarcodeReaderDriver extends HWHandler {
     //------------------------------------------------------------
     // BarcodeReaderDriver
     public BarcodeReaderDriver(String id, AppKickstarter appKickstarter) {
-	super(id, appKickstarter);
+        super(id, appKickstarter);
     } // BarcodeReaderDriver
 
 
@@ -25,11 +25,17 @@ public class BarcodeReaderDriver extends HWHandler {
 
             case BR_GoActive:
                 handleGoActive();
+                // TODO Check the activation respond before send
+                slc.send(new Msg(id, mbox, Msg.Type.BR_IsActive, msg.getDetails()));
+                //
+
                 break;
 
             case BR_GoStandby:
                 handleGoStandby();
                 break;
+
+            //
 
             default:
                 log.warning(id + ": unknown message type: [" + msg + "]");
@@ -40,14 +46,14 @@ public class BarcodeReaderDriver extends HWHandler {
     //------------------------------------------------------------
     // handleGoActive
     protected void handleGoActive() {
-	log.info(id + ": Go Active");
+        log.info(id + ": Go Active");
     } // handleGoActive
 
 
     //------------------------------------------------------------
     // handleGoStandby
     protected void handleGoStandby() {
-	log.info(id + ": Go Standby");
+        log.info(id + ": Go Standby");
     } // handleGoStandby
 
 

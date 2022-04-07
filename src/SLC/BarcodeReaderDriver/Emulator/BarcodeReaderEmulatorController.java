@@ -3,6 +3,7 @@ package SLC.BarcodeReaderDriver.Emulator;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.MBox;
 import AppKickstarter.misc.Msg;
+
 import java.util.logging.Logger;
 
 import javafx.beans.value.ChangeListener;
@@ -38,9 +39,9 @@ public class BarcodeReaderEmulatorController {
     public void initialize(String id, AppKickstarter appKickstarter, Logger log, BarcodeReaderEmulator barcodeReaderEmulator) {
         this.id = id;
         this.appKickstarter = appKickstarter;
-	this.log = log;
-	this.barcodeReaderEmulator = barcodeReaderEmulator;
-	this.barcodeReaderMBox = appKickstarter.getThread("BarcodeReaderDriver").getMBox();
+        this.log = log;
+        this.barcodeReaderEmulator = barcodeReaderEmulator;
+        this.barcodeReaderMBox = appKickstarter.getThread("BarcodeReaderDriver").getMBox();
         this.activationRespCBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -55,7 +56,7 @@ public class BarcodeReaderEmulatorController {
                 appendTextArea("Standby Response set to " + standbyRespCBox.getItems().get(newValue.intValue()).toString());
             }
         });
-	this.pollRespCBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+        this.pollRespCBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 pollResp = pollRespCBox.getItems().get(newValue.intValue()).toString();
@@ -72,47 +73,59 @@ public class BarcodeReaderEmulatorController {
     //------------------------------------------------------------
     // buttonPressed
     public void buttonPressed(ActionEvent actionEvent) {
-	Button btn = (Button) actionEvent.getSource();
+        Button btn = (Button) actionEvent.getSource();
 
-	switch (btn.getText()) {
-	    case "Barcode 1":
-	        barcodeNumField.setText(appKickstarter.getProperty("BarcodeReader.Barcode1"));
-	        break;
+        switch (btn.getText()) {
+            case "Barcode 1":
+                barcodeNumField.setText(appKickstarter.getProperty("BarcodeReader.Barcode1"));
+                break;
 
-	    case "Barcode 2":
-		barcodeNumField.setText(appKickstarter.getProperty("BarcodeReader.Barcode2"));
-		break;
+            case "Barcode 2":
+                barcodeNumField.setText(appKickstarter.getProperty("BarcodeReader.Barcode2"));
+                break;
 
-	    case "Barcode 3":
-		barcodeNumField.setText(appKickstarter.getProperty("BarcodeReader.Barcode3"));
-		break;
+            case "Barcode 3":
+                barcodeNumField.setText(appKickstarter.getProperty("BarcodeReader.Barcode3"));
+                break;
 
-	    case "Reset":
-		barcodeNumField.setText("");
-		break;
+            case "Reset":
+                barcodeNumField.setText("");
+                break;
 
-	    case "Send Barcode":
-                barcodeReaderMBox.send(new Msg(id, barcodeReaderMBox, Msg.Type.BR_BarcodeRead, barcodeNumField.getText()));
-                barcodeReaderTextArea.appendText("Sending barcode " + barcodeNumField.getText()+"\n");
-		break;
+            case "Send Barcode":
+                //cannot send the barcode num msg if it is in "standby" mode
+                if (getActivationResp() == "Active") {
+                    barcodeReaderMBox.send(new Msg(id, barcodeReaderMBox, Msg.Type.BR_BarcodeRead, barcodeNumField.getText()));
+                    barcodeReaderTextArea.appendText("Sending barcode " + barcodeNumField.getText() + "\n");
+                }
+                break;
 
-	    case "Activate/Standby":
+            case "Activate/Standby":
                 barcodeReaderMBox.send(new Msg(id, barcodeReaderMBox, Msg.Type.BR_GoActive, barcodeNumField.getText()));
                 barcodeReaderTextArea.appendText("Removing card\n");
-		break;
 
-	    default:
-	        log.warning(id + ": unknown button: [" + btn.getText() + "]");
-		break;
-	}
+                break;
+
+            default:
+                log.warning(id + ": unknown button: [" + btn.getText() + "]");
+                break;
+        }
     } // buttonPressed
 
 
     //------------------------------------------------------------
     // getters
-    public String getActivationResp() { return activationResp; }
-    public String getStandbyResp()    { return standbyResp; }
-    public String getPollResp()       { return pollResp; }
+    public String getActivationResp() {
+        return activationResp;
+    }
+
+    public String getStandbyResp() {
+        return standbyResp;
+    }
+
+    public String getPollResp() {
+        return pollResp;
+    }
 
 
     //------------------------------------------------------------
@@ -139,6 +152,6 @@ public class BarcodeReaderEmulatorController {
     //------------------------------------------------------------
     // appendTextArea
     public void appendTextArea(String status) {
-	barcodeReaderTextArea.appendText(status+"\n");
+        barcodeReaderTextArea.appendText(status + "\n");
     } // appendTextArea
 } // BarcodeReaderEmulatorController

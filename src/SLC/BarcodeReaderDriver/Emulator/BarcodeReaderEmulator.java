@@ -24,50 +24,51 @@ public class BarcodeReaderEmulator extends BarcodeReaderDriver {
     //------------------------------------------------------------
     // BarcodeReaderEmulator
     public BarcodeReaderEmulator(String id, SLCStarter slcStarter) {
-	super(id, slcStarter);
-	this.slcStarter = slcStarter;
-	this.id = id;
+        super(id, slcStarter);
+        this.slcStarter = slcStarter;
+        this.id = id;
     } // BarcodeReaderEmulator
 
 
     //------------------------------------------------------------
     // start
     public void start() throws Exception {
-	Parent root;
-	myStage = new Stage();
-	FXMLLoader loader = new FXMLLoader();
-	String fxmlName = "BarcodeReaderEmulator.fxml";
-	loader.setLocation(BarcodeReaderEmulator.class.getResource(fxmlName));
-	root = loader.load();
-	barcodeReaderEmulatorController = (BarcodeReaderEmulatorController) loader.getController();
-	barcodeReaderEmulatorController.initialize(id, slcStarter, log, this);
-	myStage.initStyle(StageStyle.DECORATED);
-	myStage.setScene(new Scene(root, 350, 470));
-	myStage.setTitle("Barcode Reader");
-	myStage.setResizable(false);
-	myStage.setOnCloseRequest((WindowEvent event) -> {
-	    slcStarter.stopApp();
-	    Platform.exit();
-	});
-	myStage.show();
+        Parent root;
+        myStage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        String fxmlName = "BarcodeReaderEmulator.fxml";
+        loader.setLocation(BarcodeReaderEmulator.class.getResource(fxmlName));
+        root = loader.load();
+        barcodeReaderEmulatorController = (BarcodeReaderEmulatorController) loader.getController();
+        barcodeReaderEmulatorController.initialize(id, slcStarter, log, this);
+        myStage.initStyle(StageStyle.DECORATED);
+        myStage.setScene(new Scene(root, 350, 470));
+        myStage.setTitle("Barcode Reader");
+        myStage.setResizable(false);
+        myStage.setOnCloseRequest((WindowEvent event) -> {
+            slcStarter.stopApp();
+            Platform.exit();
+        });
+        myStage.show();
     } // BarcodeReaderEmulator
 
 
     //------------------------------------------------------------
     // handleGoActive
     protected void handleGoActive() {
-        // fixme
-	super.handleGoActive();
-	barcodeReaderEmulatorController.appendTextArea("Barcode Reader Activated");
+        super.handleGoActive();
+        barcodeReaderEmulatorController.appendTextArea("Barcode Reader Activated");
+        barcodeReaderEmulatorController.goActive();
     } // handleGoActive
 
 
     //------------------------------------------------------------
     // handleGoStandby
     protected void handleGoStandby() {
-        // fixme
-	super.handleGoStandby();
-	barcodeReaderEmulatorController.appendTextArea("Barcode Reader Standby");
+        super.handleGoStandby();
+        barcodeReaderEmulatorController.appendTextArea("Barcode Reader Standby");
+        barcodeReaderEmulatorController.goStandby();
+        //
     } // handleGoStandby
 
 
@@ -88,6 +89,8 @@ public class BarcodeReaderEmulator extends BarcodeReaderDriver {
             case "Ignore":
                 // Just ignore.  do nothing!!
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + barcodeReaderEmulatorController.getPollResp());
         }
     } // handlePoll
 } // BarcodeReaderEmulator
