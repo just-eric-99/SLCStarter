@@ -57,8 +57,9 @@ public class BarcodeReaderEmulator extends BarcodeReaderDriver {
     // handleGoActive
     protected void handleGoActive() {
         super.handleGoActive();
-        barcodeReaderEmulatorController.appendTextArea("Barcode Reader Activated");
         barcodeReaderEmulatorController.goActive();
+        String respond = barcodeReaderEmulatorController.getActivationResp();
+        handleRespond(respond);
     } // handleGoActive
 
 
@@ -66,11 +67,30 @@ public class BarcodeReaderEmulator extends BarcodeReaderDriver {
     // handleGoStandby
     protected void handleGoStandby() {
         super.handleGoStandby();
-        barcodeReaderEmulatorController.appendTextArea("Barcode Reader Standby");
         barcodeReaderEmulatorController.goStandby();
-        //
+        String respond = barcodeReaderEmulatorController.getStandbyResp();
+        handleRespond(respond);
     } // handleGoStandby
 
+    private void handleRespond(String respond) {
+        switch (respond) {
+            case "Active":
+                barcodeReaderEmulatorController.appendTextArea("Barcode Reader Activated");
+                slc.send(new Msg(id, mbox, Msg.Type.BR_IsActive, ""));
+                break;
+
+            case "Standby":
+                barcodeReaderEmulatorController.appendTextArea("Barcode Reader Standby");
+                slc.send(new Msg(id, mbox, Msg.Type.BR_IsStandby, ""));
+                break;
+
+            case "Ignore":
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + barcodeReaderEmulatorController.getPollResp());
+        }
+    }
 
     //------------------------------------------------------------
     // handlePoll

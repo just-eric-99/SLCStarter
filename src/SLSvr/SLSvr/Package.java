@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Package {
+    // TODO get from cfg file
     public static final int defaultDuration = 24;
 
     private final String barcode;

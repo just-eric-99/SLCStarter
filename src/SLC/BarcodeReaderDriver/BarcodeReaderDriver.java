@@ -25,17 +25,11 @@ public class BarcodeReaderDriver extends HWHandler {
 
             case BR_GoActive:
                 handleGoActive();
-                // TODO Check the activation respond before send
-                slc.send(new Msg(id, mbox, Msg.Type.BR_IsActive, msg.getDetails()));
-                //
-
                 break;
 
             case BR_GoStandby:
                 handleGoStandby();
                 break;
-
-            //
 
             default:
                 log.warning(id + ": unknown message type: [" + msg + "]");
