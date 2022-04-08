@@ -3,7 +3,6 @@ package SLC.TouchDisplayHandler;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
-import SLC.TouchDisplayHandler.Emulator.TouchDisplayEmulatorController;
 
 
 //======================================================================

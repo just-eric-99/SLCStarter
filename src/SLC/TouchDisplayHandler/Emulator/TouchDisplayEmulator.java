@@ -90,6 +90,10 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         System.out.println(msg);
         String[] tokens = msg.getDetails().split(",");
         String page = tokens[0].trim();
+        if (tokens.length > 1)
+            TouchDisplayEmulatorController.setShowMsg(tokens[1].trim());
+        else
+            TouchDisplayEmulatorController.setShowMsg("");
 
         switch (page) {
             case "WelcomePage":
@@ -109,11 +113,6 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
                 break;
 
             case "Payment":
-                // payment amount textArea
-                String amount = tokens[1].trim();
-                TouchDisplayEmulatorController.setFee(Double.parseDouble(amount));
-                System.out.println("in emulator::inside payment:: amount:" + amount);
-//                touchDisplayEmulatorController.setFee(Double.parseDouble(amount));
                 reloadStage("TouchDisplayPayment.fxml");
                 break;
 
@@ -187,8 +186,6 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
 
         super.handleSendPasscode(msg);
     }
-
-
 
     // send message
     protected void mouseClick(String screenType, String receivedMsg) {

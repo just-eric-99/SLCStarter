@@ -3,22 +3,16 @@ package SLC.TouchDisplayHandler.Emulator;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.MBox;
 import AppKickstarter.misc.Msg;
-import AppKickstarter.timer.Timer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import org.w3c.dom.css.Rect;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 
@@ -58,7 +52,7 @@ public class TouchDisplayEmulatorController {
     public Text invalidPasscodeText;
     // Payment
     public Text paymentText;
-    private static double fee;
+    private static String showMsg;
     // Show Locker/Locker Not Close
     public static Rectangle locker0Rect;
     public static Rectangle locker1Rect;
@@ -190,9 +184,10 @@ public class TouchDisplayEmulatorController {
                 }
             }
         });
-        if (paymentText != null) {
-            this.paymentText.setText(fee + "");
-        }
+        if (paymentText != null)
+            this.paymentText.setText(showMsg);
+        if (passcodeTextArea != null)
+            passcodeTextArea.setText(showMsg);
         this.selectedScreen = screenSwitcherCBox.getValue().toString();
     } // initialize
 
@@ -222,195 +217,12 @@ public class TouchDisplayEmulatorController {
         int x = (int) mouseEvent.getX();
         int y = (int) mouseEvent.getY();
 
-        /**
-         * Welcome Page
-         * Main Menu
-         * Enter Passcode
-         * Payment
-         * Payment Succeeded
-         * Payment Failed
-         * Show Locker
-         * Scan Barcode
-         * Locker Not Close
-         * Server Down
-         */
-
-        switch (selectedScreen) {
-            case "Welcome Page":
-                handleWelcomePage();
-                break;
-            case "Main Menu":
-                handleMainMenu(x, y);
-                break;
-            case "Enter Passcode":
-                handleEnterPasscode(x, y);
-                break;
-            case "Scan Barcode":
-                handleScanBarcode(x, y);
-                break;
-            case "Show Locker":
-                locker0Rect.setFill(Color.RED);
-                break;
-//            case "Payment":
-//                // fixme: start counting 4s after a click
-//                Thread.sleep(4000);
-//                touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ShowLocker"));
-//                break;
-        }
-        // todo: set rectangle color: enterRect.setFill(Color.RED);
         log.fine(id + ": mouse clicked: -- (" + x + ", " + y + ")");
         touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_MouseClicked, x + " " + y));
     } // td_mouseClick
 
-    private void handleWelcomePage() {
-        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "MainMenu"));
-    }
-
-    private void handleMainMenu(int x, int y) {
-        double checkInXLeft = checkInRect.getLayoutX();
-        double checkInXRight = checkInXLeft + checkInRect.getWidth();
-        double checkInYTop = checkInRect.getLayoutY();
-        double checkInYBottom = checkInYTop + checkInRect.getHeight();
-
-        double pickUpXLeft = pickUpRect.getLayoutX();
-        double pickUpXRight = pickUpXLeft + pickUpRect.getWidth();
-        double pickUpYTop = pickUpRect.getLayoutY();
-        double pickUpYBottom = pickUpYTop + pickUpRect.getHeight();
-
-        if (x > checkInXLeft && x < checkInXRight && y > checkInYTop && y < checkInYBottom) {
-            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ScanBarcode"));
-        } else if (x > pickUpXLeft && x < pickUpXRight && y > pickUpYTop && y < pickUpYBottom) {
-            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "EnterPasscode"));
-        }
-    }
-
-    private void handleEnterPasscode(int x, int y) {
-        double homeXLeft = homeRect.getLayoutX() + groupGroup.getLayoutX();
-        double homeXRight = homeXLeft + homeRect.getWidth();
-        double homeYTop = homeRect.getLayoutY() + groupGroup.getLayoutY();
-        double homeYBottom = homeYTop + homeRect.getHeight();
-
-        double numpad1XLeft = numpad1Rect.getLayoutX();
-        double numpad1XRight = numpad1XLeft + numpad1Rect.getWidth();
-        double numpad1YTop = numpad1Rect.getLayoutY();
-        double numpad1YBottom = numpad1YTop + numpad1Rect.getHeight();
-
-        double numpad2XLeft = numpad2Rect.getLayoutX();
-        double numpad2XRight = numpad2XLeft + numpad2Rect.getWidth();
-        double numpad2YTop = numpad2Rect.getLayoutY();
-        double numpad2YBottom = numpad2YTop + numpad2Rect.getHeight();
-
-        double numpad3XLeft = numpad3Rect.getLayoutX();
-        double numpad3XRight = numpad3XLeft + numpad3Rect.getWidth();
-        double numpad3YTop = numpad3Rect.getLayoutY();
-        double numpad3YBottom = numpad3YTop + numpad3Rect.getHeight();
-
-        double numpad4XLeft = numpad4Rect.getLayoutX();
-        double numpad4XRight = numpad4XLeft + numpad4Rect.getWidth();
-        double numpad4YTop = numpad4Rect.getLayoutY();
-        double numpad4YBottom = numpad4YTop + numpad4Rect.getHeight();
-
-        double numpad5XLeft = numpad5Rect.getLayoutX();
-        double numpad5XRight = numpad5XLeft + numpad5Rect.getWidth();
-        double numpad5YTop = numpad5Rect.getLayoutY();
-        double numpad5YBottom = numpad5YTop + numpad5Rect.getHeight();
-
-        double numpad6XLeft = numpad6Rect.getLayoutX();
-        double numpad6XRight = numpad6XLeft + numpad6Rect.getWidth();
-        double numpad6YTop = numpad6Rect.getLayoutY();
-        double numpad6YBottom = numpad6YTop + numpad6Rect.getHeight();
-
-        double numpad7XLeft = numpad7Rect.getLayoutX();
-        double numpad7XRight = numpad7XLeft + numpad7Rect.getWidth();
-        double numpad7YTop = numpad7Rect.getLayoutY();
-        double numpad7YBottom = numpad7YTop + numpad7Rect.getHeight();
-
-        double numpad8XLeft = numpad8Rect.getLayoutX();
-        double numpad8XRight = numpad8XLeft + numpad8Rect.getWidth();
-        double numpad8YTop = numpad8Rect.getLayoutY();
-        double numpad8YBottom = numpad8YTop + numpad8Rect.getHeight();
-
-        double numpad9XLeft = numpad9Rect.getLayoutX();
-        double numpad9XRight = numpad9XLeft + numpad9Rect.getWidth();
-        double numpad9YTop = numpad9Rect.getLayoutY();
-        double numpad9YBottom = numpad9YTop + numpad9Rect.getHeight();
-
-        double numpad0XLeft = numpad0Rect.getLayoutX();
-        double numpad0XRight = numpad0XLeft + numpad0Rect.getWidth();
-        double numpad0YTop = numpad0Rect.getLayoutY();
-        double numpad0YBottom = numpad0YTop + numpad0Rect.getHeight();
-
-        double numpadBkspaceXLeft = numpadBkspaceRect.getLayoutX();
-        double numpadBkspaceXRight = numpadBkspaceXLeft + numpadBkspaceRect.getWidth();
-        double numpadBkspaceYTop = numpadBkspaceRect.getLayoutY();
-        double numpadBkspaceYBottom = numpadBkspaceYTop + numpadBkspaceRect.getHeight();
-
-        double numpadClearXLeft = numpadClearRect.getLayoutX();
-        double numpadClearXRight = numpadClearXLeft + numpadClearRect.getWidth();
-        double numpadClearYTop = numpadClearRect.getLayoutY();
-        double numpadClearYBottom = numpadClearYTop + numpadClearRect.getHeight();
-
-        double enterXLeft = enterRect.getLayoutX();
-        double enterXRight = enterXLeft + enterRect.getWidth();
-        double enterYTop = enterRect.getLayoutY();
-        double enterYBottom = enterYTop + enterRect.getHeight();
-
-        if (x > homeXLeft && x < homeXRight && y > homeYTop && y < homeYBottom) {
-            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "MainMenu"));
-        } else if (x > numpad1XLeft && x < numpad1XRight && y > numpad1YTop && y < numpad1YBottom) {
-            passcodeTextArea.appendText("1");
-        } else if (x > numpad2XLeft && x < numpad2XRight && y > numpad2YTop && y < numpad2YBottom) {
-            passcodeTextArea.appendText("2");
-        } else if (x > numpad3XLeft && x < numpad3XRight && y > numpad3YTop && y < numpad3YBottom) {
-            passcodeTextArea.appendText("3");
-        } else if (x > numpad4XLeft && x < numpad4XRight && y > numpad4YTop && y < numpad4YBottom) {
-            passcodeTextArea.appendText("4");
-        } else if (x > numpad5XLeft && x < numpad5XRight && y > numpad5YTop && y < numpad5YBottom) {
-            passcodeTextArea.appendText("5");
-        } else if (x > numpad6XLeft && x < numpad6XRight && y > numpad6YTop && y < numpad6YBottom) {
-            passcodeTextArea.appendText("6");
-        } else if (x > numpad7XLeft && x < numpad7XRight && y > numpad7YTop && y < numpad7YBottom) {
-            passcodeTextArea.appendText("7");
-        } else if (x > numpad8XLeft && x < numpad8XRight && y > numpad8YTop && y < numpad8YBottom) {
-            passcodeTextArea.appendText("8");
-        } else if (x > numpad9XLeft && x < numpad9XRight && y > numpad9YTop && y < numpad9YBottom) {
-            passcodeTextArea.appendText("9");
-        } else if (x > numpad0XLeft && x < numpad0XRight && y > numpad0YTop && y < numpad0YBottom) {
-            passcodeTextArea.appendText("0");
-        } else if (x > numpadBkspaceXLeft && x < numpadBkspaceXRight && y > numpadBkspaceYTop && y < numpadBkspaceYBottom) {
-            // Note: need to be editable for backspace
-            passcodeTextArea.setEditable(true);
-            passcodeTextArea.deletePreviousChar();
-            passcodeTextArea.setEditable(false);
-        } else if (x > numpadClearXLeft && x < numpadClearXRight && y > numpadClearYTop && y < numpadClearYBottom) {
-            passcodeTextArea.clear();
-        } else if (x > enterXLeft && x < enterXRight && y > enterYTop && y < enterYBottom) {
-            String sendMsg = passcodeTextArea.getText();
-            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_SendPasscode, sendMsg));
-
-
-        }
-    }
-
-    private void handleScanBarcode(int x, int y) {
-        double homeXLeft = homeRect.getLayoutX() + groupGroup.getLayoutX();
-        double homeXRight = homeXLeft + homeRect.getWidth();
-        double homeYTop = homeRect.getLayoutY() + groupGroup.getLayoutY();
-        double homeYBottom = homeYTop + homeRect.getHeight();
-
-
-        if (x > homeXLeft && x < homeXRight && y > homeYTop && y < homeYBottom) {
-            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "MainMenu"));
-        }
-    }
-
-    public void setPaymentText(Text paymentText) {
-        this.paymentText = paymentText;
-    }
-
-
-    public static void setFee(double fee) {
-        TouchDisplayEmulatorController.fee = fee;
+    public static void setShowMsg(String showMsg) {
+        TouchDisplayEmulatorController.showMsg = showMsg;
     }
 
     public static void setDisplayLocker(String lockerId) {

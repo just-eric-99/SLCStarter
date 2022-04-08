@@ -7,11 +7,11 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLC.TouchDisplayHandler.Emulator.TouchDisplayEmulatorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="570.0" prefWidth="680.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLC.TouchDisplayHandler.Emulator.TouchDisplayEmulatorController">
     <children>
         <AnchorPane prefHeight="480.0" prefWidth="640.0" AnchorPane.leftAnchor="20" AnchorPane.topAnchor="20">
             <children>
-                <Rectangle fx:id="checkInRect" arcHeight="5.0" arcWidth="5.0" fill="white" height="72.0" layoutX="20.0" layoutY="271.0" onMouseClicked="#td_mouseClick" stroke="BLACK" strokeType="OUTSIDE" width="284.0" AnchorPane.bottomAnchor="140.0" AnchorPane.leftAnchor="19.0" />
+                <Rectangle fx:id="checkInRect" arcHeight="5.0" arcWidth="5.0" fill="white" height="72.0" layoutX="20.0" layoutY="271.0" onMouseClicked="#td_mouseClick" stroke="BLACK" strokeType="OUTSIDE" width="284.0" AnchorPane.bottomAnchor="140.0" AnchorPane.leftAnchor="19.0" AnchorPane.rightAnchor="337.0" AnchorPane.topAnchor="268.0" />
                 <Rectangle fx:id="pickUpRect" arcHeight="5.0" arcWidth="5.0" fill="white" height="72.0" stroke="BLACK" strokeType="OUTSIDE" width="284.0" AnchorPane.bottomAnchor="140" AnchorPane.rightAnchor="22.0" />
             <Label layoutX="110.0" layoutY="297.0" text="Check in Package">
                <font>

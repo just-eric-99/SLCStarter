@@ -47,6 +47,7 @@ public class SLSvrHandler extends HWHandler {
     // processMsg
     protected void processMsg(Msg msg) {
         try {
+            System.out.println("Process Msg: " + msg.getType());
             switch (msg.getType()) {
                 case SLS_VerifyBarcode:
                     verifyBarcode(msg);
