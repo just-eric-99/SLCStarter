@@ -30,7 +30,7 @@ public class LockerDriver extends HWHandler {
             String name = appKickstarter.getProperty(nameInProperty);
             boolean occupied = (Integer.parseInt(appKickstarter.getProperty(occupiedInProperty))) == 1;
 
-            lockers.add(new Locker(name));
+            lockers.add(new Locker(name, occupied));
         }
     }
 
@@ -47,6 +47,7 @@ public class LockerDriver extends HWHandler {
                 break;
 
             case L_Unlock:
+
                 handleUnlock(msg.getDetails());
                 break;
 

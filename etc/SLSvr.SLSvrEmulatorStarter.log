@@ -1,16 +1,8 @@
-220408-05:07:17 [INFO] -- 
-220408-05:07:17 [INFO] -- 
-220408-05:07:17 [INFO] -- ============================================================
-220408-05:07:17 [INFO] -- SLSvrStarter: Application Starting...
-220408-05:07:19 [INFO] -- SLSvr: starting...
-220408-05:07:19 [INFO] -- SLSvr: running...
-220408-05:07:20 [INFO] -- 127.0.0.1 is connected.
-220408-05:27:17 [INFO] -- 127.0.0.1 is disconnected.
-220408-05:27:20 [INFO] -- 127.0.0.1 is connected.
-220408-05:29:33 [INFO] -- 127.0.0.1 is disconnected.
-220408-05:29:36 [INFO] -- 127.0.0.1 is connected.
-220408-05:29:57 [INFO] -- 127.0.0.1 is disconnected.
-220408-05:29:59 [INFO] -- 127.0.0.1 is connected.
-220408-05:34:09 [INFO] -- 127.0.0.1 is disconnected.
-220408-05:34:12 [INFO] -- 127.0.0.1 is connected.
-220408-05:55:16 [INFO] -- 127.0.0.1 is disconnected.
+220407-23:58:27 [INFO] -- 
+220407-23:58:27 [INFO] -- 
+220407-23:58:27 [INFO] -- ============================================================
+220407-23:58:27 [INFO] -- SLSvrStarter: Application Starting...
+220407-23:58:28 [INFO] -- SLSvr: starting...
+220407-23:58:28 [INFO] -- SLSvr: running...
+220407-23:58:31 [INFO] -- 127.0.0.1 is connected.
+220408-00:16:22 [INFO] -- 127.0.0.1 is disconnected.

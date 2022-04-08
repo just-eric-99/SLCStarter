@@ -3,16 +3,22 @@ package SLC.TouchDisplayHandler.Emulator;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.MBox;
 import AppKickstarter.misc.Msg;
+import AppKickstarter.timer.Timer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import org.w3c.dom.css.Rect;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 
@@ -272,8 +278,7 @@ public class TouchDisplayEmulatorController {
         double pickUpYBottom = pickUpYTop + pickUpRect.getHeight();
 
         if (x > checkInXLeft && x < checkInXRight && y > checkInYTop && y < checkInYBottom) {
-//            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ScanBarcode"));
-            touchDisplayEmulator.handleCheckIn(new Msg(id, touchDisplayMBox, Msg.Type.TD_GoCheckIn, ""));
+            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ScanBarcode"));
         } else if (x > pickUpXLeft && x < pickUpXRight && y > pickUpYTop && y < pickUpYBottom) {
             touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "EnterPasscode"));
         }
