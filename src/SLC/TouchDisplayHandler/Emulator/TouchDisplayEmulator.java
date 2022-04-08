@@ -188,7 +188,10 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         super.handleSendPasscode(msg);
     }
 
-
+    @Override
+    public void handleCheckIn(Msg msg) {
+        super.handleCheckIn(msg);
+    }
 
     // send message
     protected void mouseClick(String screenType, String receivedMsg) {

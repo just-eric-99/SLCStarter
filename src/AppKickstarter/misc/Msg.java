@@ -152,7 +152,7 @@ public class Msg {
         TD_DisplayBarcode,
         TD_VerifiedPasscode,
         TD_GetLockerId,
-        TD_GetBarcode,
+        TD_GoCheckIn,
 
 
 
@@ -166,9 +166,13 @@ public class Msg {
          */
         BR_GoStandby,
         /**
-         * Barcode Reader Went Active
+         * Barcode Reader is Active
          */
         BR_IsActive,
+        /**
+         * Barcode Reader is Standby
+         */
+        BR_IsStandby,
         /**
          * Card inserted
          */

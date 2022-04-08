@@ -3,8 +3,6 @@ package SLC.SLC;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
 import AppKickstarter.timer.Timer;
-import SLC.Locker.Locker;
-import SLC.Locker.LockerDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +19,10 @@ public class SLC extends AppThread {
     private MBox lockerMBox;
     private MBox octopusCardReaderMBox;
 
-    ArrayList<Locker> lockers = LockerDriver.getLockers();
+    private List<SmallLocker> smallLockers = new ArrayList<>();
 
-    Stage stage = Stage.Welcome_Page;
+//    private Stage stage = Stage.Welcome_Page;
+    private Stage stage = Stage.Main_Menu;
     boolean brIsActive = false;
 
 
@@ -32,7 +31,14 @@ public class SLC extends AppThread {
     public SLC(String id, AppKickstarter appKickstarter) throws Exception {
         super(id, appKickstarter);
         pollingTime = Integer.parseInt(appKickstarter.getProperty("SLC.PollingTime"));
+        loadLockerInfo();
     } // SLC
+
+    private void loadLockerInfo() {
+        int total = Integer.parseInt(appKickstarter.getProperty("locker.Count"));
+        for (int i = 0; i < total; i++)
+            smallLockers.add(new SmallLocker(appKickstarter.getProperty("Locker.LockerId" + i)));
+    }
 
 
     //------------------------------------------------------------
@@ -53,6 +59,7 @@ public class SLC extends AppThread {
             log.fine(id + ": message received: [" + msg + "].");
 
             switch (msg.getType()) {
+                // Msg process all the time
                 case TD_MouseClicked:
                     log.info("MouseCLicked: " + msg.getDetails());
                     processMouseClicked(msg);
@@ -72,44 +79,28 @@ public class SLC extends AppThread {
                     log.info("PollAck: " + msg.getDetails());
                     break;
 
-                case Terminate:
-                    quit = true;
+                case SLS_Fee:
+                    setFee(msg);
                     break;
 
-                case TD_GetBarcode:
-                    // activate barcode reader
-                    if (stage == Stage.Main_Menu) {
-                        barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoActive, ""));
-                        stage = Stage.Scan_Barcode;
-                    }
+                case TD_GoCheckIn:
+                    handleCheckIn();
                     break;
 
                 // send a GetBarcode request to the BarcodeMbox
 
                 case BR_IsActive:
-//                     ask the barcode reader to read a barcode
-                    barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_BarcodeRead, ""));
-
+                    // ask the barcode reader to read a barcode
+                    // barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_BarcodeRead, ""));
+                    brIsActive = true;
                     break;
 
                 case BR_BarcodeRead:
-                    // process
-                    // Br_isActive && stage = scan_barcode
-                    String barcode = msg.getDetails();
-                    // **verified? -> exist?
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_VerifyBarcode, barcode));
+                    handleBarcodeRead(msg);
                     break;
+
                 case SLS_BarcodeVerified:
-                    // randomly choose an empty locker
-                    String barcode1 = msg.getDetails();
-                    String lockerId = chooseEmptyLocker();
-                    int passcode = generatePasscode();
-                    updateLocker(lockerId, passcode);
-                    touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "Show Locker," + lockerId));
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Fee, barcode1));
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_TimeInterval, barcode1));
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_PackageArrived, barcode1 + "\t" + System.currentTimeMillis()));
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_SendPasscode, barcode1 + "\t" + passcode));
+                    barcodeVerified(msg);
                     break;
 
                 case SLS_InvalidBarcode:
@@ -118,8 +109,9 @@ public class SLC extends AppThread {
                     touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, ""));
                     break;
 
-                case SLS_Fee:
-
+                case Terminate:
+                    quit = true;
+                    break;
 
                 default:
                     log.warning(id + ": unknown message type: [" + msg + "]");
@@ -138,27 +130,66 @@ public class SLC extends AppThread {
         // *** process mouse click here!!! ***
     } // processMouseClicked
 
-    private void loadLockers() {
-        if (lockers != null) {
-            for (int i = 0; i < 44; i++) {
-                String nameInProperty = "Locker.LockerId" + i;
-                String occupiedInProperty = "Locker.LockerId" + i + ".Occupied";
+    private SmallLocker chooseEmptyLocker() {
+        for (SmallLocker l : smallLockers) {
+            if (!l.isOccupied())
+                return l;
+        }
+        return null;
+    }
 
-                String name = appKickstarter.getProperty(nameInProperty);
-                boolean occupied = (Integer.parseInt(appKickstarter.getProperty(occupiedInProperty))) == 1;
+    private void barcodeVerified(Msg msg) {
+        if (stage != Stage.Scan_Barcode) return;
+        // randomly choose an empty locker
+        String barcode = msg.getDetails();
+        long arriveTime = System.currentTimeMillis();
+        SmallLocker sl = chooseEmptyLocker();
+        if (sl == null) {
+            // TODO send change screen to TD
+            return;
+        }
+        int passcode = generatePasscode();
+        Package p = sl.addPackage(barcode, passcode);
+        p.setArriveTime(arriveTime);
+        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "Show Locker," + sl.getLockerID()));
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Fee, barcode));
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_TimeInterval, barcode));
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_PackageArrived, barcode + "\t" + arriveTime));
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_SendPasscode, barcode + "\t" + passcode));
+        lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, sl.getLockerID()));
+        stage = Stage.Show_Locker;
+    }
 
-                lockers.add(new Locker(name, occupied));
-            }
+    private void handleCheckIn() {
+        // activate barcode reader
+        if (stage == Stage.Main_Menu) {
+            touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "ScanBarcode"));
+            barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoActive, ""));
+            stage = Stage.Scan_Barcode;
         }
     }
 
-    private String chooseEmptyLocker() {
-        for (Locker locker : lockers) {
-            if (!locker.isOccupied()) {
-                return locker.getLockerId();
+    private void handleBarcodeRead(Msg msg) {
+        if (stage == Stage.Scan_Barcode && brIsActive) {
+            // process
+            // Br_isActive && stage = scan_barcode
+            String barcode = msg.getDetails().trim();
+            if (findPackage(barcode) != null) {
+                // fixme already exist?
+
+                return;
             }
+            slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_VerifyBarcode, barcode));
         }
-        return null;
+    }
+
+    private void setFee(Msg msg) {
+        String[] tokens = msg.getDetails().split("\t");
+        Package p = findPackage(tokens[0]);
+        if (p != null) {
+            p.setFee(Double.parseDouble(tokens[1]));
+        }
+        // TODO null?
     }
 
     private int generatePasscode() {
@@ -166,20 +197,19 @@ public class SLC extends AppThread {
         int[] generatedPasscode = new int[1];
         do {
             generatedPasscode[0] = ThreadLocalRandom.current().nextInt(10000000,100000000);
-            x = lockers.stream().filter(locker -> locker.isOccupied() && (locker.getPasscode() == generatedPasscode[0])).count();
+            x = smallLockers.stream().filter(l -> l.isOccupied() && l.passcodeIsSame(generatedPasscode[0])).count();
         } while (x == 0);
 
         return generatedPasscode[0];
     }
 
-    void updateLocker(String lockerId, int passcode) {
-        lockers.stream()
-                .filter(locker -> locker.getLockerId().equals(lockerId))
-                .forEach(locker -> {
-                    locker.setOccupied(true);
-                    locker.setPasscode(passcode);
-                    locker.setArrivalTime(System.currentTimeMillis());
-                });
+    private Package findPackage(String barcode) {
+        for (SmallLocker sl : smallLockers) {
+            Package p = sl.isContainPackage(barcode);
+            if (p != null)
+                return p;
+        }
+        return null;
     }
 
     private enum Stage {

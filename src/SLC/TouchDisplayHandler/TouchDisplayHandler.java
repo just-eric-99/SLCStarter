@@ -3,7 +3,6 @@ package SLC.TouchDisplayHandler;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
-import SLC.TouchDisplayHandler.Emulator.TouchDisplayEmulatorController;
 
 
 //======================================================================
@@ -79,6 +78,11 @@ public class TouchDisplayHandler extends HWHandler {
     // fixme
     protected void handleSendBarcode(Msg msg) {
         log.info(id + ": received barcode -- " + msg.getDetails());
+    }
+
+    protected void handleCheckIn(Msg msg) {
+        log.info(id + ": Handle go check in.");
+        slc.send(new Msg(id, mbox, Msg.Type.TD_GoCheckIn, ""));
     }
 
 
