@@ -1,4 +1,4 @@
-package SLC.HWHandler;
+package SLC.SLC;
 
 public enum HWStatus {
     Active,
