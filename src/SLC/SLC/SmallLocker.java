@@ -5,12 +5,16 @@ public class SmallLocker {
     private int passcode;
     private String barcode;
     private long arriveTime;
+    private boolean locked;
+    private LockerSize size;
 
-    public SmallLocker(String lockerID) {
+    public SmallLocker(String lockerID, LockerSize size) {
         this.lockerID = lockerID;
+        this.size = size;
         passcode = -1;
         barcode = null;
         arriveTime = -1;
+        locked = true;
     }
 
     public String getLockerID() {
@@ -51,6 +55,23 @@ public class SmallLocker {
         passcode = -1;
         arriveTime = -1;
         return tempBarcode;
+    }
+
+    public int getPayment(){
+        // 24 hours = 86400000 milliseconds, default $15 a day
+        return (int) (Math.ceil((System.currentTimeMillis()-arriveTime)/86400000.0) - 1) * 15;
+    }
+
+    @Override
+    public String toString() {
+        return "SmallLocker{" +
+                "lockerID='" + lockerID + '\'' +
+                ", passcode=" + passcode +
+                ", barcode='" + barcode + '\'' +
+                ", arriveTime=" + arriveTime +
+                ", locked=" + locked +
+                ", lockerSize='" + size + '\'' +
+                '}';
     }
 }
 

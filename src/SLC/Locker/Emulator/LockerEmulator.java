@@ -61,4 +61,16 @@ public class LockerEmulator extends LockerDriver {
                 break;
         }
     } // handlePoll
+
+    protected void sendHasCloseMsg(String lockerId) {
+        super.sendHasCloseMsg(lockerId);
+        slc.send(new Msg(id, mbox, Msg.Type.L_HasClose, lockerId));
+    }
+
+    @Override
+    protected void handleUnlock(String locker) {
+        super.handleUnlock(locker);
+        lockerEmulatorController.appendTextArea("Opening Locker #" + locker + "...");
+        lockerEmulatorController.appendTextArea("Locker #" + locker + " opened...");
+    }
 }

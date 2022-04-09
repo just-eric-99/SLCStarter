@@ -5,9 +5,7 @@ import AppKickstarter.misc.*;
 import AppKickstarter.timer.Timer;
 import SLC.HWHandler.HWStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -44,8 +42,10 @@ public class SLC extends AppThread {
 
     private void loadLockerInfo() {
         int total = Integer.parseInt(appKickstarter.getProperty("locker.Count"));
-        for (int i = 0; i < total; i++)
-            smallLockers.add(new SmallLocker(appKickstarter.getProperty("Locker.LockerId" + i)));
+        for (int i = 0; i < total; i++) {
+            LockerSize size = LockerSize.valueOf(appKickstarter.getProperty("Locker.LockerId" + i + ".Size"));
+            smallLockers.add(new SmallLocker(i + "", size));
+        }
     }
 
 
@@ -123,6 +123,12 @@ public class SLC extends AppThread {
 
                 default:
                     log.warning(id + ": unknown message type: [" + msg + "]");
+            }
+
+            for (SmallLocker locker : smallLockers) {
+                if (locker.isOccupied()) {
+                    System.out.println(locker);
+                }
             }
         }
 
@@ -311,8 +317,9 @@ public class SLC extends AppThread {
             touchScreenMsg += "9";
         } else if (x > numPad0XLeft && x < numPad0XRight && y > numPad0YTop && y < numPad0YBottom) {
             touchScreenMsg += "0";
+            System.out.println(touchScreenMsg);
         } else if (x > numPadBKSpaceXLeft && x < numPadBKSpaceXRight && y > numPadBKSpaceYTop && y < numPadBKSpaceYBottom) {
-            touchScreenMsg = touchScreenMsg.length() > 0? touchScreenMsg.substring(0, touchScreenMsg.length() - 1) : "";
+            touchScreenMsg = touchScreenMsg.length() > 0 ? touchScreenMsg.substring(0, touchScreenMsg.length() - 1) : "";
 //            passcodeTextArea.setEditable(true);
 //            passcodeTextArea.deletePreviousChar();
 //            passcodeTextArea.setEditable(false);

@@ -5,11 +5,12 @@ import AppKickstarter.misc.Msg;
 import SLC.HWHandler.HWHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LockerDriver extends HWHandler {
     private final int n = Integer.parseInt(appKickstarter.getProperty("locker.Count"));
 
-    protected final static ArrayList<Locker> lockers = new ArrayList<>();
+    public static HashMap<String, Boolean> lockers = new HashMap<>();
 
     public LockerDriver(String id, AppKickstarter appKickstarter) {
         super(id, appKickstarter);
@@ -17,20 +18,10 @@ public class LockerDriver extends HWHandler {
     }
 
     private void initialize() {
-        if (lockers.size() == 0) {
-            loadData();
-        }
-    }
-
-    private void loadData() {
-        for (int i = 0; i < n; i++) {
-            String nameInProperty = "Locker.LockerId"+ i;
-            String occupiedInProperty = "Locker.LockerId"+ i +".Occupied";
-
-            String name = appKickstarter.getProperty(nameInProperty);
-            boolean occupied = (Integer.parseInt(appKickstarter.getProperty(occupiedInProperty))) == 1;
-
-            lockers.add(new Locker(name));
+        if (lockers.isEmpty()) {
+            for (int i = 0; i < n; i++) {
+                lockers.put(i + "", true);
+            }
         }
     }
 
@@ -39,10 +30,6 @@ public class LockerDriver extends HWHandler {
         // slc will send the message to lock or unlock
         switch (msg.getType()) {
 
-            case L_Opened:
-                handleOpened();
-                break;
-
             case TimesUp:
                 break;
 
@@ -50,12 +37,15 @@ public class LockerDriver extends HWHandler {
                 handleUnlock(msg.getDetails());
                 break;
 
+            case L_HasClose:
+                sendHasCloseMsg(msg.getDetails());
+
             default:
                 log.warning(id + ": unknown message type: [" + msg + "]");
         }
     }
 
-    public static ArrayList<Locker> getLockers() {
+    public static HashMap<String, Boolean> getLockers() {
         return lockers;
     }
 
@@ -65,29 +55,18 @@ public class LockerDriver extends HWHandler {
     }
 
     protected void handleUnlock(String locker) {
-        int lockerId = Integer.parseInt(locker);
-
-        if (lockers.get(lockerId).isOpened()) {
-            log.info("Locker #" + lockers.get(lockerId).getLockerId() + " is already opened.");
+        if (lockers.get(locker) != null) {
+            lockers.replace(locker, false);
+            log.info("Locker #" + locker + " is opened.");
+            slc.send(new Msg(id,mbox, Msg.Type.L_Opened, locker + ""));
         } else {
-            lockers.get(lockerId).setOpened(true);
-            log.info("Locker #" + lockers.get(lockerId).getLockerId() + " is opened.");
-            log.info("Locker #" + lockers.get(lockerId).getLockerId() + " is available now.");
+            log.info("Locker #" + locker + " not found.");
         }
     }
 
-    protected void handleOpened() {
-        String lockerIds = "";
-        if (!lockers.isEmpty()) {
-            for (Locker locker : lockers) {
-                if (locker.isOpened()) {
-                    lockerIds += locker.getLockerId() + ",";
-                }
-            }
-            if (lockerIds.length() != 0) {
-                lockerIds = lockerIds.substring(0, lockerIds.length() - 1);
-            }
-        }
-        slc.send(new Msg(id, mbox, Msg.Type.L_Opened, lockerIds));
+    protected void sendHasCloseMsg(String lockerId) {
+        log.info(id + ": Locker #" + lockerId + " is  now close.");
     }
+
+
 }

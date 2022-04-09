@@ -56,30 +56,31 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         TouchDisplayEmulator touchDisplayEmulator = this;
 
         Platform.runLater(new Runnable() {
-	    @Override
-	    public void run() {
-		try {
-		    log.info(id + ": loading fxml: " + fxmlFName);
+            @Override
+            public void run() {
+                try {
+                    log.info(id + ": loading fxml: " + fxmlFName);
 
-		    // get the latest pollResp string, default to "ACK"
-		    String pollResp = "ACK";
-		    if (touchDisplayEmulatorController != null) {
-		        pollResp = touchDisplayEmulatorController.getPollResp();
+                    // get the latest pollResp string, default to "ACK"
+                    String pollResp = "ACK";
+                    if (touchDisplayEmulatorController != null) {
+                        pollResp = touchDisplayEmulatorController.getPollResp();
                     }
 
-		    Parent root;
-		    FXMLLoader loader = new FXMLLoader();
-		    loader.setLocation(TouchDisplayEmulator.class.getResource(fxmlFName));
-		    root = loader.load();
-		    touchDisplayEmulatorController = (TouchDisplayEmulatorController) loader.getController();
-		    touchDisplayEmulatorController.initialize(id, slcStarter, log, touchDisplayEmulator, pollResp);
-		    myStage.setScene(new Scene(root, WIDTH, HEIGHT));
-		} catch (Exception e) {
-		    log.severe(id + ": failed to load " + fxmlFName);
-		    e.printStackTrace();
-		}
-	    }
-	});
+                    Parent root;
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(TouchDisplayEmulator.class.getResource(fxmlFName));
+                    root = loader.load();
+
+                    touchDisplayEmulatorController = (TouchDisplayEmulatorController) loader.getController();
+                    touchDisplayEmulatorController.initialize(id, slcStarter, log, touchDisplayEmulator, pollResp);
+                    myStage.setScene(new Scene(root, WIDTH, HEIGHT));
+                } catch (Exception e) {
+                    log.severe(id + ": failed to load " + fxmlFName);
+                    e.printStackTrace();
+                }
+            }
+        });
     } // reloadStage
 
 

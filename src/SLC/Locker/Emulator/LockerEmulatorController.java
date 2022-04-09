@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import java.lang.reflect.Array;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class LockerEmulatorController {
@@ -52,17 +53,33 @@ public class LockerEmulatorController {
         return pollResp;
     }
 
+//    public void buttonPressed(ActionEvent actionEvent) {
+//        Button btn = (Button) actionEvent.getSource();
+//        int index = Integer.parseInt(btn.getId());
+//        ArrayList<Locker> lockers = LockerDriver.getLockers();
+//
+//        if (!lockers.get(index).isOpened()) {
+//            appendTextArea("Locker #" + index + " is not opened.");
+//        } else {
+//            lockers.get(index).setOpened(false);
+//            appendTextArea("Closing Locker #" + index + "...");
+//            appendTextArea("Locker #" + index + " is closed.");
+//        }
+//    }
+
     public void buttonPressed(ActionEvent actionEvent) {
         Button btn = (Button) actionEvent.getSource();
-        int index = Integer.parseInt(btn.getId());
-        ArrayList<Locker> lockers = LockerDriver.getLockers();
-
-        if (!lockers.get(index).isOpened()) {
-            appendTextArea("Locker #" + index + " is not opened.");
-        } else {
-            lockers.get(index).setOpened(false);
+        String index = btn.getId();
+        HashMap<String, Boolean> lockers = LockerDriver.getLockers();
+//        true close, false opened
+        if (lockers.get(index) == false) {
             appendTextArea("Closing Locker #" + index + "...");
             appendTextArea("Locker #" + index + " is closed.");
+            lockerMBox.send(new Msg(id, lockerMBox, Msg.Type.L_HasClose, index));
+        } else {
+            appendTextArea("Locker #" + index + " is not opened.");
         }
     }
+
+
 }
