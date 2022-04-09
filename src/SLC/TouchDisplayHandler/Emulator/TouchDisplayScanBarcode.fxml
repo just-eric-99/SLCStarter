@@ -28,12 +28,22 @@
                   <Font size="18.0" />
                </font>
             </Text>
+                <Text fx:id="invalidBarcodeText" fill="RED" layoutX="120.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Invalid Barcode. Please scan again." visible="false">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Text>
+                <Text fx:id="lockerFullText" fill="RED" layoutX="120.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sorry, lockers are currently full." visible="false">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Text>
             <Text layoutX="506.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Timer" wrappingWidth="41.0">
                <font>
                   <Font size="14.0" />
                </font>
             </Text>
-                <Group fx:id="groupGroup" layoutX="-35.0" layoutY="28.0">
+                <Group layoutX="-38.0" layoutY="6.0">
                     <children>
                         <Rectangle fill="WHITE" height="19.0" layoutX="92.0" layoutY="89.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
                         <Polygon fill="WHITE" layoutX="105.0" layoutY="94.0" scaleX="0.4" scaleY="0.15" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0">

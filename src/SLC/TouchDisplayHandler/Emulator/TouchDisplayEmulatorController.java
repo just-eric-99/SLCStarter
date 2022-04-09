@@ -30,7 +30,6 @@ public class TouchDisplayEmulatorController {
     public ChoiceBox screenSwitcherCBox;
     public ChoiceBox pollRespCBox;
     public Rectangle homeRect;
-    public Group groupGroup;
     // Main Menu
     public Rectangle checkInRect;
     public Rectangle pickUpRect;
@@ -54,6 +53,8 @@ public class TouchDisplayEmulatorController {
     public Text paymentText;
     private static String showMsg;
     // Show Locker/Locker Not Close
+    public Text checkInText;
+    public Text pickUpText;
     public static Rectangle locker0Rect;
     public static Rectangle locker1Rect;
     public static Rectangle locker2Rect;
