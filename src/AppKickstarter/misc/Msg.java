@@ -154,6 +154,7 @@ public class Msg {
         TD_GetLockerId,
         TD_GoCheckIn,
         TD_GoPickUp,
+        TD_ChangeScreen,
 
 
 
@@ -182,10 +183,6 @@ public class Msg {
          */
         SLS_SendPasscode,
         /**
-         * Get Fee From Server
-         */
-        SLS_Fee,
-        /**
          * Package arrived
          */
         SLS_PackageArrived,
@@ -197,10 +194,6 @@ public class Msg {
          * Send Payment Record
          */
         SLS_Payment,
-        /**
-         * Send Time interval to SLC
-         */
-        SLS_TimeInterval,
         /**
          * Add Package to server
          */
@@ -225,6 +218,7 @@ public class Msg {
          * Unlock a locker
          */
         L_Unlock,
+        L_HasClose,
         /**
          * Octopus Card Reader Go Activate
          */

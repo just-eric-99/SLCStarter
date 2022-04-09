@@ -3,7 +3,7 @@ package SLC.SLC;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
 import AppKickstarter.timer.Timer;
-import SLC.HWHandler.HWStatus;
+import Common.LockerSize;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -21,7 +21,8 @@ public class SLC extends AppThread {
 
     private List<SmallLocker> smallLockers = new ArrayList<>();
 
-    private Stage stage = Stage.Welcome_Page;
+    private Screen screen = Screen.Welcome_Page;
+    private LockerFunction lockerFunction = LockerFunction.Home;
 
     // fixme Ask HW Status when start?
     private HWStatus brStatus = HWStatus.Standby;
@@ -31,6 +32,8 @@ public class SLC extends AppThread {
 
     private String touchScreenMsg = "";
     private String readBarcode = "";
+    private SmallLocker openLocker = null;
+    private int fee = -1;
 
     //------------------------------------------------------------
     // SLC
@@ -99,6 +102,11 @@ public class SLC extends AppThread {
                     sendPasscode(msg);
                     break;
 
+                // For hacking purpose
+                case TD_ChangeScreen:
+                    updateScreen(Screen.valueOf(msg.getDetails()));
+                    break;
+
                 case BR_IsActive:
                     brStatus = HWStatus.Active;
                     break;
@@ -115,6 +123,27 @@ public class SLC extends AppThread {
                     // show visible: text msg (invalid barcode)
                     // TODO check type or detail
                     touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, ""));
+                    break;
+
+                case L_Opened:
+                    handleLockerOpened(msg);
+                    break;
+
+                case L_HasClose:
+                    // receive locker close message with lockerId
+                    handleLockerClose(msg);
+                    break;
+
+                case OCR_WaitingTransaction:
+                    handleWaitingTransaction(msg);
+                    break;
+
+                case OCR_CardOK:
+                    handleReceiveFee();
+                    break;
+
+                case OCR_CardFailed:
+                    handlePaymentFail(msg);
                     break;
 
                 case Terminate:
@@ -166,7 +195,7 @@ public class SLC extends AppThread {
         StringTokenizer st = new StringTokenizer(msg.getDetails());
         int x = Integer.parseInt(st.nextToken());
         int y = Integer.parseInt(st.nextToken());
-        switch (stage) {
+        switch (screen) {
             case Welcome_Page:
                 processWelcomePage();
                 break;
@@ -186,8 +215,7 @@ public class SLC extends AppThread {
     } // processMouseClicked
 
     private void processWelcomePage() {
-        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "MainMenu"));
-        stage = Stage.Main_Menu;
+        updateScreen(Screen.Main_Menu);
     }
 
     private void processMainMenu(int x, int y) {
@@ -204,9 +232,9 @@ public class SLC extends AppThread {
         if (x > checkInXLeft && x < checkInXRight && y > checkInYTop && y < checkInYBottom)
             handleCheckIn();
         else if (x > pickUpXLeft && x < pickUpXRight && y > pickUpYTop && y < pickUpYBottom) {
-            touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "EnterPasscode"));
             touchScreenMsg = "";
-            stage = Stage.Enter_Passcode;
+            updateScreen(Screen.Enter_Passcode);
+            lockerFunction = LockerFunction.Pick_Up;
         }
     }
 
@@ -217,7 +245,8 @@ public class SLC extends AppThread {
         int homeYBottom = 114;
 
         if (x > homeXLeft && x < homeXRight && y > homeYTop && y < homeYBottom) {
-            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "MainMenu"));
+            updateScreen(Screen.Main_Menu);
+            lockerFunction = LockerFunction.Home;
             return true;
         }
         return false;
@@ -290,8 +319,8 @@ public class SLC extends AppThread {
         int enterYBottom = 184;
 
         if (x > enterXLeft && x < enterXRight && y > enterYTop && y < enterYBottom) {
-            // fixme Verify code
-//            touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "," + touchScreenMsg));
+            handleVerifyPasscode(Integer.parseInt(touchScreenMsg));
+            touchScreenMsg = "";
             return;
         }
 
@@ -326,63 +355,85 @@ public class SLC extends AppThread {
         } else if (x > numPadClearXLeft && x < numPadClearXRight && y > numPadClearYTop && y < numPadClearYBottom) {
             touchScreenMsg = "";
         }
-        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "EnterPasscode," + touchScreenMsg));
+        updateScreen(Screen.Enter_Passcode, touchScreenMsg);
     }
 
     private void processScanBarcode(int x, int y) {
-        isRtnHome(x, y);
+        if (isRtnHome(x, y)) {
+            barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoStandby, ""));
+        }
     }
 
-    private SmallLocker chooseEmptyLocker() {
+    private void handleVerifyPasscode(int passcode) {
+        SmallLocker sl = findByPasscode(passcode);
+        if (sl == null)
+            updateScreen(Screen.Enter_Passcode, "Invalid passcode");
+        else {
+            int fee = sl.getPayment();
+            openLocker = sl;
+            System.out.println("Fee: " + fee);
+            if (fee == 0) {
+                lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, sl.getLockerID()));
+            } else {
+                this.fee = fee;
+                octopusCardReaderMBox.send(new Msg(id, mbox, Msg.Type.OCR_TransactionRequest, fee + ""));
+            }
+        }
+    }
+
+    private SmallLocker chooseEmptyLocker(LockerSize size) {
         for (SmallLocker l : smallLockers) {
-            if (!l.isOccupied())
+            if (!l.isOccupied() && l.getSize() == size)
                 return l;
         }
         return null;
     }
 
     private void barcodeVerified(Msg msg) {
-        if (stage != Stage.Scan_Barcode)
+        if (screen != Screen.Scan_Barcode)
             return;
         // randomly choose an empty locker
-        String barcode = msg.getDetails().trim();
+        String[] tokens = msg.getDetails().split("\t");
+        String barcode = tokens[0].trim();
         // fixme
         if (!barcode.equals(readBarcode))
             return;
 
-        SmallLocker sl = chooseEmptyLocker();
+        LockerSize size = LockerSize.valueOf(tokens[1].trim());
+        SmallLocker sl = chooseEmptyLocker(size);
         if (sl == null) {
             // TODO send change screen to TD
+            System.out.println("Locker for " + size + " is full.");
             return;
         }
+
         int passcode = generatePasscode();
         sl.addPackage(barcode, passcode);
         log.info("Added package #" + sl.getBarcode() + " to locker #" + sl.getLockerID());
 
-        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Fee, barcode));
-        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_TimeInterval, barcode));
         slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_PackageArrived, barcode + "\t" + sl.getArriveTime()));
         slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_SendPasscode, barcode + "\t" + passcode));
-        openLocker(sl.getLockerID());
+        barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoStandby, ""));
+        lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, sl.getLockerID()));
+        openLocker = sl;
     }
 
     private void handleCheckIn() {
-        if (stage != Stage.Main_Menu)
+        if (screen != Screen.Main_Menu && screen != Screen.Show_Locker)
             return;
-        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "ScanBarcode"));
+        lockerFunction = LockerFunction.Check_In;
         barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoActive, ""));
-        stage = Stage.Scan_Barcode;
+        updateScreen(Screen.Scan_Barcode);
     }
 
     private void handlePickUp() {
-        if (stage != Stage.Main_Menu)
+        if (screen != Screen.Main_Menu)
             return;
-        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "EnterPasscode"));
-        stage = Stage.Enter_Passcode;
+        updateScreen(Screen.Enter_Passcode);
     }
 
     private void sendPasscode(Msg msg) {
-        if (stage != Stage.Enter_Passcode)
+        if (screen != Screen.Enter_Passcode)
             return;
         SmallLocker sl = findByPasscode(Integer.parseInt(msg.getDetails()));
         // null -> passcode wrong, not null -> passcode correct
@@ -396,11 +447,12 @@ public class SLC extends AppThread {
     }
 
     private void handleBarcodeRead(Msg msg) {
-        if (stage != Stage.Scan_Barcode || brStatus != HWStatus.Active)
+        if (screen != Screen.Scan_Barcode || brStatus != HWStatus.Active)
             return;
 
         String barcode = msg.getDetails().trim();
-        if (!findPackage(barcode)) {
+        readBarcode = barcode;
+        if (findPackage(barcode)) {
             // fixme already exist?
             return;
         }
@@ -408,21 +460,75 @@ public class SLC extends AppThread {
         slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_VerifyBarcode, barcode));
     }
 
-    private void openLocker(String lockerID) {
-        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "ShowLocker"));
-        lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, lockerID));
-        stage = Stage.Show_Locker;
-    }
-
     private int generatePasscode() {
         long x;
         int[] generatedPasscode = new int[1];
         do {
-            generatedPasscode[0] = ThreadLocalRandom.current().nextInt(10000000,100000000);
+            generatedPasscode[0] = ThreadLocalRandom.current().nextInt(10000000, 100000000);
             x = smallLockers.stream().filter(l -> l.isOccupied() && l.passcodeIsSame(generatedPasscode[0])).count();
         } while (x != 0);
 
         return generatedPasscode[0];
+    }
+
+    private void handleLockerOpened(Msg msg) {
+        System.out.println("handleLockerOpened " + msg);
+        String lockerID = msg.getDetails().trim();
+        if (openLocker.getLockerID().equals(lockerID))
+            updateScreen(Screen.Show_Locker, lockerID);
+        if (lockerFunction == LockerFunction.Pick_Up)
+            openLocker.pickUpPackage();
+    }
+
+    private void handleLockerClose(Msg msg) {
+        System.out.println("Locker close: " + msg);
+        String lockerID = msg.getDetails().trim();
+        if (openLocker.getLockerID().equals(lockerID)) {
+            if (lockerFunction == LockerFunction.Check_In) {
+                handleCheckIn();
+            } else if (lockerFunction == LockerFunction.Pick_Up) {
+                String barcode = openLocker.pickUpPackage();
+                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_PackagePicked, barcode + "\t" + System.currentTimeMillis() + ""));
+                updateScreen(Screen.Main_Menu);
+                lockerFunction = LockerFunction.Home;
+            }
+            openLocker = null;    // locker is close
+        }
+    }
+
+    private void handleWaitingTransaction(Msg msg) {
+        double fee = Double.parseDouble(msg.getDetails());
+        if (this.fee == fee) {
+            updateScreen(Screen.Payment, this.fee + "");
+        }
+    }
+
+    private void handleReceiveFee() {
+        updateScreen(Screen.Payment_Succeeded);
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+                lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, openLocker.getLockerID()));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void handlePaymentFail(Msg msg) {
+        updateScreen(Screen.Payment_Failed, msg.getDetails());
+    }
+
+    private void updateScreen(Screen s) {
+        updateScreen(s, "");
+    }
+
+    private void updateScreen(Screen s, String msg) {
+        String detail = s.toString();
+        if (!msg.isEmpty())
+            detail += "," + msg;
+        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, detail));
+        screen = s;
     }
 
     private boolean findPackage(String barcode) {
@@ -441,16 +547,9 @@ public class SLC extends AppThread {
         return null;
     }
 
-    private enum Stage {
-        Welcome_Page,
-        Main_Menu,
-        Confirmation,
-        Enter_Passcode,
-        Payment,
-        Payment_Succeeded,
-        Payment_Failed,
-        Scan_Barcode,
-        Show_Locker,
-        Locker_Not_Close,
+    private enum LockerFunction {
+        Home,
+        Pick_Up,
+        Check_In
     }
 } // SLC

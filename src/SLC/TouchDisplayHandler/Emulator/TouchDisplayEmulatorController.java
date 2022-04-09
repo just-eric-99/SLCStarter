@@ -3,6 +3,7 @@ package SLC.TouchDisplayHandler.Emulator;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.MBox;
 import AppKickstarter.misc.Msg;
+import SLC.SLC.Screen;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -140,47 +141,47 @@ public class TouchDisplayEmulatorController {
                 switch (selectedScreen) {
                     // case == selection list
                     case "Welcome Page":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "WelcomePage"));
+                        touchDisplayEmulator.changeScreen(Screen.Welcome_Page);
                         break;
 
                     case "Main Menu":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "MainMenu"));
+                        touchDisplayEmulator.changeScreen(Screen.Main_Menu);
                         break;
 
                     case "Confirmation":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "Confirmation"));
+                        touchDisplayEmulator.changeScreen(Screen.Confirmation);
                         break;
 
                     case "Enter Passcode":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "EnterPasscode"));
+                        touchDisplayEmulator.changeScreen(Screen.Enter_Passcode);
                         break;
 
                     case "Payment":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "Payment"));
+                        touchDisplayEmulator.changeScreen(Screen.Payment);
                         break;
 
                     case "Payment Succeeded":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "PaymentSucceeded"));
+                        touchDisplayEmulator.changeScreen(Screen.Payment_Succeeded);
                         break;
 
                     case "Payment Failed":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "PaymentFailed"));
+                        touchDisplayEmulator.changeScreen(Screen.Payment_Failed);
                         break;
 
                     case "Scan Barcode":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ScanBarcode"));
+                        touchDisplayEmulator.changeScreen(Screen.Scan_Barcode);
                         break;
 
                     case "Show Locker":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ShowLocker"));
+                        touchDisplayEmulator.changeScreen(Screen.Show_Locker);
                         break;
 
                     case "Locker Not Close":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "LockerNotClose"));
+                        touchDisplayEmulator.changeScreen(Screen.Locker_Not_Close);
                         break;
 
                     case "Server Down":
-                        touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_UpdateDisplay, "ServerDown"));
+                        touchDisplayEmulator.changeScreen(Screen.Server_Down);
                         break;
                 }
             }

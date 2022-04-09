@@ -1,6 +1,7 @@
 package SLSvr.Emulator;
 
 import AppKickstarter.misc.Msg;
+import Common.LockerSize;
 import SLSvr.SLSvrStarter;
 
 import SLSvr.SLSvr.SLSvr;
@@ -59,7 +60,7 @@ public class SLSvrEmulator extends SLSvr {
     //------------------------------------------------------------
     // handlePoll
     @Override
-    protected void handlePoll(String detail) throws IOException, LockerNotFoundException {
+    protected void handlePoll(String detail) throws IOException, LockerException {
         Socket cSocket = findLocker(detail).getSocket();
         DataOutputStream out = new DataOutputStream(cSocket.getOutputStream());
         switch (slSvrEmulatorController.getPollResp()) {
@@ -78,38 +79,14 @@ public class SLSvrEmulator extends SLSvr {
     } // handlePoll
 
     @Override
-    protected void addPackage(Msg msg) throws LockerNotFoundException {
-        slSvrEmulatorController.appendTextArea("Adding package to server...");
-        try {
-            super.addPackage(msg);
-            slSvrEmulatorController.appendTextArea("Add package success.");
-        } catch (LockerNotFoundException e){
-            slSvrEmulatorController.appendTextArea(e.getMessage());
-            throw e;
-        }
+    protected void addPackage(String barcode, String lockerID, LockerSize size) throws LockerException {
+        super.addPackage(barcode, lockerID, size);
     }
 
-    @Override
-    protected void sendPackageFee(Msg msg) throws IOException, LockerNotFoundException, PackageNotFoundException {
-        slSvrEmulatorController.appendTextArea("Sending fee to client...");
-        try {
-            super.sendPackageFee(msg);
-            slSvrEmulatorController.appendTextArea("Send fee success.");
-        } catch (IOException | LockerNotFoundException | PackageNotFoundException e) {
-            slSvrEmulatorController.appendTextArea(e.getMessage());
-            throw e;
-        }
+    public void removePackage(Msg msg) throws LockerException {
+        slSvrEmulatorController.appendTextArea("User getting package...");
+
+
     }
 
-    @Override
-    protected void sendTimeInterval(Msg msg) throws IOException, LockerNotFoundException, PackageNotFoundException {
-        slSvrEmulatorController.appendTextArea("Sending time interval to client...");
-        try {
-            super.sendTimeInterval(msg);
-            slSvrEmulatorController.appendTextArea("Send time interval success.");
-        } catch (IOException | LockerNotFoundException | PackageNotFoundException e) {
-            slSvrEmulatorController.appendTextArea(e.getMessage());
-            throw e;
-        }
-    }
-} // BarcodeReaderEmulator
+} // SLSvrEmulator

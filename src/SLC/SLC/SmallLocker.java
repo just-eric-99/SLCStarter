@@ -1,5 +1,7 @@
 package SLC.SLC;
 
+import Common.LockerSize;
+
 public class SmallLocker {
     private final String lockerID;
     private int passcode;
@@ -35,6 +37,18 @@ public class SmallLocker {
 
     public long getArriveTime() {
         return arriveTime;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public LockerSize getSize() {
+        return size;
     }
 
     public void addPackage(String barcode, int passcode) {

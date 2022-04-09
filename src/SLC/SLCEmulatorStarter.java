@@ -1,5 +1,4 @@
 package SLC;
-
 import AppKickstarter.timer.Timer;
 
 import SLC.Locker.Emulator.LockerEmulator;

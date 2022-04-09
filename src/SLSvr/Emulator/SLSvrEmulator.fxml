@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLSvr.Emulator.SLSvrEmulatorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLSvr.Emulator.SLSvrEmulatorController">
     <children>
         <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
             <children>
@@ -30,19 +30,18 @@
         </AnchorPane>
         <AnchorPane layoutX="262.0" layoutY="50.0" prefHeight="30.0" prefWidth="224.0" AnchorPane.leftAnchor="262.0" AnchorPane.rightAnchor="37.0" AnchorPane.topAnchor="50.0">
          <children>
-            <Label layoutY="6.0" prefHeight="17.0" prefWidth="71.0" text="Fee:" />
-            <TextField fx:id="feeField1" layoutX="75.0" layoutY="-1.0" prefHeight="30.0" prefWidth="88.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="0.0" />
-            <Label layoutX="166.0" layoutY="13.0" text="." />
-            <TextField fx:id="feeField2" layoutX="174.0" prefHeight="30.0" prefWidth="57.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="174.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label layoutY="6.0" prefHeight="17.0" prefWidth="71.0" text="Size:" />
+             <ChoiceBox fx:id="lockerSizeCBox" layoutX="107.0" layoutY="2.0" prefHeight="25.0" prefWidth="124.0" value="Large">
+                 <items>
+                     <FXCollections fx:factory="observableArrayList">
+                         <String fx:value="Large" />
+                         <String fx:value="Medium" />
+                         <String fx:value="Small" />
+                     </FXCollections>
+                 </items>
+             </ChoiceBox>
          </children>
         </AnchorPane>
-        <AnchorPane layoutX="263.0" layoutY="91.0" prefHeight="30.0" prefWidth="224.0" AnchorPane.leftAnchor="263.0" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="91.0">
-            <children>
-                <Label layoutY="6.0" prefHeight="17.0" prefWidth="71.0" text="Duration:" />
-                <TextField fx:id="durationField" layoutX="75.0" layoutY="-1.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            </children>
-        </AnchorPane>
-
         <AnchorPane layoutX="21.0" layoutY="140.0" prefHeight="30.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="140.0">
             <children>
                 <Button mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="310.0" text="Add Package" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

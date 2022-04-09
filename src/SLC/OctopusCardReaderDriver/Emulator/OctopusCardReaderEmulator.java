@@ -85,7 +85,7 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
         super.handleTransactionRequest(amount);
         octopusCardReaderEmulatorController.setOctopusCardRequestAmountField(String.valueOf(amount));
 
-        float cardAmount = OctopusCardReaderEmulatorController.getCardAmount();
+        float cardAmount = octopusCardReaderEmulatorController.getCardAmount();
 
         float remaining = cardAmount - (float)amount;
 

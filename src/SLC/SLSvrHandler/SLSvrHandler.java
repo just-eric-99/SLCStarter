@@ -27,7 +27,7 @@ public class SLSvrHandler extends HWHandler {
         slSvr = new Socket(serverIP, serverPort);
         in = new DataInputStream(slSvr.getInputStream());
         out = new DataOutputStream(slSvr.getOutputStream());
-        sendString("HKGLK01");  // TODO change to get the id from cfg
+        sendString(appKickstarter.getProperty("Locker.Location"));
         new Thread(() -> {
             try {
                 receive();
@@ -47,7 +47,7 @@ public class SLSvrHandler extends HWHandler {
     // processMsg
     protected void processMsg(Msg msg) {
         try {
-            System.out.println("Process Msg: " + msg.getType());
+            System.out.println("SLSvrHandler: Process Msg, " + msg.getType());
             switch (msg.getType()) {
                 case SLS_VerifyBarcode:
                     verifyBarcode(msg);
@@ -55,10 +55,6 @@ public class SLSvrHandler extends HWHandler {
 
                 case SLS_SendPasscode:
                     sendPasscode(msg);
-                    break;
-
-                case SLS_Fee:
-                    requestFee(msg);
                     break;
 
                 case SLS_PackageArrived:
@@ -81,7 +77,6 @@ public class SLSvrHandler extends HWHandler {
     private void receive() throws IOException {
         while (true) {
             Msg.Type type = Msg.Type.values()[in.readInt()];
-            System.out.println(type);
             switch (type) {
                 case PollAck:
                     slc.send(new Msg(id, mbox, type, id + " is up!"));
@@ -92,16 +87,11 @@ public class SLSvrHandler extends HWHandler {
                     break;
 
                 case SLS_BarcodeVerified:
+                    slc.send(new Msg(id, mbox, type, readString() + "\t" + readString()));
+                    break;
+
                 case SLS_InvalidBarcode:
                     slc.send(new Msg(id, mbox, type, readString()));
-                    break;
-
-                case SLS_Fee:
-                    slc.send(new Msg(id, mbox, type, in.readDouble() + ""));
-                    break;
-
-                case SLS_TimeInterval:
-                    slc.send(new Msg(id, mbox, type, in.readInt() + ""));
                     break;
 
                 default:
@@ -131,11 +121,6 @@ public class SLSvrHandler extends HWHandler {
         out.writeInt(msg.getType().ordinal());
         sendString(tokens[0]);
         out.writeInt(Integer.parseInt(tokens[1]));
-    }
-
-    private void requestFee(Msg msg) throws IOException {
-        out.writeInt(msg.getType().ordinal());
-        sendString(msg.getDetails());
     }
 
     private void sendTimeStr(Msg msg) throws IOException {

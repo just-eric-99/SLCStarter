@@ -3,6 +3,7 @@ package SLSvr.SLSvr;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.AppThread;
 import AppKickstarter.misc.Msg;
+import Common.LockerSize;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -58,17 +59,15 @@ public class SLSvr extends AppThread {
                         break;
 
                     default:
-                        new Thread(() -> {
-                            try {
-                                send(msg);
-                            } catch (LockerNotFoundException e) {
-                                log.warning(e.getMessage());
-                            } catch (IOException e) {
-                                log.warning(e.getMessage());
-                            } catch (PackageNotFoundException e) {
-                                log.warning(e.getMessage());
-                            }
-                        }).start();
+                        try {
+                            send(msg);
+                        } catch (LockerException e) {
+                            log.warning(e.getMessage());
+                        } catch (IOException e) {
+                            log.warning(e.getMessage());
+                        } catch (PackageNotFoundException e) {
+                            log.warning(e.getMessage());
+                        }
                 }
             }
             receiveSvr.interrupt();
@@ -79,14 +78,10 @@ public class SLSvr extends AppThread {
         appKickstarter.unregThread(this);
     }
 
-    private void send(Msg msg) throws LockerNotFoundException, IOException, PackageNotFoundException {
+    private void send(Msg msg) throws LockerException, IOException, PackageNotFoundException {
         switch (msg.getType()) {
             case Poll:
                 handlePoll(msg.getDetails());
-                break;
-
-            case SLS_AddPackage:
-                addPackage(msg);
                 break;
 
             case SLS_BarcodeVerified:
@@ -95,14 +90,6 @@ public class SLSvr extends AppThread {
 
             case SLS_InvalidBarcode:
                 sendInvalid(msg);
-                break;
-
-            case SLS_Fee:
-                sendPackageFee(msg);
-                break;
-
-            case SLS_TimeInterval:
-                sendTimeInterval(msg);
                 break;
 
             default:
@@ -128,7 +115,7 @@ public class SLSvr extends AppThread {
                     serve(in, lockerID);
                 } catch (IOException e) {
                     log.info(cSocket.getInetAddress().getHostAddress() + " is disconnected.");
-                } catch (LockerNotFoundException e) {
+                } catch (LockerException e) {
                     log.warning(cSocket.getInetAddress().getHostAddress() + " is disconnected: Unauthorized");
                 }
                 if (l != null) {
@@ -141,7 +128,7 @@ public class SLSvr extends AppThread {
         }
     }
 
-    private void serve(DataInputStream in, String lockerID) throws IOException, LockerNotFoundException {
+    private void serve(DataInputStream in, String lockerID) throws IOException, LockerException {
         while (true) {
             Msg.Type type = Msg.Type.values()[in.readInt()];
             System.out.println("Serve: " + type);
@@ -149,11 +136,6 @@ public class SLSvr extends AppThread {
                 switch (type) {
                     case Poll:
                         mbox.send(new Msg(id, mbox, Msg.Type.Poll, lockerID));
-                        break;
-
-                    case SLS_Fee:
-                    case SLS_TimeInterval:
-                        mbox.send(new Msg(id, mbox, type, lockerID + "\t" + readString(in)));
                         break;
 
                     case SLS_VerifyBarcode:
@@ -187,25 +169,33 @@ public class SLSvr extends AppThread {
         }
     }
 
-    protected void handlePoll(String detail) throws IOException, LockerNotFoundException {
+    protected void handlePoll(String detail) throws IOException, LockerException {
         Socket cSocket = findLocker(detail).getSocket();
         DataOutputStream out = new DataOutputStream(cSocket.getOutputStream());
         out.writeInt(Msg.Type.PollAck.ordinal());
     }
 
-    protected void addPackage(Msg msg) throws LockerNotFoundException {
-        String[] tokens = msg.getDetails().split("\t");
+    protected void addPackage(String barcode, String lockerID, LockerSize size) throws LockerException {
         try {
-            findLocker(tokens[1]);
-        } catch (LockerNotFoundException e) {
-            throw new LockerNotFoundException("Add Package fail: " + e.getMessage());
+            findPackage(barcode);
+            throw new LockerException("Add Package fail: Package #" + barcode + " is already added.");
+        } catch (PackageNotFoundException e) {
+            try {
+                Locker l = findLocker(lockerID);
+                if (!l.reserveLocker(size))
+                    throw new LockerException("Add Package fail: " + size + " is full.");
+            } catch (LockerException ex) {
+                throw new LockerException("Add Package fail: " + e.getMessage());
+            }
+            Package p = new Package(barcode, lockerID, size);
+            synchronized (packages) {
+                packages.add(p);
+            }
+            log.info("Add package #" + barcode + " to locker location #" + lockerID + " success.");
         }
-        Package p = new Package(tokens[0], tokens[1], Double.parseDouble(tokens[2]), Integer.parseInt(tokens[3]));
-        packages.add(p);
-        log.info("Add package success.");
     }
 
-    private void sendPackageProperty(Msg msg, SendPackageListener sp) throws IOException, LockerNotFoundException, PackageNotFoundException {
+    private void sendPackageProperty(Msg msg, SendPackageListener sp) throws IOException, LockerException, PackageNotFoundException {
         String[] tokens = msg.getDetails().split("\t");
         Socket cSocket = findLocker(tokens[0]).getSocket();
         if (cSocket != null) {
@@ -223,17 +213,20 @@ public class SLSvr extends AppThread {
         throw new IOException("Locker #" + tokens[0] + " is disconnected. Server will retry it later.");
     }
 
-    protected void sendVerified(Msg msg) throws IOException, LockerNotFoundException, PackageNotFoundException {
+    protected void sendVerified(Msg msg) throws IOException, LockerException, PackageNotFoundException {
         try {
-            sendPackageProperty(msg, (out, p) -> sendString(out, p.getBarcode()));
+            sendPackageProperty(msg, (out, p) -> {
+                sendString(out, p.getBarcode());
+                sendString(out, p.getSize().toString());
+            });
         } catch (IOException e) {
             throw new IOException("Send verified message fail: " + e.getMessage());
-        } catch (LockerNotFoundException e) {
-            throw new LockerNotFoundException("Send verified message fail: " + e.getMessage());
+        } catch (LockerException e) {
+            throw new LockerException("Send verified message fail: " + e.getMessage());
         }
     }
 
-    protected void sendInvalid(Msg msg) throws LockerNotFoundException, IOException {
+    protected void sendInvalid(Msg msg) throws LockerException, IOException {
         String[] tokens = msg.getDetails().split("\t");
         Socket cSocket = findLocker(tokens[0]).getSocket();
         if (cSocket != null) {
@@ -248,37 +241,15 @@ public class SLSvr extends AppThread {
         throw new IOException("Locker #" + tokens[0] + " is disconnected. Server will retry it later.");
     }
 
-    protected void sendPackageFee(Msg msg) throws IOException, LockerNotFoundException, PackageNotFoundException {
-        try {
-            sendPackageProperty(msg, (out, p) -> out.writeDouble(p.getFee()));
-        } catch (IOException e) {
-            throw new IOException("Send barcode fail: " + e.getMessage());
-        } catch (LockerNotFoundException e) {
-            throw new LockerNotFoundException("Send barcode fail: " + e.getMessage());
-        } catch (PackageNotFoundException e) {
-            throw new PackageNotFoundException("Send barcode fail: " + e.getMessage());
-        }
-    }
-
-    protected void sendTimeInterval(Msg msg) throws IOException, LockerNotFoundException, PackageNotFoundException {
-        try {
-            sendPackageProperty(msg, (out, p) -> out.writeInt(p.getDuration()));
-        } catch (IOException e) {
-            throw new IOException("Send barcode fail: " + e.getMessage());
-        } catch (LockerNotFoundException e) {
-            throw new LockerNotFoundException("Send barcode fail: " + e.getMessage());
-        } catch (PackageNotFoundException e) {
-            throw new PackageNotFoundException("Send barcode fail: " + e.getMessage());
-        }
-    }
-
     protected void verifyBarcode(DataInputStream in, String lockerID) throws IOException {
         String barcode = readString(in);
         try {
             Package p = findPackage(barcode);
-            mbox.send(new Msg(id, mbox, Msg.Type.SLS_BarcodeVerified, lockerID + "\t" + p.getBarcode()));
+            mbox.send(new Msg(id, mbox, Msg.Type.SLS_BarcodeVerified, lockerID + "\t" + p.getBarcode() + "\t" + p.getSize()));
+            log.info("verifyBarcode: Success. Verified barcode #" + barcode + " for locker #" + lockerID);
         } catch (PackageNotFoundException e) {
             mbox.send(new Msg(id, mbox, Msg.Type.SLS_InvalidBarcode, lockerID + "\t" + barcode));
+            log.info("verifyBarcode: Fail. Cannot verify barcode #" + barcode + " for locker #" + lockerID);
         }
     }
 
@@ -287,7 +258,7 @@ public class SLSvr extends AppThread {
         int passcode = in.readInt();
         Package p = findPackage(packageID);
         p.setLockerPasscode(passcode);
-        log.info("SetPasscode: Success. Received passcode for package #" + p.getBarcode());
+        log.info("SetPasscode: Success. Received passcode #" + passcode + " for package #" + p.getBarcode());
     }
 
     protected void setArrivalTime(DataInputStream in, String lockerID) throws IOException, PackageNotFoundException {
@@ -296,7 +267,6 @@ public class SLSvr extends AppThread {
         Package p = findPackage(packageID);
         p.setArriveTime(new Date(date));
         log.info("SetArrivalTime: Success. Received arrival time for package #" + p.getBarcode());
-        mbox.send(new Msg(id, mbox, Msg.Type.SLS_TimeInterval, lockerID + "\t" + p.getLockerID()));
     }
 
     protected void setPickUpTime(DataInputStream in) throws IOException, PackageNotFoundException {
@@ -326,21 +296,24 @@ public class SLSvr extends AppThread {
         throw new PackageNotFoundException("Package #" + barcode + " is not found.");
     }
 
-    protected Locker findLocker(String id) throws LockerNotFoundException {
+    protected Locker findLocker(String id) throws LockerException {
         synchronized (lockers) {
             for (Locker l : lockers) {
                 if (l.equals(id))
                     return l;
             }
         }
-        throw new LockerNotFoundException("Locker #" + id + " is not found.");
+        throw new LockerException("Locker #" + id + " is not found.");
     }
 
     private void loadLockerData() {
         int total = Integer.parseInt(appKickstarter.getProperty("Locker.Total"));
         for (int i = 1; i <= total; i++) {
             String lockerID = appKickstarter.getProperty("Locker.Locker" + i + ".ID").trim();
-            lockers.add(new Locker(lockerID));
+            int largeLocker = Integer.parseInt(appKickstarter.getProperty("Locker.Locker" + i + ".Large"));
+            int mediumLocker = Integer.parseInt(appKickstarter.getProperty("Locker.Locker" + i + ".Medium"));
+            int smallLocker = Integer.parseInt(appKickstarter.getProperty("Locker.Locker" + i + ".Small"));
+            lockers.add(new Locker(lockerID, largeLocker, mediumLocker, smallLocker));
         }
     }
 
@@ -366,7 +339,7 @@ public class SLSvr extends AppThread {
         }
     }
 
-    protected static class PackageNotFoundException extends Exception {
+    public static class PackageNotFoundException extends Exception {
         public PackageNotFoundException() {
         }
 
@@ -375,11 +348,11 @@ public class SLSvr extends AppThread {
         }
     }
 
-    protected static class LockerNotFoundException extends Exception {
-        public LockerNotFoundException() {
+    public static class LockerException extends Exception {
+        public LockerException() {
         }
 
-        public LockerNotFoundException(String message) {
+        public LockerException(String message) {
             super(message);
         }
     }

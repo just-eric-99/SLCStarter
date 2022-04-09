@@ -28,6 +28,7 @@ public class LockerDriver extends HWHandler {
     @Override
     protected void processMsg(Msg msg) {
         // slc will send the message to lock or unlock
+        System.out.println("Locker: " + msg);
         switch (msg.getType()) {
 
             case TimesUp:

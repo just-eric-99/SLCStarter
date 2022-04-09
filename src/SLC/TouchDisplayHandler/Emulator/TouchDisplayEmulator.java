@@ -1,5 +1,6 @@
 package SLC.TouchDisplayHandler.Emulator;
 
+import SLC.SLC.Screen;
 import SLC.SLCStarter;
 import SLC.TouchDisplayHandler.TouchDisplayHandler;
 import AppKickstarter.misc.Msg;
@@ -8,10 +9,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 
@@ -88,7 +86,7 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
     // handleUpdateDisplay
     protected void handleUpdateDisplay(Msg msg) {
         log.info(id + ": update display -- " + msg.getDetails());
-        System.out.println(msg);
+        System.out.println("Update Display: " + msg);
         String[] tokens = msg.getDetails().split(",");
         String page = tokens[0].trim();
         if (tokens.length > 1)
@@ -96,50 +94,48 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         else
             TouchDisplayEmulatorController.setShowMsg("");
 
-        switch (page) {
-            case "WelcomePage":
+        switch (Screen.valueOf(page)) {
+            case Welcome_Page:
                 reloadStage("TouchDisplayEmulator.fxml");
                 break;
 
-            case "MainMenu":
+            case Main_Menu:
                 reloadStage("TouchDisplayMainMenu.fxml");
                 break;
 
-            case "Confirmation":
+            case Confirmation:
                 reloadStage("TouchDisplayConfirmation.fxml");
                 break;
 
-            case "EnterPasscode":
+            case Enter_Passcode:
                 reloadStage("TouchDisplayEnterPasscode.fxml");
                 break;
 
-            case "Payment":
+            case Payment:
                 reloadStage("TouchDisplayPayment.fxml");
                 break;
 
-            case "PaymentSucceeded":
+            case Payment_Succeeded:
                 reloadStage("TouchDisplayPaymentSucceeded.fxml");
                 break;
 
-            case "PaymentFailed":
+            case Payment_Failed:
                 reloadStage("TouchDisplayPaymentFailed.fxml");
                 break;
 
-            case "ScanBarcode":
+            case Scan_Barcode:
                 reloadStage("TouchDisplayScanBarcode.fxml");
                 break;
 
-            case "ShowLocker":
-//                String lockerId = tokens[1].trim();
-//                TouchDisplayEmulatorController.setDisplayLocker(lockerId);
+            case Show_Locker:
                 reloadStage("TouchDisplayShowLocker.fxml");
                 break;
 
-            case "LockerNotClose":
+            case Locker_Not_Close:
                 reloadStage("TouchDisplayLockerNotClose.fxml");
                 break;
 
-            case "ServerDown":
+            case Server_Down:
                 reloadStage("TouchDisplayServerDown.fxml");
                 break;
 
@@ -170,69 +166,8 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         }
     } // handlePoll
 
-    // fixme
-    protected void handleSendBarcode(Msg msg) {
-        System.out.println("handleSendBarcode" + msg.getDetails());
-//        touchDisplayEmulatorController.scannedBarcodeTextArea.appendText(msg.getDetails());
-    }
-
-    // fixme
     @Override
-    protected void handleSendPasscode(Msg msg) {
-//        switch (msg.getDetails()) {
-//            case "true":
-//                touchDisplayEmulatorController.getMbox().send(new Msg(id, touchDisplayEmulatorController.getMbox(), Msg.Type.TD_UpdateDisplay, "Payment"));
-//                break;
-//        }
-
-        super.handleSendPasscode(msg);
+    public void changeScreen(Screen s) {
+        super.changeScreen(s);
     }
-
-    // send message
-    protected void mouseClick(String screenType, String receivedMsg) {
-        switch (screenType) {
-            case "Enter Passcode":
-                slc.send(new Msg(id, mbox, Msg.Type.TD_SendPasscode, receivedMsg));
-                break;
-
-        }
-    }
-
-    protected void handleDisplayBarcode(Msg msg) {
-        log.info(id + ": Display barcode after scanning, barcode: " + msg.getDetails());
-        System.out.println(msg.getDetails());
-    }
-
-    @Override
-    protected void handleVerifyPasscode(Msg msg) {
-        System.out.println(msg.getDetails());
-        String[] tokens = msg.getDetails().split(",");
-        String validity = tokens[0].trim();
-        switch (validity) {
-            case "valid":
-                String hasPayment = tokens[1].trim();
-                switch (hasPayment) {
-                    case "yes":
-                        String amount = tokens[2].trim();
-                        // display payment page
-                        mbox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "Payment," + amount));
-                        break;
-
-                    case "no":
-                        String lockerId = tokens[2].trim();
-                        mbox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, "ShowLocker," + lockerId));
-//                        slc.send(new Msg(id, mbox, Msg.Type.TD_GetLockerId, ""));
-                        break;
-                }
-                break;
-            case "invalid":
-                touchDisplayEmulatorController.invalidPasscodeText.setVisible(true);
-                break;
-
-            default:
-                log.severe(id + ": verify passcode with unknown validity -- " + msg.getDetails());
-                break;
-        }
-    }
-
 } // TouchDisplayEmulator

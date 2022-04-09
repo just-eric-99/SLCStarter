@@ -1,5 +1,7 @@
 package SLSvr.SLSvr;
 
+import Common.LockerSize;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +12,7 @@ public class Package {
 
     private final String barcode;
     private String lockerID;
-    private double fee;
-    private int duration;   // In hour
+    private LockerSize size;
 
     // Save in server for reference
     private int lockerPasscode;
@@ -19,11 +20,10 @@ public class Package {
     private Date pickUpTime;
     private List<Payment> paymentList;
 
-    public Package(String barcode, String lockerID, double fee, int duration) {
+    public Package(String barcode, String lockerID, LockerSize size) {
         this.barcode = barcode;
         this.lockerID = lockerID;
-        this.fee = fee;
-        this.duration = duration;
+        this.size = size;
         arriveTime = null;
         pickUpTime = null;
         paymentList = new ArrayList<>();
@@ -41,12 +41,8 @@ public class Package {
         this.lockerID = lockerID;
     }
 
-    public double getFee() {
-        return fee;
-    }
-
-    public void setFee(double fee) {
-        this.fee = fee;
+    public LockerSize getSize() {
+        return size;
     }
 
     public int getLockerPasscode() {
@@ -63,10 +59,6 @@ public class Package {
 
     public void setPickUpTime(Date pickUpTime) {
         this.pickUpTime = pickUpTime;
-    }
-
-    public int getDuration() {
-        return duration;
     }
 
     public void addPayment(Payment p) {

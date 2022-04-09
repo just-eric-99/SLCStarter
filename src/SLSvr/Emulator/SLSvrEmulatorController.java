@@ -6,7 +6,8 @@ import AppKickstarter.misc.Msg;
 
 import java.util.logging.Logger;
 
-import SLSvr.SLSvr.Package;
+import Common.LockerSize;
+import SLSvr.SLSvr.SLSvr;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -27,11 +28,9 @@ public class SLSvrEmulatorController {
     private String pollResp;
     public TextField packageIDField;
     public TextField lockerIDField;
-    public TextField feeField1;
-    public TextField feeField2;
-    public TextField durationField;
     public TextArea slSvrTextArea;
-    public ChoiceBox pollRespCBox;
+    public ChoiceBox<String> pollRespCBox;
+    public ChoiceBox<String> lockerSizeCBox;
 
 
     //------------------------------------------------------------
@@ -47,29 +46,6 @@ public class SLSvrEmulatorController {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 pollResp = pollRespCBox.getItems().get(newValue.intValue()).toString();
                 appendTextArea("Poll Response set to " + pollRespCBox.getItems().get(newValue.intValue()).toString());
-            }
-        });
-        this.feeField1.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*"))
-                    feeField1.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
-        this.feeField2.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*"))
-                    feeField2.setText(newValue.replaceAll("[^\\d]", ""));
-                else if (feeField2.getText().length() > 2)
-                    feeField2.setText(feeField2.getText(0, 2));
-            }
-        });
-        this.durationField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*"))
-                    durationField.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
         this.pollResp = pollRespCBox.getValue().toString();
@@ -101,9 +77,7 @@ public class SLSvrEmulatorController {
             case "Reset":
                 packageIDField.setText("");
                 lockerIDField.setText("");
-                feeField1.setText("");
-                feeField2.setText("");
-                durationField.setText("");
+                lockerSizeCBox.setValue(LockerSize.Large.toString());
                 break;
 
             case "Add Package":
@@ -132,19 +106,20 @@ public class SLSvrEmulatorController {
         String propertyName = "Package.Package" + num + ".";
         packageIDField.setText(appKickstarter.getProperty(propertyName + "ID"));
         lockerIDField.setText(appKickstarter.getProperty(propertyName + "LockerID"));
-        String[] feeTokens = appKickstarter.getProperty(propertyName + "Fee").split("\\.");
-        feeField1.setText(feeTokens[0]);
-        feeField2.setText(feeTokens[1]);
-        durationField.setText(appKickstarter.getProperty(propertyName + "Duration"));
+        lockerSizeCBox.setValue(appKickstarter.getProperty(propertyName + "Size"));
     }
 
     private void addPackage() {
-        String detail = packageIDField.getText() + "\t" + lockerIDField.getText() + "\t";
-        detail += (feeField1.getText().isEmpty() ? 0 : feeField1.getText()) + ".";
-        detail += (feeField2.getText().isEmpty() ? 0 : feeField2.getText()) + "\t";
-        detail += durationField.getText().isEmpty() ? Package.defaultDuration : durationField.getText();
-        appendTextArea("Sending package #" + packageIDField.getText() + " information...");
-        slSvrMBox.send(new Msg(id, slSvrMBox, Msg.Type.SLS_AddPackage, detail));
+        appendTextArea("Adding package #" + packageIDField.getText() + " information...");
+        String barcode = packageIDField.getText().trim();
+        String lockerID = lockerIDField.getText().trim();
+        LockerSize size = LockerSize.valueOf(lockerSizeCBox.getValue());
+        try {
+            slSvrEmulator.addPackage(barcode, lockerID, size);
+            appendTextArea("Add package #" + barcode + " to locker #" + lockerID + ".");
+        } catch (SLSvr.LockerException e) {
+            appendTextArea(e.getMessage());
+        }
     }
 
     private void removePackage(){
