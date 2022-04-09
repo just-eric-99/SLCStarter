@@ -147,6 +147,10 @@ public class SLSvrEmulatorController {
         slSvrMBox.send(new Msg(id, slSvrMBox, Msg.Type.SLS_AddPackage, detail));
     }
 
+    private void removePackage(){
+
+    }
+
     //------------------------------------------------------------
     // appendTextArea
     public void appendTextArea(String status) {

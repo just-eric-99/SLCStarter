@@ -24,7 +24,7 @@ public class OctopusCardReaderEmulatorController {
     private String standbyResp;
     private String pollResp;
     public TextField octopusCardNumField;
-    public static TextField octopusCardAmountField;
+    public TextField octopusCardAmountField;
     public TextField octopusCardRequestAmountField;
     public TextField octopusCardReaderStatusField;
     public TextArea octopusCardReaderTextArea;
@@ -96,13 +96,13 @@ public class OctopusCardReaderEmulatorController {
                 octopusCardAmountField.setText("");
                 break;
 
-            case "Select Octopus":
+            case "Send Octopus":
                 OctopusCardReaderEmulator.isCardChosen = true;
-                octopusCardReaderTextArea.appendText("Selected Octopus Card " + octopusDetails + "\n");
+                octopusCardReaderTextArea.appendText("Send Octopus Card " + octopusDetails + "\n");
                 break;
 
-            case "Activate/Standby":
-                octopusCardReaderMBox.send(new Msg(id, octopusCardReaderMBox, Msg.Type.OCR_GoActive, octopusDetails));
+            case "Standby":
+                octopusCardReaderMBox.send(new Msg(id, octopusCardReaderMBox, Msg.Type.OCR_GoStandby, "OCR is standby"));
                 octopusCardReaderTextArea.appendText("Removing card\n");
                 break;
 
@@ -127,9 +127,9 @@ public class OctopusCardReaderEmulatorController {
         return pollResp;
     }
 
-    public static float getCardAmount(){return Float.parseFloat(String.valueOf(octopusCardAmountField)); }
+    public float getCardAmount(){return Float.parseFloat(octopusCardAmountField.getText()); }
 
-    public static void setCardAmount(float amount){ octopusCardAmountField = new TextField(String.valueOf(amount));}
+    public void setCardAmount(float amount){ octopusCardAmountField.setText(String.valueOf(amount));}
 
 
     //------------------------------------------------------------

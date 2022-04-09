@@ -20,16 +20,17 @@ public class OctopusCardReaderDriver extends HWHandler {
     protected void processMsg(Msg msg) {
         switch (msg.getType()) {
             case OCR_TransactionRequest:
+                System.out.println("Got type, "+msg.getDetails());
                 //expected details should be the amount in the format dollar+\t+cents
-                String[] amount = msg.getDetails().split("\t");
+                int amount = Integer.parseInt(msg.getDetails());
 
-                if (Integer.parseInt(amount[0]) <= 0 && Integer.parseInt(amount[1]) <= 0) {
+                if (amount <= 0) {
                     slc.send(new Msg(id, mbox, Msg.Type.OCR_CardOK, msg.getDetails()));
                     handleCardOK();
                     break;
                 }
 
-                handleTransactionRequest(Integer.parseInt(amount[0]), Integer.parseInt(amount[1]));
+                handleTransactionRequest(amount);
                 break;
 
             case OCR_GoActive:
@@ -76,7 +77,7 @@ public class OctopusCardReaderDriver extends HWHandler {
 
     //------------------------------------------------------------
     // handleTransactionRequest
-    protected void handleTransactionRequest(int dollar, int cent) {
+    protected void handleTransactionRequest(int amount) {
         log.info(id + ": Transaction Request");
     } // handleCardRead
 }

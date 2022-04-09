@@ -248,6 +248,10 @@ public class Msg {
         /**
          * Octopus Card transaction receive
          */
-        OCR_TransactionRequest
+        OCR_TransactionRequest,
+        /**
+         * Octopus Card Waiting Transaction
+         */
+        OCR_WaitingTransaction,
     } // Type
 } // Msg
