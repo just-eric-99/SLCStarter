@@ -3,7 +3,6 @@ package SLC.OctopusCardReaderDriver;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
-import com.google.gson.GsonBuilder;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
