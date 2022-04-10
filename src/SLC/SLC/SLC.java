@@ -25,9 +25,9 @@ public class SLC extends AppThread {
     private LockerFunction lockerFunction = LockerFunction.Home;
 
     // fixme Ask HW Status when start?
-    private HWStatus brStatus = HWStatus.Standby;
-    private HWStatus octStatus = HWStatus.Standby;
-    private HWStatus tdStatus = HWStatus.Active;
+    private HWStatus brStatus = HWStatus.Initialize;
+    private HWStatus octStatus = HWStatus.Initialize;
+    private HWStatus tdStatus = HWStatus.Initialize;
     private HWStatus serverStatus = HWStatus.Initialize;
 
     private String touchScreenMsg = "";
@@ -37,6 +37,7 @@ public class SLC extends AppThread {
 
     private final List<Thread> threadList = new ArrayList<>();
     private final List<Msg> msgQueue = new ArrayList<>();
+    private boolean stopThread = false;
 
     //------------------------------------------------------------
     // SLC
@@ -58,7 +59,7 @@ public class SLC extends AppThread {
     //------------------------------------------------------------
     // run
     public void run() {
-        Timer.setTimer(id, mbox, pollingTime);
+        Timer.setTimer(id, mbox, 200);
         log.info(id + ": starting...");
 
         barcodeReaderMBox = appKickstarter.getThread("BarcodeReaderDriver").getMBox();
@@ -83,16 +84,12 @@ public class SLC extends AppThread {
                 case TimesUp:
                     Timer.setTimer(id, mbox, pollingTime);
                     log.info("Poll: " + msg.getDetails());
-                    barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
-                    touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
-                    octopusCardReaderMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
-                    lockerMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+                    sendPolling();
                     checkThread();
                     break;
 
                 case PollAck:
-                    log.info("PollAck: " + msg.getDetails());
+                    handlePollAck(msg);
                     break;
 
                 case PollNak:
@@ -137,9 +134,7 @@ public class SLC extends AppThread {
                     break;
 
                 case SLS_InvalidBarcode:
-                    // show visible: text msg (invalid barcode)
-                    // TODO check type or detail
-                    touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, ""));
+                    updateScreen(Screen.Scan_Barcode, "Barcode is not valid.");
                     break;
 
                 case L_Opened:
@@ -172,12 +167,44 @@ public class SLC extends AppThread {
             }
         }
 
+        killThread();
         // declaring our departure
         appKickstarter.unregThread(this);
         log.info(id + ": terminating...");
     } // run
 
+    private void sendPolling() {
+        barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+        octopusCardReaderMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+        lockerMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+    }
+
+    private void handlePollAck(Msg msg) {
+        log.info("PollAck: " + msg.getDetails());
+        String senderID = msg.getSender();
+        switch (senderID) {
+            case "BarcodeReaderDriver":
+                brStatus = HWStatus.Active;
+                break;
+
+            case "OctopusCardReaderDriver":
+                octStatus = HWStatus.Active;
+                break;
+
+            case "TouchDisplayHandler":
+                tdStatus = HWStatus.Active;
+                break;
+
+            case "SLSvrHandler":
+                serverStatus = HWStatus.Active;
+                break;
+        }
+    }
+
     private void handlePollNak(Msg msg) {
+        log.info("PollNck: " + msg.getDetails());
         String senderID = msg.getSender();
         switch (senderID) {
             case "BarcodeReaderDriver":
@@ -217,10 +244,10 @@ public class SLC extends AppThread {
 
         serverStatus = HWStatus.Disconnected;
         Thread t = new Thread(() -> {
-            while (serverStatus == HWStatus.Disconnected) {
-                log.info("Trying to reconnect server...");
-                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Reconnect, ""));
+            while (!stopThread && serverStatus == HWStatus.Disconnected) {
                 try {
+                    log.info("Trying to reconnect server...");
+                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Reconnect, ""));
                     Thread.sleep(10000);
                 } catch (InterruptedException ignored) {}
             }
@@ -231,7 +258,7 @@ public class SLC extends AppThread {
     private void checkThread() {
         synchronized (threadList) {
             log.info("Checking for thread list (length: " + threadList.size() + ")...");
-            threadList.removeIf(Thread::isAlive);
+            threadList.removeIf(t -> !t.isAlive());
         }
     }
 
@@ -240,6 +267,10 @@ public class SLC extends AppThread {
         synchronized (threadList) {
             threadList.add(t);
         }
+    }
+
+    private void killThread() {
+        stopThread = true;
     }
 
     //------------------------------------------------------------
@@ -446,15 +477,17 @@ public class SLC extends AppThread {
         // randomly choose an empty locker
         String[] tokens = msg.getDetails().split("\t");
         String barcode = tokens[0].trim();
-        // fixme
-        if (!barcode.equals(readBarcode))
+        // TODO Screen to show error
+        if (!barcode.equals(readBarcode)) {
+            updateScreen(Screen.Scan_Barcode, "Barcode is invalid.\nPlease contact administrator.");
             return;
+        }
 
         LockerSize size = LockerSize.valueOf(tokens[1].trim());
         SmallLocker sl = chooseEmptyLocker(size);
         if (sl == null) {
             // TODO send change screen to TD
-            System.out.println("Locker for " + size + " is full.");
+            updateScreen(Screen.Scan_Barcode, "Size " + size + " locker is full.\nPlease contact administrator.");
             return;
         }
 
@@ -472,6 +505,11 @@ public class SLC extends AppThread {
     private void handleCheckIn() {
         if (screen != Screen.Main_Menu && screen != Screen.Show_Locker)
             return;
+        else if (serverStatus == HWStatus.Disconnected || serverStatus == HWStatus.Fail) {
+            handleServerDownScreen();
+            return;
+        }
+
         lockerFunction = LockerFunction.Check_In;
         barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoActive, ""));
         updateScreen(Screen.Scan_Barcode);
@@ -481,6 +519,11 @@ public class SLC extends AppThread {
         if (screen != Screen.Main_Menu)
             return;
         updateScreen(Screen.Enter_Passcode);
+    }
+
+    private void handleServerDownScreen() {
+        updateScreen(Screen.Server_Down);
+        timeOutToWelcomePage(5);
     }
 
     private void sendPasscode(Msg msg) {
@@ -596,6 +639,21 @@ public class SLC extends AppThread {
         synchronized (smallLockers) {
             return smallLockers.stream().filter(sl -> sl.passcodeIsSame(passcode)).findFirst().orElse(null);
         }
+    }
+
+    private void timeOutToWelcomePage(int second) {
+        Screen s = screen;
+        Thread t = new Thread(() -> {
+            for (int i = 0; i < second * 2; i++) {
+                try {
+                    Thread.sleep(500);
+                    if (screen != s)
+                        return;
+                } catch (InterruptedException ignored) {}
+            }
+            updateScreen(Screen.Welcome_Page);
+        });
+        addAndStartThread(t);
     }
 
     private enum LockerFunction {

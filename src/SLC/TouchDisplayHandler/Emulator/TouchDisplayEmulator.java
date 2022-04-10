@@ -150,7 +150,6 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
     // handlePoll
     protected void handlePoll() {
         // super.handlePoll();
-
         switch (touchDisplayEmulatorController.getPollResp()) {
             case "ACK":
                 slc.send(new Msg(id, mbox, Msg.Type.PollAck, id + " is up!"));
