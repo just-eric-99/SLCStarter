@@ -37,7 +37,7 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
     public void start() throws Exception {
 	// Parent root;
 	myStage = new Stage();
-	reloadStage("TouchDisplayEmulator.fxml");
+	reloadStage("TouchDisplayEmulator.fxml", "");
 	myStage.setTitle("Touch Display");
 	myStage.setResizable(false);
 	myStage.setOnCloseRequest((WindowEvent event) -> {
@@ -50,7 +50,7 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
 
     //------------------------------------------------------------
     // reloadStage
-    private void reloadStage(String fxmlFName) {
+    private void reloadStage(String fxmlFName, String showMsg) {
         TouchDisplayEmulator touchDisplayEmulator = this;
 
         Platform.runLater(new Runnable() {
@@ -71,7 +71,7 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
                     root = loader.load();
 
                     touchDisplayEmulatorController = (TouchDisplayEmulatorController) loader.getController();
-                    touchDisplayEmulatorController.initialize(id, slcStarter, log, touchDisplayEmulator, pollResp);
+                    touchDisplayEmulatorController.initialize(id, slcStarter, log, touchDisplayEmulator, pollResp, showMsg);
                     myStage.setScene(new Scene(root, WIDTH, HEIGHT));
                 } catch (Exception e) {
                     log.severe(id + ": failed to load " + fxmlFName);
@@ -81,7 +81,6 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         });
     } // reloadStage
 
-
     //------------------------------------------------------------
     // handleUpdateDisplay
     protected void handleUpdateDisplay(Msg msg) {
@@ -89,34 +88,32 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
         System.out.println("Update Display: " + msg);
         String[] tokens = msg.getDetails().split(",");
         String page = tokens[0].trim();
-        if (tokens.length > 1)
-            TouchDisplayEmulatorController.setShowMsg(tokens[1].trim());
-        else
-            TouchDisplayEmulatorController.setShowMsg("");
+
+        String showMsg = tokens.length > 1 ? tokens[1].trim() : "";
 
         switch (Screen.valueOf(page)) {
             case Welcome_Page:
-                reloadStage("TouchDisplayEmulator.fxml");
+                reloadStage("TouchDisplayEmulator.fxml", showMsg);
                 break;
 
             case Main_Menu:
-                reloadStage("TouchDisplayMainMenu.fxml");
+                reloadStage("TouchDisplayMainMenu.fxml", showMsg);
                 break;
 
             case Confirmation:
-                reloadStage("TouchDisplayConfirmation.fxml");
+                reloadStage("TouchDisplayConfirmation.fxml", showMsg);
                 break;
 
             case Enter_Passcode:
-                reloadStage("TouchDisplayEnterPasscode.fxml");
+                reloadStage("TouchDisplayEnterPasscode.fxml", showMsg);
                 break;
 
             case Payment:
-                reloadStage("TouchDisplayPayment.fxml");
+                reloadStage("TouchDisplayPayment.fxml", showMsg);
                 break;
 
             case Payment_Succeeded:
-                reloadStage("TouchDisplayPaymentSucceeded.fxml");
+                reloadStage("TouchDisplayPaymentSucceeded.fxml", showMsg);
                 break;
 
             case Payment_Failed:

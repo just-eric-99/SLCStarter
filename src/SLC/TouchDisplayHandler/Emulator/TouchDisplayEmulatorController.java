@@ -56,7 +56,6 @@ public class TouchDisplayEmulatorController {
     public Text lockerFullText;
     // Payment
     public Text paymentText;
-    private static String showMsg;
     // Show Locker/Locker Not Close
     public Rectangle locker0Rect;
     public Rectangle locker1Rect;
@@ -119,7 +118,7 @@ public class TouchDisplayEmulatorController {
 
     //------------------------------------------------------------
     // initialize
-    public void initialize(String id, AppKickstarter appKickstarter, Logger log, TouchDisplayEmulator touchDisplayEmulator, String pollRespParam) {
+    public void initialize(String id, AppKickstarter appKickstarter, Logger log, TouchDisplayEmulator touchDisplayEmulator, String pollRespParam, String showMsg) {
         this.id = id;
         this.appKickstarter = appKickstarter;
         this.log = log;
@@ -238,10 +237,6 @@ public class TouchDisplayEmulatorController {
         log.fine(id + ": mouse clicked: -- (" + x + ", " + y + ")");
         touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_MouseClicked, x + " " + y));
     } // td_mouseClick
-
-    public static void setShowMsg(String showMsg) {
-        TouchDisplayEmulatorController.showMsg = showMsg;
-    }
 
     public void setPaymentText(String amount) {
         paymentText.setText(amount);

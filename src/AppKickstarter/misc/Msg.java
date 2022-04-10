@@ -222,6 +222,10 @@ public class Msg {
          */
         SLS_RqDiagnostic,
         /**
+         * Send System diagnostic
+         */
+        SLS_SendDiagnostic,
+        /**
          * Get Opened Locker List
          */
         L_Opened,

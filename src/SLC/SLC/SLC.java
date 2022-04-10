@@ -52,7 +52,7 @@ public class SLC extends AppThread {
     } // SLC
 
     private void loadLockerInfo() {
-        int total = Integer.parseInt(appKickstarter.getProperty("locker.Count"));
+        int total = Integer.parseInt(appKickstarter.getProperty("Locker.Count"));
         for (int i = 0; i < total; i++) {
             LockerSize size = LockerSize.valueOf(appKickstarter.getProperty("Locker.LockerId" + i + ".Size"));
             smallLockers.add(new SmallLocker(i + "", size));
@@ -87,7 +87,6 @@ public class SLC extends AppThread {
             Msg msg = mbox.receive();
 
             log.fine(id + ": message received: [" + msg + "].");
-            System.out.println(id + ": message received: [" + msg + "].");
 
             switch (msg.getType()) {
                 // Msg process all the time
@@ -338,13 +337,13 @@ public class SLC extends AppThread {
 
         serverStatus = HWStatus.Disconnected;
         Thread t = new Thread(() -> {
-            while (!stopThread && serverStatus == HWStatus.Disconnected) {
-                try {
+            try {
+                while (serverStatus == HWStatus.Disconnected) {
                     log.info("Trying to reconnect server...");
                     slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Reconnect, ""));
                     Thread.sleep(10000);
-                } catch (InterruptedException ignored) {}
-            }
+                }
+            } catch (InterruptedException ignored) {}
         });
         addAndStartThread(t);
     }
@@ -364,7 +363,9 @@ public class SLC extends AppThread {
     }
 
     private void killThread() {
-        stopThread = true;
+        synchronized (threadList) {
+            threadList.forEach(Thread::interrupt);
+        }
     }
 
     //------------------------------------------------------------
@@ -498,6 +499,7 @@ public class SLC extends AppThread {
         int enterYBottom = 184;
 
         if (x > enterXLeft && x < enterXRight && y > enterYTop && y < enterYBottom) {
+            // fixme empty string problem
             handleVerifyPasscode(Integer.parseInt(touchScreenMsg));
             touchScreenMsg = "";
             return;
@@ -665,13 +667,11 @@ public class SLC extends AppThread {
             Thread t = new Thread(() -> {
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException ignored) {}
-                updateScreen(Screen.Show_Locker, lockerID);
+                    updateScreen(Screen.Show_Locker, lockerID);
+                } catch (InterruptedException ignored) {
+                }
             });
-            t.start();
-            synchronized (threadList) {
-                threadList.add(t);
-            }
+            addAndStartThread(t);
         }
 
         if (lockerFunction == LockerFunction.Pick_Up)
@@ -738,14 +738,14 @@ public class SLC extends AppThread {
     private void timeOutToWelcomePage(int second) {
         Screen s = screen;
         Thread t = new Thread(() -> {
-            for (int i = 0; i < second * 2; i++) {
-                try {
+            try {
+                for (int i = 0; i < second * 2; i++) {
                     Thread.sleep(500);
                     if (screen != s)
                         return;
-                } catch (InterruptedException ignored) {}
-            }
-            updateScreen(Screen.Welcome_Page);
+                }
+                updateScreen(Screen.Welcome_Page);
+            } catch (InterruptedException ignored) {}
         });
         addAndStartThread(t);
     }

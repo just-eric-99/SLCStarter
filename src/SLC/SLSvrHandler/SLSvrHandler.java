@@ -2,12 +2,18 @@ package SLC.SLSvrHandler;
 
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 //======================================================================
@@ -24,6 +30,7 @@ public class SLSvrHandler extends AppThread {
 
     private Thread receiveThread;
 
+    private boolean connection = false;
     private boolean quit = false;
 
     //------------------------------------------------------------
@@ -185,11 +192,36 @@ public class SLSvrHandler extends AppThread {
         out.writeDouble(Double.parseDouble(tokens[2]));
     }
 
+    private void sendDiagnosticToSLC() {
+        Map<String, Object> information = new LinkedHashMap<>();
+
+        information.put("Name", appKickstarter.getProperty("SLSvr.Handler.Name"));
+        information.put("Version", appKickstarter.getProperty("SLSvr.Handler.Version"));
+        information.put("IP Address", slSvr.getLocalAddress().getHostAddress());
+        information.put("Port", slSvr.getLocalPort() + "");
+        information.put("Connection", connection? "Stable" : "Disconnected");
+        information.put("Retrieval time", System.currentTimeMillis() + "");
+
+        String data = new JSONObject(information).toString();
+        slc.send(new Msg(id, mbox, Msg.Type.SH_RpDiagnostic, data));
+    }
+
+    private void sendDiagnosticToServer(Msg msg) throws IOException {
+        out.writeInt(msg.getType().ordinal());
+        sendString(msg.getDetails());
+    }
+
     private String readString() throws IOException {
         byte[] buffer = new byte[1024];
         int len = in.readInt();
-        in.read(buffer, 0, len);
-        return new String(buffer, 0, len);
+        String s = "";
+        while (len > 0) {
+            int readLength = Math.min(len, 1024);
+            in.read(buffer, 0, readLength);
+            s += new String(buffer, 0, readLength);
+            len -= readLength;
+        }
+        return s;
     }
 
     private void sendString(String str) throws IOException {
@@ -199,6 +231,7 @@ public class SLSvrHandler extends AppThread {
     }
 
     private void sendDisconnectedMsg() {
+        connection = false;
         slc.send(new Msg(id, mbox, Msg.Type.SLS_ConnectionFail, id + " is disconnected!"));
     }
 
@@ -209,6 +242,7 @@ public class SLSvrHandler extends AppThread {
             out = new DataOutputStream(slSvr.getOutputStream());
             sendString(locationID);
             slc.send(new Msg(id, mbox, Msg.Type.SLS_Connected, ""));
+            connection = true;
         } catch (IOException e) {
             sendDisconnectedMsg();
         }

@@ -1,35 +1,28 @@
-220410-20:16:39 [INFO] -- 
-220410-20:16:39 [INFO] -- 
-220410-20:16:39 [INFO] -- ============================================================
-220410-20:16:39 [INFO] -- SLSvrStarter: Application Starting...
-220410-20:16:40 [INFO] -- timer: starting...
-220410-20:16:40 [INFO] -- SLSvr: starting...
-220410-20:16:40 [INFO] -- SLSvr: running...
-220410-20:16:41 [INFO] -- 127.0.0.1 is connected.
-220410-20:16:46 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:16:46 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:16:46 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:16:52 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:16:52 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:16:52 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:16:58 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:16:58 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:16:58 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:17:04 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:17:04 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:17:04 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:17:10 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:17:10 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:17:10 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:17:16 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:17:16 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:17:16 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:17:22 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:17:22 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:17:22 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:17:28 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:17:28 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:17:28 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
-220410-20:17:34 [INFO] -- Request system diagnostic for locker #HKGLK01
-220410-20:17:34 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
-220410-20:17:34 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
+220411-03:19:34 [INFO] -- 
+220411-03:19:34 [INFO] -- 
+220411-03:19:34 [INFO] -- ============================================================
+220411-03:19:34 [INFO] -- SLSvrStarter: Application Starting...
+220411-03:19:34 [INFO] -- timer: starting...
+220411-03:19:34 [INFO] -- SLSvr: starting...
+220411-03:19:34 [INFO] -- SLSvr: running...
+220411-03:19:42 [INFO] -- 127.0.0.1 is connected.
+220411-03:29:34 [INFO] -- Request system diagnostic for locker #HKGLK01
+220411-03:29:34 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
+220411-03:29:34 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
+220411-03:32:12 [INFO] -- Add package #4107-7014 to locker location #HKGLK01 success.
+220411-03:33:31 [INFO] -- verifyBarcode: Success. Verified barcode #4107-7014 for locker #HKGLK01
+220411-03:33:31 [INFO] -- SetArrivalTime: Success. Received arrival time for package #4107-7014
+220411-03:33:31 [INFO] -- SetPasscode: Success. Received passcode #12408828 for package #4107-7014
+220411-03:38:11 [INFO] -- 127.0.0.1 is disconnected.
+220411-03:38:15 [INFO] -- 127.0.0.1 is connected.
+220411-03:38:31 [INFO] -- verifyBarcode: Success. Verified barcode #4107-7014 for locker #HKGLK01
+220411-03:38:31 [INFO] -- SetArrivalTime: Success. Received arrival time for package #4107-7014
+220411-03:38:31 [INFO] -- SetPasscode: Success. Received passcode #28686909 for package #4107-7014
+220411-03:39:34 [INFO] -- Request system diagnostic for locker #HKGLK01
+220411-03:39:34 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
+220411-03:39:34 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
+220411-03:44:22 [INFO] -- 127.0.0.1 is disconnected.
+220411-03:44:26 [INFO] -- 127.0.0.1 is connected.
+220411-03:44:56 [INFO] -- 127.0.0.1 is disconnected.
+220411-03:44:59 [INFO] -- 127.0.0.1 is connected.
+220411-03:45:11 [INFO] -- 127.0.0.1 is disconnected.

@@ -83,6 +83,11 @@ public class SLSvrEmulator extends SLSvr {
         super.addPackage(barcode, lockerID, size);
     }
 
+    @Override
+    public void requestDiagnostic() {
+        super.requestDiagnostic();
+    }
+
     public void removePackage(Msg msg) throws LockerException {
         slSvrEmulatorController.appendTextArea("User getting package...");
 

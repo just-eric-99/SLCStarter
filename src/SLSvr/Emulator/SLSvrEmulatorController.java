@@ -89,6 +89,10 @@ public class SLSvrEmulatorController {
                 slSvrTextArea.appendText("Removing card\n");
                 break;
 
+            case "Diagnostic":
+                slSvrEmulator.requestDiagnostic();
+                break;
+
             default:
                 log.warning(id + ": unknown button: [" + btn.getText() + "]");
                 break;

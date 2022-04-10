@@ -5,6 +5,11 @@ import AppKickstarter.misc.AppThread;
 import AppKickstarter.misc.Msg;
 import AppKickstarter.timer.Timer;
 import Common.LockerSize;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -165,6 +170,10 @@ public class SLSvr extends AppThread {
                         addPaymentRecord(in);
                         break;
 
+                    case SLS_SendDiagnostic:
+                        receiveDiagnostic(in);
+                        break;
+
                     default:
                         log.warning(id + ": unknown message type: [" + type + "]");
                         break;
@@ -176,7 +185,7 @@ public class SLSvr extends AppThread {
         }
     }
 
-    private void requestDiagnostic() {
+    protected void requestDiagnostic() {
         synchronized (lockers) {
             lockers.forEach(l -> {
                 Socket cSocket = l.getSocket();
@@ -339,11 +348,26 @@ public class SLSvr extends AppThread {
         }
     }
 
+    protected void receiveDiagnostic(DataInputStream in) throws IOException {
+        String data = readString(in);
+        JSONObject diagnostic = new JSONObject(data);
+        System.out.println(diagnostic);
+        JSONObject brReader = diagnostic.getJSONObject("Barcode Reader Driver");
+        System.out.println(brReader);
+        System.out.println(brReader.getString("Version"));
+    }
+
     protected String readString(DataInputStream in) throws IOException {
         byte[] buffer = new byte[1024];
         int len = in.readInt();
-        in.read(buffer, 0, len);
-        return new String(buffer, 0, len);
+        String s = "";
+        while (len > 0) {
+            int readLength = Math.min(len, 1024);
+            in.read(buffer, 0, readLength);
+            s += new String(buffer, 0, readLength);
+            len -= readLength;
+        }
+        return s;
     }
 
     protected void sendString(DataOutputStream out, String str) throws IOException {

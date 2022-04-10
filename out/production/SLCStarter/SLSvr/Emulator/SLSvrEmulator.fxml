@@ -60,6 +60,10 @@
                         </FXCollections>
                     </items>
                 </ChoiceBox>
-         </children></AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="371.0" layoutY="517.0" prefHeight="30.0" prefWidth="124.0">
+        <Button layoutY="3.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="26.0" prefWidth="138.0" text="Diagnostic" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0" />
+      </AnchorPane>
     </children>
 </AnchorPane>

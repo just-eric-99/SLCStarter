@@ -37,6 +37,10 @@ public class TouchDisplayHandler extends HWHandler {
                 handleUpdateDisplay(msg);
                 break;
 
+            case SLS_RqDiagnostic:
+                sendDiagnostic();
+                break;
+
             default:
                 log.warning(id + ": unknown message type: [" + msg + "]");
         }
@@ -59,5 +63,19 @@ public class TouchDisplayHandler extends HWHandler {
     // For hacking
     protected void changeScreen(Screen s) {
         slc.send(new Msg(id, mbox, Msg.Type.TD_ChangeScreen, s.toString()));
+    }
+
+    private void sendDiagnostic() {
+        Map<String, Object> information = new LinkedHashMap<>();
+
+
+        information.put("Name", appKickstarter.getProperty("TouchDisplay.Name"));
+        information.put("Manufacturer Name", appKickstarter.getProperty("TouchDisplay.Manufacturer"));
+        information.put("Version", appKickstarter.getProperty("TouchDisplay.Version"));
+        information.put("Retrieval time", System.currentTimeMillis());
+
+        String data = new JSONObject(information).toString();
+
+        slc.send(new Msg(id, mbox, Msg.Type.TD_RpDiagnostic, data));
     }
 } // TouchDisplayHandler
