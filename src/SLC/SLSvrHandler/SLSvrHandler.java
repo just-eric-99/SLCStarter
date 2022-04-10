@@ -91,6 +91,14 @@ public class SLSvrHandler extends AppThread {
                     sendPayment(msg);
                     break;
 
+                case SLS_RqDiagnostic:
+                    sendDiagnosticToSLC();
+                    break;
+
+                case SLS_SendDiagnostic:
+                    sendDiagnosticToServer(msg);
+                    break;
+
                 default:
                     log.warning(id + ": unknown message type: [" + msg + "]");
             }

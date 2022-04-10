@@ -4,11 +4,11 @@ import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.Msg;
 import SLC.HWHandler.HWHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+
 
 public class LockerDriver extends HWHandler {
-    private final int n = Integer.parseInt(appKickstarter.getProperty("locker.Count"));
+    private final int n = Integer.parseInt(appKickstarter.getProperty("Locker.Count"));
 
     public static HashMap<String, Boolean> lockers = new HashMap<>();
 
@@ -40,6 +40,11 @@ public class LockerDriver extends HWHandler {
 
             case L_HasClose:
                 sendHasCloseMsg(msg.getDetails());
+                break;
+
+            case SLS_RqDiagnostic:
+                sendLockerDiagnostic();
+                break;
 
             default:
                 log.warning(id + ": unknown message type: [" + msg + "]");
@@ -69,5 +74,39 @@ public class LockerDriver extends HWHandler {
         log.info(id + ": Locker #" + lockerId + " is  now close.");
     }
 
+    protected void sendLockerDiagnostic() {
+        Map<String, Object> information = new LinkedHashMap<>();
+        ArrayList<String> openedLocker = new ArrayList<>();
+        ArrayList<String> closedLocker = new ArrayList<>();
+
+        lockers.entrySet()
+                .parallelStream()
+                .forEach(entry -> {
+                    if (entry.getValue()) {
+                        closedLocker.add(entry.getKey());
+                    } else {
+                        openedLocker.add(entry.getKey());
+                    }
+                });
+
+        information.put("Name", appKickstarter.getProperty("Locker.Name"));
+        information.put("Manufacturer Name", appKickstarter.getProperty("Locker.Manufacturer"));
+        information.put("Version", appKickstarter.getProperty("Locker.Version"));
+        information.put("Opened lockers", openedLocker.toArray());
+        information.put("Closed lockers", closedLocker.toArray());
+        information.put("Retrieval time", System.currentTimeMillis());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("Locker", information);
+
+        String data = new JSONObject(information).toString();
+//        System.out.println("================================================");
+//        System.out.println("Inside Locker Driver...");
+//        System.out.println(data);
+//        System.out.println("================================================");
+
+
+        slc.send(new Msg(id, mbox, Msg.Type.L_RpDiagnostic, data));
+    }
 
 }

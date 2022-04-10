@@ -4,6 +4,8 @@ import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
 import AppKickstarter.timer.Timer;
 import Common.LockerSize;
+import com.google.gson.GsonBuilder;
+import org.json.JSONObject;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -37,7 +39,8 @@ public class SLC extends AppThread {
 
     private final List<Thread> threadList = new ArrayList<>();
     private final List<Msg> msgQueue = new ArrayList<>();
-    private boolean stopThread = false;
+    private final HashMap<String, JSONObject> diagnostic = new HashMap<>();
+
 
     //------------------------------------------------------------
     // SLC
@@ -45,6 +48,7 @@ public class SLC extends AppThread {
         super(id, appKickstarter);
         pollingTime = Integer.parseInt(appKickstarter.getProperty("SLC.PollingTime"));
         loadLockerInfo();
+        loadDiagnosticInfo();
     } // SLC
 
     private void loadLockerInfo() {
@@ -55,6 +59,17 @@ public class SLC extends AppThread {
         }
     }
 
+    private void loadDiagnosticInfo() {
+        if (diagnostic.isEmpty()) {
+            diagnostic.put("Barcode Reader Driver", null);
+            diagnostic.put("Octopus Card Reader", null);
+            diagnostic.put("Touch Display", null);
+            diagnostic.put("Smart Locker Server", null);
+            diagnostic.put("Locker", null);
+        }
+
+
+    }
 
     //------------------------------------------------------------
     // run
@@ -158,6 +173,14 @@ public class SLC extends AppThread {
                     handlePaymentFail(msg);
                     break;
 
+                case L_RpDiagnostic:
+                case TD_RpDiagnostic:
+                case OCR_RpDiagnostic:
+                case BR_RpDiagnostic:
+                case SH_RpDiagnostic:
+                    receiveDiagnostic(msg);
+                    break;
+
                 case Terminate:
                     quit = true;
                     break;
@@ -225,9 +248,80 @@ public class SLC extends AppThread {
         }
     }
 
-    private void handleSystemDiagnostic(){
+    private void handleSystemDiagnostic() {
         log.info("Handle System Diagnostic.");
-        // fixme send to other devices
+        barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
+        touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
+        octopusCardReaderMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
+        lockerMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
+
+        Thread t = new Thread(() -> {
+            try {
+                for (int i = 0; i < 240; i++) {
+                    Thread.sleep(500);
+                    // if all 5 hardware received, send ->
+                    int count = (int) diagnostic.entrySet().parallelStream().filter(data -> data.getValue().equals("")).count();
+                    if (count == 0)
+                        break;
+                }
+                generateDiagnostic();
+            } catch (InterruptedException ignored) {}
+        });
+        addAndStartThread(t);
+    }
+
+    private void receiveDiagnostic(Msg msg) {
+        switch (msg.getType()) {
+            case BR_RpDiagnostic:
+                if (diagnostic.get("Barcode Reader Driver") == null) {
+                    diagnostic.put("Barcode Reader Driver", new JSONObject(msg.getDetails()));
+                }
+                break;
+
+            case OCR_RpDiagnostic:
+                if (diagnostic.get("Octopus Card Reader") == null) {
+                    diagnostic.put("Octopus Card Reader", new JSONObject(msg.getDetails()));
+                }
+                break;
+
+            case TD_RpDiagnostic:
+                if (diagnostic.get("Touch Display") == null) {
+                    diagnostic.put("Touch Display", new JSONObject(msg.getDetails()));
+                }
+                break;
+
+            case SH_RpDiagnostic:
+                if (diagnostic.get("Smart Locker Server") == null) {
+                    diagnostic.put("Smart Locker Server", new JSONObject(msg.getDetails()));
+                }
+                break;
+
+            case L_RpDiagnostic:
+                if (diagnostic.get("Locker") == null) {
+                    diagnostic.put("Locker", new JSONObject(msg.getDetails()));
+                }
+                break;
+        }
+    }
+
+    private void generateDiagnostic() {
+        // diagnostic to string, generate diagnostic
+//        Map<Object, Object> map = new HashMap<>();
+//        map.put("Information", diagnostic);
+//
+//        String data = new GsonBuilder().setPrettyPrinting().create().toJson(map).replace("\\n", "\n").replace("\\", "");
+//        System.out.println("Inside slc...");
+//        System.out.println(data);
+//        System.out.println("end...");
+        JSONObject combined = new JSONObject();
+        combined.put("Barcode Reader Driver", diagnostic.get("Barcode Reader Driver"));
+        combined.put("Octopus Card Reader", diagnostic.get("Octopus Card Reader"));
+        combined.put("Touch Display", diagnostic.get("Touch Display"));
+        combined.put("Smart Locker Server", diagnostic.get("Smart Locker Server"));
+        combined.put("Locker", diagnostic.get("Locker"));
+
+        slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_SendDiagnostic, combined.toString()));
     }
 
     private void handleServerConnected() {
@@ -654,6 +748,13 @@ public class SLC extends AppThread {
             updateScreen(Screen.Welcome_Page);
         });
         addAndStartThread(t);
+    }
+
+    protected void shutDown() throws InterruptedException {
+
+        // send a message to touch display to display "Shutting down ..." with a loading icon?
+        Thread.sleep(5000);
+        System.exit(0);
     }
 
     private enum LockerFunction {

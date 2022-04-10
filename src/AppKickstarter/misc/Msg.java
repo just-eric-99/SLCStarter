@@ -258,5 +258,25 @@ public class Msg {
          * Octopus Card Waiting Transaction
          */
         OCR_WaitingTransaction,
+        /**
+         * Locker reply diagnostic
+         */
+        L_RpDiagnostic,
+        /**
+         * Touch display reply diagnostic
+         */
+        TD_RpDiagnostic,
+        /**
+         * Barcode reader reply diagnostic
+         */
+        BR_RpDiagnostic,
+        /**
+         * Octopus card reader reply diagnostic
+         */
+        OCR_RpDiagnostic,
+        /**
+         * Octopus card reader reply diagnostic
+         */
+        SH_RpDiagnostic,
     } // Type
 } // Msg

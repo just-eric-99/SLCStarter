@@ -72,9 +72,10 @@ public class LockerEmulatorController {
         String index = btn.getId();
         HashMap<String, Boolean> lockers = LockerDriver.getLockers();
 //        true close, false opened
-        if (lockers.get(index) == false) {
+        if (!lockers.get(index)) {
             appendTextArea("Closing Locker #" + index + "...");
             appendTextArea("Locker #" + index + " is closed.");
+            lockers.put(index, true);
             lockerMBox.send(new Msg(id, lockerMBox, Msg.Type.L_HasClose, index));
         } else {
             appendTextArea("Locker #" + index + " is not opened.");
