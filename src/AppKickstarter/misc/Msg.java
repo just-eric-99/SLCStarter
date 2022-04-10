@@ -157,7 +157,6 @@ public class Msg {
         TD_ChangeScreen,
 
 
-
         /**
          * Barcode Reader Go Activate
          */
@@ -179,6 +178,10 @@ public class Msg {
          */
         BR_BarcodeRead,
         /**
+         * Cannot connect to server
+         */
+        SLS_ConnectionFail,
+        /**
          * Send Passcode to Server
          */
         SLS_SendPasscode,
@@ -195,10 +198,6 @@ public class Msg {
          */
         SLS_Payment,
         /**
-         * Add Package to server
-         */
-        SLS_AddPackage,
-        /**
          * Verify package barcode
          */
         SLS_VerifyBarcode,
@@ -210,6 +209,10 @@ public class Msg {
          * Invalid Barcode
          */
         SLS_InvalidBarcode,
+        /**
+         * Request for system diagnostic
+         */
+        SLS_RqDiagnostic,
         /**
          * Get Opened Locker List
          */

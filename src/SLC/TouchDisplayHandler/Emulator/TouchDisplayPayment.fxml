@@ -48,7 +48,7 @@
                   </Text>
                </left>
                <right>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="  " BorderPane.alignment="CENTER">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Amount" BorderPane.alignment="CENTER">
                      <font>
                         <Font size="40.0" />
                      </font>

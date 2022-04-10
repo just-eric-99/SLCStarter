@@ -3,6 +3,7 @@ package SLSvr.SLSvr;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.AppThread;
 import AppKickstarter.misc.Msg;
+import AppKickstarter.timer.Timer;
 import Common.LockerSize;
 
 import java.io.DataInputStream;
@@ -18,6 +19,7 @@ import java.util.List;
 public class SLSvr extends AppThread {
     private ServerSocket slSvrSocket;
     private final int port;
+    private int diagnosticTime;
 
     protected final List<Locker> lockers = new ArrayList<>();
     protected final List<Package> packages = new ArrayList<>();
@@ -31,12 +33,15 @@ public class SLSvr extends AppThread {
     public SLSvr(String id, AppKickstarter appKickstarter) {
         super(id, appKickstarter);
         port = Integer.parseInt(appKickstarter.getProperty("Server.Port"));
+        diagnosticTime = Integer.parseInt(appKickstarter.getProperty("SLSvr.DiagnosticTime"));
         loadLockerData();
     }
 
     @Override
     public void run() {
+        Timer.setTimer(id, mbox, diagnosticTime);
         log.info(id + ": starting...");
+
         try {
             slSvrSocket = new ServerSocket(port);
             Thread receiveSvr = new Thread(() -> {
@@ -56,6 +61,11 @@ public class SLSvr extends AppThread {
                 switch (msg.getType()) {
                     case Terminate:
                         quit = true;
+                        break;
+
+                    case TimesUp:
+                        Timer.setTimer(id, mbox, diagnosticTime);
+                        requestDiagnostic();
                         break;
 
                     default:
@@ -118,6 +128,7 @@ public class SLSvr extends AppThread {
                 } catch (LockerException e) {
                     log.warning(cSocket.getInetAddress().getHostAddress() + " is disconnected: Unauthorized");
                 }
+
                 if (l != null) {
                     synchronized (l.getID()) {
                         l.setSocket(null);
@@ -166,6 +177,25 @@ public class SLSvr extends AppThread {
                 log.warning("SetPasscode: Fail. Package ID not found.");
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void requestDiagnostic() {
+        synchronized (lockers) {
+            lockers.forEach(l -> {
+                Socket cSocket = l.getSocket();
+                if (cSocket != null) {
+                    try {
+                        DataOutputStream out = new DataOutputStream(cSocket.getOutputStream());
+                        out.writeInt(Msg.Type.SLS_RqDiagnostic.ordinal());
+                        log.info("Request system diagnostic for locker #" + l.getID());
+                    } catch (IOException e) {
+                        log.warning("Request system diagnostic fail. Locker #" + l.getID() + " is disconnected.");
+                    }
+                } else {
+                    log.warning("Request system diagnostic fail. Locker #" + l.getID() + " is disconnected.");
+                }
+            });
         }
     }
 
@@ -288,22 +318,18 @@ public class SLSvr extends AppThread {
 
     protected Package findPackage(String barcode) throws PackageNotFoundException {
         synchronized (packages) {
-            for (Package p : packages) {
-                if (p.equals(barcode))
-                    return p;
-            }
+            Package p = packages.stream().filter(aPackage -> aPackage.equals(barcode)).findFirst().orElse(null);
+            if (p != null) return p;
+            throw new PackageNotFoundException("Package #" + barcode + " is not found.");
         }
-        throw new PackageNotFoundException("Package #" + barcode + " is not found.");
     }
 
     protected Locker findLocker(String id) throws LockerException {
         synchronized (lockers) {
-            for (Locker l : lockers) {
-                if (l.equals(id))
-                    return l;
-            }
+            Locker l = lockers.stream().filter(locker -> locker.equals(id)).findFirst().orElse(null);
+            if (l != null) return l;
+            throw new LockerException("Locker #" + id + " is not found.");
         }
-        throw new LockerException("Locker #" + id + " is not found.");
     }
 
     private void loadLockerData() {

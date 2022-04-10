@@ -14,27 +14,31 @@ import java.nio.charset.StandardCharsets;
 //======================================================================
 // SLSvrHandler
 public class SLSvrHandler extends HWHandler {
+    private String serverIP;
+    private int serverPort;
+    private String locationID;
+
     private Socket slSvr;
     private DataInputStream in;
     private DataOutputStream out;
 
+    private Thread receiveThread;
+
     //------------------------------------------------------------
     // SLSvrHandler
-    public SLSvrHandler(String id, AppKickstarter appKickstarter) throws IOException {
+    public SLSvrHandler(String id, AppKickstarter appKickstarter) {
         super(id, appKickstarter);
-        String serverIP = appKickstarter.getProperty("Server.IP");
-        int serverPort = Integer.parseInt(appKickstarter.getProperty("Server.Port"));
-        slSvr = new Socket(serverIP, serverPort);
-        in = new DataInputStream(slSvr.getInputStream());
-        out = new DataOutputStream(slSvr.getOutputStream());
-        sendString(appKickstarter.getProperty("Locker.Location"));
-        new Thread(() -> {
+        serverIP = appKickstarter.getProperty("Server.IP");
+        serverPort = Integer.parseInt(appKickstarter.getProperty("Server.Port"));
+        locationID = appKickstarter.getProperty("Locker.Location");
+        receiveThread = new Thread(() -> {
             try {
                 receive();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        startClient();
     } // SLSvrHandler
 
     @Override
@@ -70,7 +74,7 @@ public class SLSvrHandler extends HWHandler {
                     log.warning(id + ": unknown message type: [" + msg + "]");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            slc.send(new Msg(id, mbox, Msg.Type.SLS_ConnectionFail, ""));
         }
     } // processMsg
 
@@ -86,6 +90,10 @@ public class SLSvrHandler extends HWHandler {
                     slc.send(new Msg(id, mbox, type, id + " is down!"));
                     break;
 
+                case SLS_RqDiagnostic:
+                    slc.send(new Msg(id, mbox, type, ""));
+                    break;
+
                 case SLS_BarcodeVerified:
                     slc.send(new Msg(id, mbox, type, readString() + "\t" + readString()));
                     break;
@@ -99,7 +107,6 @@ public class SLSvrHandler extends HWHandler {
             }
         }
     }
-
 
     //------------------------------------------------------------
     // handlePoll
@@ -149,6 +156,26 @@ public class SLSvrHandler extends HWHandler {
         int len = str.length();
         out.writeInt(len);
         out.write(str.getBytes(StandardCharsets.UTF_8), 0, len);
+    }
+
+    private void startClient() {
+        try {
+            slSvr = new Socket(serverIP, serverPort);
+            in = new DataInputStream(slSvr.getInputStream());
+            out = new DataOutputStream(slSvr.getOutputStream());
+            sendString(locationID);
+            receiveThread.start();
+        } catch (IOException e) {
+            while (slc == null) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                slc = appKickstarter.getThread("SLC").getMBox();
+            }
+            slc.send(new Msg(id, mbox, Msg.Type.SLS_ConnectionFail, ""));
+        }
     }
 
     private void stopClient() {

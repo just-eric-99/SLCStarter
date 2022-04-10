@@ -2,10 +2,12 @@ package SLSvr;
 
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.Msg;
+import AppKickstarter.timer.Timer;
 import SLSvr.SLSvr.SLSvr;
 import javafx.application.Platform;
 
 public class SLSvrStarter extends AppKickstarter {
+    protected Timer timer;
     protected SLSvr slSvr;
 
     public static void main(String[] args) {
@@ -29,7 +31,8 @@ public class SLSvrStarter extends AppKickstarter {
 
     protected void startSvr() {
         try {
-            slSvr = new SLSvr(id, this);
+            timer = new Timer("timer", this);
+            slSvr = new SLSvr("SLSvr", this);
         } catch (Exception e) {
             System.out.println("AppKickstarter: startApp failed");
             e.printStackTrace();
@@ -37,6 +40,7 @@ public class SLSvrStarter extends AppKickstarter {
         }
 
         // start threads
+        new Thread(timer).start();
         new Thread(slSvr).start();
     }
 

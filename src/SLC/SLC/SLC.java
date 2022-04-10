@@ -19,7 +19,7 @@ public class SLC extends AppThread {
     private MBox lockerMBox;
     private MBox octopusCardReaderMBox;
 
-    private List<SmallLocker> smallLockers = new ArrayList<>();
+    private final List<SmallLocker> smallLockers = new ArrayList<>();
 
     private Screen screen = Screen.Welcome_Page;
     private LockerFunction lockerFunction = LockerFunction.Home;
@@ -68,6 +68,7 @@ public class SLC extends AppThread {
             Msg msg = mbox.receive();
 
             log.fine(id + ": message received: [" + msg + "].");
+            System.out.println(id + ": message received: [" + msg + "].");
 
             switch (msg.getType()) {
                 // Msg process all the time
@@ -115,6 +116,10 @@ public class SLC extends AppThread {
                     handleBarcodeRead(msg);
                     break;
 
+                case SLS_RqDiagnostic:
+                    handleSystemDiagnostic();
+                    break;
+
                 case SLS_BarcodeVerified:
                     barcodeVerified(msg);
                     break;
@@ -153,12 +158,6 @@ public class SLC extends AppThread {
                 default:
                     log.warning(id + ": unknown message type: [" + msg + "]");
             }
-
-            for (SmallLocker locker : smallLockers) {
-                if (locker.isOccupied()) {
-                    System.out.println(locker);
-                }
-            }
         }
 
         // declaring our departure
@@ -187,6 +186,10 @@ public class SLC extends AppThread {
         }
     }
 
+    private void handleSystemDiagnostic(){
+        log.info("Handle System Diagnostic.");
+        // fixme send to other devices
+    }
 
     //------------------------------------------------------------
     // processMouseClicked
@@ -349,9 +352,6 @@ public class SLC extends AppThread {
             System.out.println(touchScreenMsg);
         } else if (x > numPadBKSpaceXLeft && x < numPadBKSpaceXRight && y > numPadBKSpaceYTop && y < numPadBKSpaceYBottom) {
             touchScreenMsg = touchScreenMsg.length() > 0 ? touchScreenMsg.substring(0, touchScreenMsg.length() - 1) : "";
-//            passcodeTextArea.setEditable(true);
-//            passcodeTextArea.deletePreviousChar();
-//            passcodeTextArea.setEditable(false);
         } else if (x > numPadClearXLeft && x < numPadClearXRight && y > numPadClearYTop && y < numPadClearYBottom) {
             touchScreenMsg = "";
         }
@@ -532,19 +532,16 @@ public class SLC extends AppThread {
     }
 
     private boolean findPackage(String barcode) {
-        for (SmallLocker sl : smallLockers) {
-            if (sl.isContainSamePackage(barcode))
-                return true;
+        synchronized (smallLockers) {
+            SmallLocker smallLocker = smallLockers.stream().filter(sl -> sl.isContainSamePackage(barcode)).findFirst().orElse(null);
+            return smallLocker != null;
         }
-        return false;
     }
 
     private SmallLocker findByPasscode(int passcode) {
-        for (SmallLocker sl : smallLockers) {
-            if (sl.passcodeIsSame(passcode))
-                return sl;
+        synchronized (smallLockers) {
+            return smallLockers.stream().filter(sl -> sl.passcodeIsSame(passcode)).findFirst().orElse(null);
         }
-        return null;
     }
 
     private enum LockerFunction {

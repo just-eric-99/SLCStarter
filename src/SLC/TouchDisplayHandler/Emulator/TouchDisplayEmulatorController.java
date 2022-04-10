@@ -6,6 +6,7 @@ import AppKickstarter.misc.Msg;
 import SLC.SLC.Screen;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
@@ -191,6 +192,7 @@ public class TouchDisplayEmulatorController {
         if (passcodeTextArea != null)
             passcodeTextArea.setText(showMsg);
         this.selectedScreen = screenSwitcherCBox.getValue().toString();
+        System.out.println("In: " + this);
     } // initialize
 
 
@@ -225,6 +227,10 @@ public class TouchDisplayEmulatorController {
 
     public static void setShowMsg(String showMsg) {
         TouchDisplayEmulatorController.showMsg = showMsg;
+    }
+
+    public void setPaymentText(String amount) {
+        paymentText.setText(amount);
     }
 
     public static void setDisplayLocker(String lockerId) {
