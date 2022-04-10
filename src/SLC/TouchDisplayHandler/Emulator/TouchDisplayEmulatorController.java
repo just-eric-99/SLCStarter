@@ -133,8 +133,6 @@ public class TouchDisplayEmulatorController {
             }
         });
 
-//        new TouchDisplayEmulatorController();
-
         this.screenSwitcherCBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -192,7 +190,6 @@ public class TouchDisplayEmulatorController {
         if (passcodeTextArea != null)
             passcodeTextArea.setText(showMsg);
         this.selectedScreen = screenSwitcherCBox.getValue().toString();
-        System.out.println("In: " + this);
     } // initialize
 
 

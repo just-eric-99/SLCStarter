@@ -28,12 +28,15 @@ public class SLC extends AppThread {
     private HWStatus brStatus = HWStatus.Standby;
     private HWStatus octStatus = HWStatus.Standby;
     private HWStatus tdStatus = HWStatus.Active;
-    private HWStatus serverStatus = HWStatus.Active;
+    private HWStatus serverStatus = HWStatus.Initialize;
 
     private String touchScreenMsg = "";
     private String readBarcode = "";
     private SmallLocker openLocker = null;
     private int fee = -1;
+
+    private final List<Thread> threadList = new ArrayList<>();
+    private final List<Msg> msgQueue = new ArrayList<>();
 
     //------------------------------------------------------------
     // SLC
@@ -85,6 +88,7 @@ public class SLC extends AppThread {
                     octopusCardReaderMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
                     slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
                     lockerMBox.send(new Msg(id, mbox, Msg.Type.Poll, ""));
+                    checkThread();
                     break;
 
                 case PollAck:
@@ -114,6 +118,14 @@ public class SLC extends AppThread {
 
                 case BR_BarcodeRead:
                     handleBarcodeRead(msg);
+                    break;
+
+                case SLS_Connected:
+                    handleServerConnected();
+                    break;
+
+                case SLS_ConnectionFail:
+                    handleConnectionFail(msg);
                     break;
 
                 case SLS_RqDiagnostic:
@@ -189,6 +201,45 @@ public class SLC extends AppThread {
     private void handleSystemDiagnostic(){
         log.info("Handle System Diagnostic.");
         // fixme send to other devices
+    }
+
+    private void handleServerConnected() {
+        if (serverStatus == HWStatus.Active)
+            return;
+        log.info("Connected to server.");
+        serverStatus = HWStatus.Active;
+    }
+
+    private void handleConnectionFail(Msg msg) {
+        log.warning(msg.getDetails());
+        if (serverStatus == HWStatus.Disconnected)
+            return;
+
+        serverStatus = HWStatus.Disconnected;
+        Thread t = new Thread(() -> {
+            while (serverStatus == HWStatus.Disconnected) {
+                log.info("Trying to reconnect server...");
+                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Reconnect, ""));
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {}
+            }
+        });
+        addAndStartThread(t);
+    }
+
+    private void checkThread() {
+        synchronized (threadList) {
+            log.info("Checking for thread list (length: " + threadList.size() + ")...");
+            threadList.removeIf(Thread::isAlive);
+        }
+    }
+
+    private void addAndStartThread(Thread t) {
+        t.start();
+        synchronized (threadList) {
+            threadList.add(t);
+        }
     }
 
     //------------------------------------------------------------
@@ -472,10 +523,20 @@ public class SLC extends AppThread {
     }
 
     private void handleLockerOpened(Msg msg) {
-        System.out.println("handleLockerOpened " + msg);
         String lockerID = msg.getDetails().trim();
-        if (openLocker.getLockerID().equals(lockerID))
-            updateScreen(Screen.Show_Locker, lockerID);
+        if (openLocker.getLockerID().equals(lockerID)) {
+            Thread t = new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
+                updateScreen(Screen.Show_Locker, lockerID);
+            });
+            t.start();
+            synchronized (threadList) {
+                threadList.add(t);
+            }
+        }
+
         if (lockerFunction == LockerFunction.Pick_Up)
             openLocker.pickUpPackage();
     }
@@ -505,14 +566,7 @@ public class SLC extends AppThread {
 
     private void handleReceiveFee() {
         updateScreen(Screen.Payment_Succeeded);
-        new Thread(() -> {
-            try {
-                Thread.sleep(5000);
-                lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, openLocker.getLockerID()));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, openLocker.getLockerID()));
     }
 
     private void handlePaymentFail(Msg msg) {

@@ -178,9 +178,17 @@ public class Msg {
          */
         BR_BarcodeRead,
         /**
+         * Connected to server
+         */
+        SLS_Connected,
+        /**
          * Cannot connect to server
          */
         SLS_ConnectionFail,
+        /**
+         * Request reconnection to sever
+         */
+        SLS_Reconnect,
         /**
          * Send Passcode to Server
          */

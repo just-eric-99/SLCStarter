@@ -143,7 +143,6 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
                 log.severe(id + ": update display with unknown display type -- " + msg.getDetails());
                 break;
         }
-        System.out.println("Out: " + touchDisplayEmulatorController);
     } // handleUpdateDisplay
 
 

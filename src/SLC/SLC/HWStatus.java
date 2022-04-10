@@ -3,5 +3,7 @@ package SLC.SLC;
 public enum HWStatus {
     Active,
     Standby,
-    Fail
+    Fail,
+    Disconnected,
+    Initialize
 }
