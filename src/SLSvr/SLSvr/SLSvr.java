@@ -71,11 +71,7 @@ public class SLSvr extends AppThread {
                     default:
                         try {
                             send(msg);
-                        } catch (LockerException e) {
-                            log.warning(e.getMessage());
-                        } catch (IOException e) {
-                            log.warning(e.getMessage());
-                        } catch (PackageNotFoundException e) {
+                        } catch (LockerException | PackageNotFoundException | IOException e) {
                             log.warning(e.getMessage());
                         }
                 }

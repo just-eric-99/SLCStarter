@@ -51,29 +51,40 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
     //------------------------------------------------------------
     // handleGoActive
     protected void handleGoActive() {
-        // fixme
         super.handleGoActive();
-        slc.send(new Msg(id, mbox, Msg.Type.OCR_GoActive, id + " go active"));
-        octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Activated");
+        if(octopusCardReaderEmulatorController.getActivationResp().equals("Activated")) {
+            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoActive, id + " go active"));
+            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Activated");
+        }
+        else if (octopusCardReaderEmulatorController.getActivationResp().equals("Standby")){
+            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoStandby, id+ " is standby"));
+            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader is Standby");
+        }
+
     } // handleGoActive
 
 
     //------------------------------------------------------------
     // handleGoStandby
     protected void handleGoStandby() {
-        // fixme
         super.handleGoStandby();
-        slc.send(new Msg(id, mbox, Msg.Type.OCR_GoActive, id + " go standby"));
-        octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Standby");
+        if(octopusCardReaderEmulatorController.getStandbyResp().equals("Standby")) {
+            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoActive, id + " go Standby"));
+            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Activated");
+        }
+        else if (octopusCardReaderEmulatorController.getStandbyResp().equals("Activated")){
+            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoStandby, id+ " is active"));
+            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader is Standby");
+        }
     } // handleGoStandby
 
     //------------------------------------------------------------
-    // handleGoStandby
+    // handleCardFailed
     protected void handleCardFailed() {
         super.handleCardFailed();
         slc.send(new Msg(id, mbox, Msg.Type.OCR_CardFailed, id + " Card Failed"));
         octopusCardReaderEmulatorController.appendTextArea("Octopus Card Failed");
-    } // handleGoStandby
+    } // handleCardFailed
 
     //------------------------------------------------------------
     // handleTransactionRequest
@@ -100,7 +111,7 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
         octopusCardReaderEmulatorController.setCardAmount(remaining);
         octopusCardReaderEmulatorController.appendTextArea("Octopus Card OK, remaining amount: "+remaining);
         isCardChosen = false;
-    } // handleGoStandby
+    } // handleTransactionRequest
 
 
     //------------------------------------------------------------

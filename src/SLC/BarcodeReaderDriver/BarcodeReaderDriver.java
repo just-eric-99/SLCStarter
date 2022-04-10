@@ -3,6 +3,11 @@ package SLC.BarcodeReaderDriver;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import com.google.gson.GsonBuilder;
+import org.json.JSONObject;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 //======================================================================
@@ -31,6 +36,11 @@ public class BarcodeReaderDriver extends HWHandler {
                 handleGoStandby();
                 break;
 
+            case SLS_RqDiagnostic:
+                sendBarcodeReaderDiagnostic();
+                break;
+
+
             default:
                 log.warning(id + ": unknown message type: [" + msg + "]");
         }
@@ -56,4 +66,18 @@ public class BarcodeReaderDriver extends HWHandler {
     protected void handlePoll() {
         log.info(id + ": Handle Poll");
     } // handlePoll
+
+    //------------------------------------------------------------
+    // sendOctopusCardReaderDiagnostic
+    protected void sendBarcodeReaderDiagnostic() {
+        Map<String, Object> information = new LinkedHashMap<>();
+
+        information.put("Name", appKickstarter.getProperty("BarcodeReader.Name"));
+        information.put("Manufacturer", appKickstarter.getProperty("BarcodeReader.Manufacturer"));
+        information.put("Version", appKickstarter.getProperty("BarcodeReader.Version"));
+
+        String data = new JSONObject(information).toString();
+
+        slc.send(new Msg(id, mbox, Msg.Type.BR_RpDiagnostic, data));
+    }
 } // BarcodeReaderDriver

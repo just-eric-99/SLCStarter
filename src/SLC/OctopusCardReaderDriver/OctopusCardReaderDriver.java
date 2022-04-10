@@ -3,6 +3,11 @@ package SLC.OctopusCardReaderDriver;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import com.google.gson.GsonBuilder;
+import org.json.JSONObject;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 //======================================================================
@@ -39,6 +44,10 @@ public class OctopusCardReaderDriver extends HWHandler {
 
             case OCR_GoStandby:
                 handleGoStandby();
+                break;
+
+            case SLS_RqDiagnostic:
+                sendOctopusCardReaderDiagnostic();
                 break;
 
             default:
@@ -80,4 +89,18 @@ public class OctopusCardReaderDriver extends HWHandler {
     protected void handleTransactionRequest(int amount) {
         log.info(id + ": Transaction Request");
     } // handleCardRead
+
+    //------------------------------------------------------------
+    // sendOctopusCardReaderDiagnostic
+    protected void sendOctopusCardReaderDiagnostic() {
+        Map<String, Object> information = new LinkedHashMap<>();
+
+        information.put("Name", appKickstarter.getProperty("OctopusCardReader.Name"));
+        information.put("Version", appKickstarter.getProperty("OctopusCardReader.Version"));
+        information.put("Device Type", appKickstarter.getProperty("OctopusCardReader.Device.Type"));
+
+        String data = new JSONObject(information).toString();
+
+        slc.send(new Msg(id, mbox, Msg.Type.OCR_RpDiagnostic, data));
+    }
 }
