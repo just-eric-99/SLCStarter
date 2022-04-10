@@ -120,23 +120,23 @@ public class TouchDisplayEmulator extends TouchDisplayHandler {
                 break;
 
             case Payment_Failed:
-                reloadStage("TouchDisplayPaymentFailed.fxml");
+                reloadStage("TouchDisplayPaymentFailed.fxml", showMsg);
                 break;
 
             case Scan_Barcode:
-                reloadStage("TouchDisplayScanBarcode.fxml");
+                reloadStage("TouchDisplayScanBarcode.fxml", showMsg);
                 break;
 
             case Show_Locker:
-                reloadStage("TouchDisplayShowLocker.fxml");
+                reloadStage("TouchDisplayShowLocker.fxml", showMsg);
                 break;
 
             case Locker_Not_Close:
-                reloadStage("TouchDisplayLockerNotClose.fxml");
+                reloadStage("TouchDisplayLockerNotClose.fxml", showMsg);
                 break;
 
             case Server_Down:
-                reloadStage("TouchDisplayServerDown.fxml");
+                reloadStage("TouchDisplayServerDown.fxml", showMsg);
                 break;
 
             default:

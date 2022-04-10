@@ -51,56 +51,57 @@ public class TouchDisplayEmulatorController {
     public Rectangle numpadBkspaceRect;
     public Rectangle numpadClearRect;
     public Text invalidPasscodeText;
+    // Scan Barcode
+    public Text invalidBarcodeText;
+    public Text lockerFullText;
     // Payment
     public Text paymentText;
     private static String showMsg;
     // Show Locker/Locker Not Close
-    public Text checkInText;
-    public Text pickUpText;
-    public static Rectangle locker0Rect;
-    public static Rectangle locker1Rect;
-    public static Rectangle locker2Rect;
-    public static Rectangle locker3Rect;
-    public static Rectangle locker4Rect;
-    public static Rectangle locker5Rect;
-    public static Rectangle locker6Rect;
-    public static Rectangle locker7Rect;
-    public static Rectangle locker8Rect;
-    public static Rectangle locker9Rect;
-    public static Rectangle locker10Rect;
-    public static Rectangle locker11Rect;
-    public static Rectangle locker12Rect;
-    public static Rectangle locker13Rect;
-    public static Rectangle locker14Rect;
-    public static Rectangle locker15Rect;
-    public static Rectangle locker16Rect;
-    public static Rectangle locker17Rect;
-    public static Rectangle locker18Rect;
-    public static Rectangle locker19Rect;
-    public static Rectangle locker20Rect;
-    public static Rectangle locker21Rect;
-    public static Rectangle locker22Rect;
-    public static Rectangle locker23Rect;
-    public static Rectangle locker24Rect;
-    public static Rectangle locker25Rect;
-    public static Rectangle locker26Rect;
-    public static Rectangle locker27Rect;
-    public static Rectangle locker28Rect;
-    public static Rectangle locker29Rect;
-    public static Rectangle locker30Rect;
-    public static Rectangle locker31Rect;
-    public static Rectangle locker32Rect;
-    public static Rectangle locker33Rect;
-    public static Rectangle locker34Rect;
-    public static Rectangle locker35Rect;
-    public static Rectangle locker36Rect;
-    public static Rectangle locker37Rect;
-    public static Rectangle locker38Rect;
-    public static Rectangle locker39Rect;
-    public static Rectangle locker40Rect;
-    public static Rectangle locker41Rect;
-    public static Rectangle locker42Rect;
-    public static Rectangle locker43Rect;
+    public Rectangle locker0Rect;
+    public Rectangle locker1Rect;
+    public Rectangle locker2Rect;
+    public Rectangle locker3Rect;
+    public Rectangle locker4Rect;
+    public Rectangle locker5Rect;
+    public Rectangle locker6Rect;
+    public Rectangle locker7Rect;
+    public Rectangle locker8Rect;
+    public Rectangle locker9Rect;
+    public Rectangle locker10Rect;
+    public Rectangle locker11Rect;
+    public Rectangle locker12Rect;
+    public Rectangle locker13Rect;
+    public Rectangle locker14Rect;
+    public Rectangle locker15Rect;
+    public Rectangle locker16Rect;
+    public Rectangle locker17Rect;
+    public Rectangle locker18Rect;
+    public Rectangle locker19Rect;
+    public Rectangle locker20Rect;
+    public Rectangle locker21Rect;
+    public Rectangle locker22Rect;
+    public Rectangle locker23Rect;
+    public Rectangle locker24Rect;
+    public Rectangle locker25Rect;
+    public Rectangle locker26Rect;
+    public Rectangle locker27Rect;
+    public Rectangle locker28Rect;
+    public Rectangle locker29Rect;
+    public Rectangle locker30Rect;
+    public Rectangle locker31Rect;
+    public Rectangle locker32Rect;
+    public Rectangle locker33Rect;
+    public Rectangle locker34Rect;
+    public Rectangle locker35Rect;
+    public Rectangle locker36Rect;
+    public Rectangle locker37Rect;
+    public Rectangle locker38Rect;
+    public Rectangle locker39Rect;
+    public Rectangle locker40Rect;
+    public Rectangle locker41Rect;
+    public Rectangle locker42Rect;
+    public Rectangle locker43Rect;
 
 //    public static ArrayList<Rectangle> lockers = null;
 
@@ -187,8 +188,24 @@ public class TouchDisplayEmulatorController {
         });
         if (paymentText != null)
             this.paymentText.setText(showMsg);
-        if (passcodeTextArea != null)
-            passcodeTextArea.setText(showMsg);
+        if (passcodeTextArea != null) {
+            if (showMsg.contains("Invalid passcode")) {
+                invalidPasscodeText.setVisible(true);
+            } else {
+                passcodeTextArea.setText(showMsg);
+            }
+        }
+        if (lockerFullText != null && invalidBarcodeText != null) {
+            if (showMsg.contains("not valid")) {
+                invalidBarcodeText.setVisible(true);
+            } else if (showMsg.contains("full")) {
+                lockerFullText.setVisible(true);
+            }
+        }
+        if (locker0Rect != null) {
+            System.out.println("showMsg in locker0Rect: " + showMsg);
+            setDisplayLocker(showMsg);
+        }
         this.selectedScreen = screenSwitcherCBox.getValue().toString();
     } // initialize
 
@@ -230,7 +247,7 @@ public class TouchDisplayEmulatorController {
         paymentText.setText(amount);
     }
 
-    public static void setDisplayLocker(String lockerId) {
+    public void setDisplayLocker(String lockerId) {
         switch (lockerId) {
             case "0":
                 locker0Rect.setFill(Color.RED);
