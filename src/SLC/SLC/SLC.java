@@ -4,6 +4,7 @@ import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
 import AppKickstarter.timer.Timer;
 import Common.LockerSize;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -176,7 +177,11 @@ public class SLC extends AppThread {
                 case OCR_RpDiagnostic:
                 case BR_RpDiagnostic:
                 case SH_RpDiagnostic:
-                    receiveDiagnostic(msg);
+                    try {
+                        receiveDiagnostic(msg);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     break;
 
                 case Terminate:
@@ -264,12 +269,14 @@ public class SLC extends AppThread {
                         break;
                 }
                 generateDiagnostic();
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {} catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
         addAndStartThread(t);
     }
 
-    private void receiveDiagnostic(Msg msg) {
+    private void receiveDiagnostic(Msg msg) throws JSONException {
         switch (msg.getType()) {
             case BR_RpDiagnostic:
                 if (diagnostic.get("Barcode Reader Driver") == null) {
@@ -303,7 +310,7 @@ public class SLC extends AppThread {
         }
     }
 
-    private void generateDiagnostic() {
+    private void generateDiagnostic() throws JSONException {
         // diagnostic to string, generate diagnostic
 //        Map<Object, Object> map = new HashMap<>();
 //        map.put("Information", diagnostic);

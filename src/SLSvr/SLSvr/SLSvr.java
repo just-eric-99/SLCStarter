@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -178,7 +179,7 @@ public class SLSvr extends AppThread {
                         log.warning(id + ": unknown message type: [" + type + "]");
                         break;
                 }
-            } catch (PackageNotFoundException e) {
+            } catch (PackageNotFoundException | JSONException e) {
                 log.warning("SetPasscode: Fail. Package ID not found.");
                 e.printStackTrace();
             }
@@ -348,7 +349,7 @@ public class SLSvr extends AppThread {
         }
     }
 
-    protected void receiveDiagnostic(DataInputStream in) throws IOException {
+    protected void receiveDiagnostic(DataInputStream in) throws IOException, JSONException {
         String data = readString(in);
         JSONObject diagnostic = new JSONObject(data);
         System.out.println(diagnostic);
