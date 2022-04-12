@@ -409,10 +409,10 @@ public class SLC extends AppThread {
         int pickUpYTop = 269;
         int pickUpYBottom = 341;
 
-        int loginXLeft = 492;
-        int loginXRight = 580;
-        int loginYTop = 125;
-        int loginYBottom = 184;
+        int loginXLeft = 257;
+        int loginXRight = 383;
+        int loginYTop = 392;
+        int loginYBottom = 447;
 
         if (x > checkInXLeft && x < checkInXRight && y > checkInYTop && y < checkInYBottom)
             handleCheckIn();

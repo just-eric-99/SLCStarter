@@ -202,7 +202,7 @@ public class TouchDisplayEmulatorController {
         }
         // Scan Barcode
         if (lockerFullText != null && invalidBarcodeText != null) {
-            if (showMsg.contains("not valid")) {
+            if (showMsg.contains("invalid")) {
                 invalidBarcodeText.setVisible(true);
             } else if (showMsg.contains("full")) {
                 lockerFullText.setVisible(true);
@@ -213,9 +213,9 @@ public class TouchDisplayEmulatorController {
             this.paymentText.setText(showMsg);
         // Payment Failed
         if (insufficientAmtText != null && readCardErrorText != null) {
-            if (showMsg.contains("insufficient")) {
+            if (showMsg.contains("Insufficient Amount")) {
                 insufficientAmtText.setVisible(true);
-            } else if (showMsg.contains("read card error")) {
+            } else if (showMsg.contains("Read Card Error")) {
                 readCardErrorText.setVisible(true);
             }
         }
