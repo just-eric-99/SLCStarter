@@ -226,6 +226,10 @@ public class Msg {
          */
         SLS_SendDiagnostic,
         /**
+         * Send fail msg to SLC
+         */
+        SLS_FailMsg,
+        /**
          * Get Opened Locker List
          */
         L_Opened,

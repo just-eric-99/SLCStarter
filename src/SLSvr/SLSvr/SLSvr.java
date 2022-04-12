@@ -5,16 +5,9 @@ import AppKickstarter.misc.AppThread;
 import AppKickstarter.misc.Msg;
 import AppKickstarter.timer.Timer;
 import Common.LockerSize;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -41,6 +34,7 @@ public class SLSvr extends AppThread {
         port = Integer.parseInt(appKickstarter.getProperty("Server.Port"));
         diagnosticTime = Integer.parseInt(appKickstarter.getProperty("SLSvr.DiagnosticTime"));
         loadLockerData();
+        loadPackageData();
     }
 
     @Override
@@ -61,7 +55,7 @@ public class SLSvr extends AppThread {
 
             for (boolean quit = false; !quit; ) {
                 Msg msg = mbox.receive();
-                System.out.println(id + ": message received: [" + msg + "].");
+
                 log.fine(id + ": message received: [" + msg + "].");
 
                 switch (msg.getType()) {
@@ -88,6 +82,7 @@ public class SLSvr extends AppThread {
         }
         stopSvr();
         appKickstarter.unregThread(this);
+        shutDown();
     }
 
     private void send(Msg msg) throws LockerException, IOException, PackageNotFoundException {
@@ -121,9 +116,12 @@ public class SLSvr extends AppThread {
                     DataInputStream in = new DataInputStream(cSocket.getInputStream());
                     String lockerID = readString(in).trim();
                     l = findLocker(lockerID);
+                    log.info(cSocket.getInetAddress().getHostAddress() + " login as " + l.getID() + ".");
+
                     synchronized (l.getID()) {
                         l.setSocket(cSocket);
                     }
+
                     serve(in, lockerID);
                 } catch (IOException e) {
                     log.info(cSocket.getInetAddress().getHostAddress() + " is disconnected.");
@@ -144,10 +142,10 @@ public class SLSvr extends AppThread {
     private void serve(DataInputStream in, String lockerID) throws IOException, LockerException {
         while (true) {
             Msg.Type type = Msg.Type.values()[in.readInt()];
-            System.out.println("Serve: " + type);
             try {
                 switch (type) {
                     case Poll:
+                        log.info("Handle Poll for locker #" + lockerID + ".");
                         mbox.send(new Msg(id, mbox, Msg.Type.Poll, lockerID));
                         break;
 
@@ -179,9 +177,8 @@ public class SLSvr extends AppThread {
                         log.warning(id + ": unknown message type: [" + type + "]");
                         break;
                 }
-            } catch (PackageNotFoundException | JSONException e) {
-                log.warning("SetPasscode: Fail. Package ID not found.");
-                e.printStackTrace();
+            } catch (PackageNotFoundException e) {
+                log.warning(e.getMessage());
             }
         }
     }
@@ -338,6 +335,22 @@ public class SLSvr extends AppThread {
         }
     }
 
+    private void loadPackageData() {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("Server_package.db"));
+            long total = in.readLong();
+            for (long i = 0; i < total; i++) {
+                Package p = (Package) in.readObject();
+                packages.add(p);
+            }
+            log.info("Initialize package data complete.");
+        } catch (FileNotFoundException e) {
+            log.info("Initialize server without package data.");
+        } catch (IOException | ClassNotFoundException e) {
+            log.warning("Initialize package data error.");
+        }
+    }
+
     private void loadLockerData() {
         int total = Integer.parseInt(appKickstarter.getProperty("Locker.Total"));
         for (int i = 1; i <= total; i++) {
@@ -349,13 +362,17 @@ public class SLSvr extends AppThread {
         }
     }
 
-    protected void receiveDiagnostic(DataInputStream in) throws IOException, JSONException {
+    protected void receiveDiagnostic(DataInputStream in) throws IOException{
         String data = readString(in);
         JSONObject diagnostic = new JSONObject(data);
         System.out.println(diagnostic);
         JSONObject brReader = diagnostic.getJSONObject("Barcode Reader Driver");
         System.out.println(brReader);
         System.out.println(brReader.getString("Version"));
+    }
+
+    protected void removePackage(String barcode) throws PackageNotFoundException {
+        packages.remove(findPackage(barcode));
     }
 
     protected String readString(DataInputStream in) throws IOException {
@@ -382,8 +399,25 @@ public class SLSvr extends AppThread {
         try {
             slSvrSocket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warning("Server socket is closed.");
         }
+    }
+
+    private void shutDown() {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("server_package.db"));
+            out.writeLong(packages.size());
+            packages.forEach(p -> {
+                try {
+                    out.writeObject(p);
+                } catch (IOException e) {
+                    log.warning("Package " + p.getBarcode() + " backup fail.");
+                }
+            });
+        } catch (IOException e) {
+            log.warning("Package Info backup fail.");
+        }
+        System.exit(0);
     }
 
     public static class PackageNotFoundException extends Exception {

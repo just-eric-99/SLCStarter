@@ -2,7 +2,9 @@ package SLC.SLC;
 
 import Common.LockerSize;
 
-public class SmallLocker {
+import java.io.Serializable;
+
+public class SmallLocker implements Serializable {
     private final String lockerID;
     private int passcode;
     private String barcode;
@@ -52,11 +54,9 @@ public class SmallLocker {
     }
 
     public void addPackage(String barcode, int passcode) {
-        if (this.barcode == null) {
-            this.barcode = barcode;
-            this.passcode = passcode;
-            arriveTime = System.currentTimeMillis();
-        }
+        this.barcode = barcode;
+        this.passcode = passcode;
+        arriveTime = System.currentTimeMillis();
     }
 
     public boolean isContainSamePackage(String barcode) {

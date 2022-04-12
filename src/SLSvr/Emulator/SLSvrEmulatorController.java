@@ -2,11 +2,11 @@ package SLSvr.Emulator;
 
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.MBox;
-import AppKickstarter.misc.Msg;
 
 import java.util.logging.Logger;
 
 import Common.LockerSize;
+import SLSvr.SLSvr.Package;
 import SLSvr.SLSvr.SLSvr;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,7 +26,7 @@ public class SLSvrEmulatorController {
     private SLSvrEmulator slSvrEmulator;
     private MBox slSvrMBox;
     private String pollResp;
-    public TextField packageIDField;
+    public TextField barcodeField;
     public TextField lockerIDField;
     public TextArea slSvrTextArea;
     public ChoiceBox<String> pollRespCBox;
@@ -75,21 +75,24 @@ public class SLSvrEmulatorController {
                 break;
 
             case "Reset":
-                packageIDField.setText("");
+                barcodeField.setText("");
                 lockerIDField.setText("");
                 lockerSizeCBox.setValue(LockerSize.Large.toString());
                 break;
 
-            case "Add Package":
-                addPackage();
+            case "Add/Edit Package":
+                addEditPackage();
                 break;
 
-            case "Activate/Standby":
-                slSvrMBox.send(new Msg(id, slSvrMBox, Msg.Type.BR_GoActive, packageIDField.getText()));
-                slSvrTextArea.appendText("Removing card\n");
+            case "Find Package":
+                findPackageAction();
                 break;
 
-            case "Diagnostic":
+            case "Remove Package":
+                removePackage();
+                break;
+
+            case "Request Diagnostic":
                 slSvrEmulator.requestDiagnostic();
                 break;
 
@@ -108,26 +111,67 @@ public class SLSvrEmulatorController {
 
     private void loadSamplePackageField(int num) {
         String propertyName = "Package.Package" + num + ".";
-        packageIDField.setText(appKickstarter.getProperty(propertyName + "ID"));
+        barcodeField.setText(appKickstarter.getProperty(propertyName + "ID"));
         lockerIDField.setText(appKickstarter.getProperty(propertyName + "LockerID"));
         lockerSizeCBox.setValue(appKickstarter.getProperty(propertyName + "Size"));
     }
 
-    private void addPackage() {
-        appendTextArea("Adding package #" + packageIDField.getText() + " information...");
-        String barcode = packageIDField.getText().trim();
+    private Package findPackage(String barcode) {
+        try {
+            return slSvrEmulator.findPackage(barcode);
+        } catch (SLSvr.PackageNotFoundException e) {
+            return null;
+        }
+    }
+
+    private void findPackageAction() {
+        String barcode = barcodeField.getText().trim();
+        if (barcode.isEmpty())
+            return;
+        Package p = findPackage(barcode);
+        if (p != null) {
+            barcodeField.setText(p.getBarcode());
+            lockerIDField.setText(p.getLockerID());
+            lockerSizeCBox.setValue(p.getSize().toString());
+            appendTextArea(p.toString());
+        } else {
+            appendTextArea("Package #" + barcode + " is not found.");
+        }
+    }
+
+    private void addEditPackage() {
+        String barcode = barcodeField.getText().trim();
+        if (barcode.isEmpty())
+            return;
         String lockerID = lockerIDField.getText().trim();
         LockerSize size = LockerSize.valueOf(lockerSizeCBox.getValue());
-        try {
-            slSvrEmulator.addPackage(barcode, lockerID, size);
-            appendTextArea("Add package #" + barcode + " to locker #" + lockerID + ".");
-        } catch (SLSvr.LockerException e) {
-            appendTextArea(e.getMessage());
+        Package p = findPackage(barcode);
+        if (p != null) {
+            appendTextArea("Editing package #" + barcode + " information...");
+            p.setLockerID(lockerID);
+            p.setSize(size);
+            appendTextArea("Edit package #" + barcode + " successfully.");
+        } else {
+            appendTextArea("Adding package #" + barcode + " information...");
+            try {
+                slSvrEmulator.addPackage(barcode, lockerID, size);
+                appendTextArea("Added package #" + barcode + " to locker #" + lockerID + ".");
+            } catch (SLSvr.LockerException e) {
+                appendTextArea(e.getMessage());
+            }
         }
     }
 
     private void removePackage(){
-
+        String barcode = barcodeField.getText().trim();
+        if (barcode.isEmpty())
+            return;
+        try {
+            slSvrEmulator.removePackage(barcode);
+            appendTextArea("Package #" + barcode + " is removed.");
+        } catch (SLSvr.PackageNotFoundException e) {
+            appendTextArea(e.getMessage());
+        }
     }
 
     //------------------------------------------------------------

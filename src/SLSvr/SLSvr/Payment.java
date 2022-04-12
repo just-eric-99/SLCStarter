@@ -1,6 +1,8 @@
 package SLSvr.SLSvr;
 
-public class Payment {
+import java.io.Serializable;
+
+public class Payment implements Serializable {
     private String octopusID;
     private double amount;
 
@@ -15,5 +17,12 @@ public class Payment {
 
     public double getAmount() {
         return amount;
+    }
+
+    @Override
+    public String toString() {
+        return "Payment\n" +
+                "octopusID: " + octopusID + "\n" +
+                "Amount: " + amount;
     }
 }

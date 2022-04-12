@@ -52,12 +52,12 @@ public class SLSvrHandler extends AppThread {
             log.fine(id + ": message received: [" + msg + "].");
 
             switch (msg.getType()) {
-                case Poll:
-                    handlePoll();
-                    break;
-
                 case SLS_Reconnect:
                     startClient();
+                    break;
+
+                case SLS_RqDiagnostic:
+                    sendDiagnosticToSLC();
                     break;
 
                 case Terminate:
@@ -78,6 +78,10 @@ public class SLSvrHandler extends AppThread {
         try {
             System.out.println("SLSvrHandler: Process Msg, " + msg.getType());
             switch (msg.getType()) {
+                case Poll:
+                    handlePoll();
+                    break;
+
                 case SLS_VerifyBarcode:
                     verifyBarcode(msg);
                     break;
@@ -95,10 +99,6 @@ public class SLSvrHandler extends AppThread {
                     sendPayment(msg);
                     break;
 
-                case SLS_RqDiagnostic:
-                    sendDiagnosticToSLC();
-                    break;
-
                 case SLS_SendDiagnostic:
                     sendDiagnosticToServer(msg);
                     break;
@@ -108,6 +108,7 @@ public class SLSvrHandler extends AppThread {
             }
         } catch (IOException e) {
             sendDisconnectedMsg();
+            slc.send(new Msg(id, mbox, Msg.Type.SLS_FailMsg, msg.getType() + "%" + msg.getDetails()));
         }
     } // processMsg
 
@@ -152,14 +153,8 @@ public class SLSvrHandler extends AppThread {
 
     //------------------------------------------------------------
     // handlePoll
-    protected void handlePoll() {
-        try {
-            if (slSvr != null && slSvr.isConnected()) {
-                out.writeInt(Msg.Type.Poll.ordinal());
-                return;
-            }
-        } catch (IOException ignored) {}
-        sendDisconnectedMsg();
+    protected void handlePoll() throws IOException {
+        out.writeInt(Msg.Type.Poll.ordinal());
     } // handlePoll
 
     private void verifyBarcode(Msg msg) throws IOException {

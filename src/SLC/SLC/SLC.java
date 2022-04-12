@@ -4,9 +4,10 @@ import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
 import AppKickstarter.timer.Timer;
 import Common.LockerSize;
-import org.json.JSONException;
+import Common.SimpleTimer.SimpleTimer;
 import org.json.JSONObject;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,6 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 // SLC
 public class SLC extends AppThread {
     private int pollingTime;
+    private String locationID;
     private MBox barcodeReaderMBox;
     private MBox touchDisplayMBox;
     private MBox slSvrHandlerMBox;
@@ -26,20 +28,22 @@ public class SLC extends AppThread {
     private Screen screen = Screen.Welcome_Page;
     private LockerFunction lockerFunction = LockerFunction.Home;
 
-    // fixme Ask HW Status when start?
     private HWStatus brStatus = HWStatus.Initialize;
     private HWStatus octStatus = HWStatus.Initialize;
     private HWStatus tdStatus = HWStatus.Initialize;
+    private HWStatus lockerStatus = HWStatus.Initialize;
     private HWStatus serverStatus = HWStatus.Initialize;
 
     private String touchScreenMsg = "";
     private String readBarcode = "";
+    private Boolean barcodeOK = null;
     private SmallLocker openLocker = null;
     private int fee = -1;
 
-    private final List<Thread> threadList = new ArrayList<>();
     private final List<Msg> msgQueue = new ArrayList<>();
     private final HashMap<String, JSONObject> diagnostic = new HashMap<>();
+
+    private SimpleTimer screenTimer = null;
 
 
     //------------------------------------------------------------
@@ -47,15 +51,26 @@ public class SLC extends AppThread {
     public SLC(String id, AppKickstarter appKickstarter) throws Exception {
         super(id, appKickstarter);
         pollingTime = Integer.parseInt(appKickstarter.getProperty("SLC.PollingTime"));
+        locationID = appKickstarter.getProperty("Locker.Location");
         loadLockerInfo();
         loadDiagnosticInfo();
     } // SLC
 
     private void loadLockerInfo() {
-        int total = Integer.parseInt(appKickstarter.getProperty("Locker.Count"));
-        for (int i = 0; i < total; i++) {
-            LockerSize size = LockerSize.valueOf(appKickstarter.getProperty("Locker.LockerId" + i + ".Size"));
-            smallLockers.add(new SmallLocker(i + "", size));
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(locationID + ".db"));
+            long size = in.readLong();
+            for (long i = 0; i < size; i++)
+                smallLockers.add((SmallLocker) in.readObject());
+            log.info("Initialize SLC complete.");
+        } catch (IOException | ClassNotFoundException e) {
+            log.warning("Initialize SLC without locker data.");
+            smallLockers.clear();
+            int total = Integer.parseInt(appKickstarter.getProperty("Locker.Count"));
+            for (int i = 0; i < total; i++) {
+                LockerSize size = LockerSize.valueOf(appKickstarter.getProperty("Locker.LockerId" + i + ".Size"));
+                smallLockers.add(new SmallLocker(i + "", size));
+            }
         }
     }
 
@@ -67,8 +82,6 @@ public class SLC extends AppThread {
             diagnostic.put("Smart Locker Server", null);
             diagnostic.put("Locker", null);
         }
-
-
     }
 
     //------------------------------------------------------------
@@ -99,7 +112,6 @@ public class SLC extends AppThread {
                     Timer.setTimer(id, mbox, pollingTime);
                     log.info("Poll: " + msg.getDetails());
                     sendPolling();
-                    checkThread();
                     break;
 
                 case PollAck:
@@ -108,14 +120,6 @@ public class SLC extends AppThread {
 
                 case PollNak:
                     handlePollNak(msg);
-                    break;
-
-                case TD_GoPickUp:
-                    handlePickUp();
-                    break;
-
-                case TD_SendPasscode:
-                    sendPasscode(msg);
                     break;
 
                 // For hacking purpose
@@ -151,6 +155,10 @@ public class SLC extends AppThread {
                     updateScreen(Screen.Scan_Barcode, "Barcode is not valid.");
                     break;
 
+                case SLS_FailMsg:
+                    handleFailMsg(msg);
+                    break;
+
                 case L_Opened:
                     handleLockerOpened(msg);
                     break;
@@ -177,11 +185,7 @@ public class SLC extends AppThread {
                 case OCR_RpDiagnostic:
                 case BR_RpDiagnostic:
                 case SH_RpDiagnostic:
-                    try {
-                        receiveDiagnostic(msg);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    receiveDiagnostic(msg);
                     break;
 
                 case Terminate:
@@ -193,10 +197,10 @@ public class SLC extends AppThread {
             }
         }
 
-        killThread();
         // declaring our departure
         appKickstarter.unregThread(this);
         log.info(id + ": terminating...");
+        shutDown();
     } // run
 
     private void sendPolling() {
@@ -212,19 +216,30 @@ public class SLC extends AppThread {
         String senderID = msg.getSender();
         switch (senderID) {
             case "BarcodeReaderDriver":
-                brStatus = HWStatus.Active;
+                if (brStatus == HWStatus.Fail)
+                    barcodeReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoStandby, ""));
                 break;
 
             case "OctopusCardReaderDriver":
-                octStatus = HWStatus.Active;
+                if (octStatus == HWStatus.Fail)
+                    octopusCardReaderMBox.send(new Msg(id, mbox, Msg.Type.BR_GoStandby, ""));
                 break;
 
             case "TouchDisplayHandler":
-                tdStatus = HWStatus.Active;
+                if (tdStatus != HWStatus.Active)
+                    tdStatus = HWStatus.Active;
                 break;
 
             case "SLSvrHandler":
-                serverStatus = HWStatus.Active;
+                if (serverStatus != HWStatus.Active)
+                    serverStatus = HWStatus.Active;
+                while (!msgQueue.isEmpty())
+                    slSvrHandlerMBox.send(msgQueue.remove(0));
+                break;
+
+            case "LockerDriver":
+                if (lockerStatus != HWStatus.Active)
+                    lockerStatus = HWStatus.Active;
                 break;
         }
     }
@@ -259,24 +274,13 @@ public class SLC extends AppThread {
         slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
         lockerMBox.send(new Msg(id, mbox, Msg.Type.SLS_RqDiagnostic, ""));
 
-        Thread t = new Thread(() -> {
-            try {
-                for (int i = 0; i < 240; i++) {
-                    Thread.sleep(500);
-                    // if all 5 hardware received, send ->
-                    int count = (int) diagnostic.entrySet().parallelStream().filter(data -> data.getValue().equals("")).count();
-                    if (count == 0)
-                        break;
-                }
-                generateDiagnostic();
-            } catch (InterruptedException ignored) {} catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-        addAndStartThread(t);
+        SimpleTimer timer = new SimpleTimer(120)
+                .wakeIf(() -> (int) diagnostic.entrySet().parallelStream().filter(data -> data.getValue() == null).count() == 0)
+                .afterWake(this::generateDiagnostic);
+        timer.start();
     }
 
-    private void receiveDiagnostic(Msg msg) throws JSONException {
+    private void receiveDiagnostic(Msg msg) {
         switch (msg.getType()) {
             case BR_RpDiagnostic:
                 if (diagnostic.get("Barcode Reader Driver") == null) {
@@ -310,15 +314,7 @@ public class SLC extends AppThread {
         }
     }
 
-    private void generateDiagnostic() throws JSONException {
-        // diagnostic to string, generate diagnostic
-//        Map<Object, Object> map = new HashMap<>();
-//        map.put("Information", diagnostic);
-//
-//        String data = new GsonBuilder().setPrettyPrinting().create().toJson(map).replace("\\n", "\n").replace("\\", "");
-//        System.out.println("Inside slc...");
-//        System.out.println(data);
-//        System.out.println("end...");
+    private void generateDiagnostic() {
         JSONObject combined = new JSONObject();
         combined.put("Barcode Reader Driver", diagnostic.get("Barcode Reader Driver"));
         combined.put("Octopus Card Reader", diagnostic.get("Octopus Card Reader"));
@@ -342,36 +338,13 @@ public class SLC extends AppThread {
             return;
 
         serverStatus = HWStatus.Disconnected;
-        Thread t = new Thread(() -> {
-            try {
-                while (serverStatus == HWStatus.Disconnected) {
-                    log.info("Trying to reconnect server...");
-                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Reconnect, ""));
-                    Thread.sleep(10000);
-                }
-            } catch (InterruptedException ignored) {}
+        SimpleTimer timer = new SimpleTimer(10).isRepeat(true);
+        timer.wakeIf(() -> serverStatus != HWStatus.Disconnected);
+        timer.periodAction(() -> {
+            log.info("Reconnecting to server...");
+            slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Reconnect, ""));
         });
-        addAndStartThread(t);
-    }
-
-    private void checkThread() {
-        synchronized (threadList) {
-            log.info("Checking for thread list (length: " + threadList.size() + ")...");
-            threadList.removeIf(t -> !t.isAlive());
-        }
-    }
-
-    private void addAndStartThread(Thread t) {
-        t.start();
-        synchronized (threadList) {
-            threadList.add(t);
-        }
-    }
-
-    private void killThread() {
-        synchronized (threadList) {
-            threadList.forEach(Thread::interrupt);
-        }
+        timer.start();
     }
 
     //------------------------------------------------------------
@@ -505,8 +478,8 @@ public class SLC extends AppThread {
         int enterYBottom = 184;
 
         if (x > enterXLeft && x < enterXRight && y > enterYTop && y < enterYBottom) {
-            // fixme empty string problem
-            handleVerifyPasscode(Integer.parseInt(touchScreenMsg));
+            if (!touchScreenMsg.isEmpty())
+                handleVerifyPasscode(Integer.parseInt(touchScreenMsg));
             touchScreenMsg = "";
             return;
         }
@@ -555,7 +528,7 @@ public class SLC extends AppThread {
         else {
             int fee = sl.getPayment();
             openLocker = sl;
-            System.out.println("Fee: " + fee);
+
             if (fee == 0) {
                 lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, sl.getLockerID()));
             } else {
@@ -576,19 +549,23 @@ public class SLC extends AppThread {
     private void barcodeVerified(Msg msg) {
         if (screen != Screen.Scan_Barcode)
             return;
-        // randomly choose an empty locker
+
+        // Choose an empty locker
         String[] tokens = msg.getDetails().split("\t");
         String barcode = tokens[0].trim();
-        // TODO Screen to show error
+
+        // Handle same barcode in same locker
         if (!barcode.equals(readBarcode)) {
             updateScreen(Screen.Scan_Barcode, "Barcode is invalid.\nPlease contact administrator.");
             return;
         }
 
+        barcodeOK = true;
         LockerSize size = LockerSize.valueOf(tokens[1].trim());
         SmallLocker sl = chooseEmptyLocker(size);
+
+        // Handle locker is full
         if (sl == null) {
-            // TODO send change screen to TD
             updateScreen(Screen.Scan_Barcode, "Size " + size + " locker is full.\nPlease contact administrator.");
             return;
         }
@@ -604,11 +581,21 @@ public class SLC extends AppThread {
         openLocker = sl;
     }
 
+    private void handleFailMsg(Msg msg) {
+        System.out.println(msg.getDetails());
+        String[] tokens = msg.getDetails().split("%");
+        Msg.Type type = Msg.Type.valueOf(tokens[0]);
+        String detail = tokens.length > 1? tokens[1] : "";
+        log.warning("Fail to send message to server: [" + type + "] " + detail);
+        if (type != Msg.Type.Poll)
+            msgQueue.add(new Msg(id, mbox, type, detail));
+    }
+
     private void handleCheckIn() {
         if (screen != Screen.Main_Menu && screen != Screen.Show_Locker)
             return;
         else if (serverStatus == HWStatus.Disconnected || serverStatus == HWStatus.Fail) {
-            handleServerDownScreen();
+            updateScreen(Screen.Server_Down);
             return;
         }
 
@@ -617,43 +604,33 @@ public class SLC extends AppThread {
         updateScreen(Screen.Scan_Barcode);
     }
 
-    private void handlePickUp() {
-        if (screen != Screen.Main_Menu)
-            return;
-        updateScreen(Screen.Enter_Passcode);
-    }
-
-    private void handleServerDownScreen() {
-        updateScreen(Screen.Server_Down);
-        timeOutToWelcomePage(5);
-    }
-
-    private void sendPasscode(Msg msg) {
-        if (screen != Screen.Enter_Passcode)
-            return;
-        SmallLocker sl = findByPasscode(Integer.parseInt(msg.getDetails()));
-        // null -> passcode wrong, not null -> passcode correct
-        if (sl == null) {
-            // fixme Passcode wrong page
-            touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, ""));
-            // TODO Time out -> Display passcode page
-        } else {
-            // TODO
-        }
-    }
-
     private void handleBarcodeRead(Msg msg) {
-        if (screen != Screen.Scan_Barcode || brStatus != HWStatus.Active)
+        if (screen != Screen.Scan_Barcode)
             return;
 
         String barcode = msg.getDetails().trim();
         readBarcode = barcode;
         if (findPackage(barcode)) {
-            // fixme already exist?
+            // fixme update scan barcode screen
+            updateScreen(Screen.Scan_Barcode, "Invalid barcode");
             return;
         }
         readBarcode = barcode;
         slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_VerifyBarcode, barcode));
+
+        // Handle network problem
+        if (serverStatus != HWStatus.Active)
+            updateScreen(Screen.Server_Down);
+        else {
+            SimpleTimer timer = new SimpleTimer(5)
+                    .wakeIf(() -> barcodeOK != null)
+                    .afterWake(() -> {
+                        // fixme something wrong
+//                        if (barcodeOK != null && screen == Screen.Scan_Barcode)
+//                            updateScreen(Screen.Server_Down);
+                    });
+            timer.start();
+        }
     }
 
     private int generatePasscode() {
@@ -670,29 +647,22 @@ public class SLC extends AppThread {
     private void handleLockerOpened(Msg msg) {
         String lockerID = msg.getDetails().trim();
         if (openLocker.getLockerID().equals(lockerID)) {
-            Thread t = new Thread(() -> {
-                try {
-                    Thread.sleep(1000);
-                    updateScreen(Screen.Show_Locker, lockerID);
-                } catch (InterruptedException ignored) {
-                }
-            });
-            addAndStartThread(t);
+            SimpleTimer timer = new SimpleTimer(1).afterWake(() -> updateScreen(Screen.Show_Locker, lockerID));
+            timer.start();
         }
 
-        if (lockerFunction == LockerFunction.Pick_Up)
-            openLocker.pickUpPackage();
+        if (lockerFunction == LockerFunction.Pick_Up) {
+            String barcode = openLocker.pickUpPackage();
+            slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_PackagePicked, barcode + "\t" + System.currentTimeMillis() + ""));
+        }
     }
 
     private void handleLockerClose(Msg msg) {
-        System.out.println("Locker close: " + msg);
         String lockerID = msg.getDetails().trim();
         if (openLocker.getLockerID().equals(lockerID)) {
             if (lockerFunction == LockerFunction.Check_In) {
                 handleCheckIn();
             } else if (lockerFunction == LockerFunction.Pick_Up) {
-                String barcode = openLocker.pickUpPackage();
-                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_PackagePicked, barcode + "\t" + System.currentTimeMillis() + ""));
                 updateScreen(Screen.Main_Menu);
                 lockerFunction = LockerFunction.Home;
             }
@@ -726,6 +696,17 @@ public class SLC extends AppThread {
             detail += "," + msg;
         touchDisplayMBox.send(new Msg(id, mbox, Msg.Type.TD_UpdateDisplay, detail));
         screen = s;
+        switch (s) {
+            case Main_Menu:
+            case Enter_Passcode:
+            case Scan_Barcode:
+                timeOutToScreen(60, Screen.Welcome_Page);
+                break;
+
+            case Server_Down:
+                timeOutToScreen(5, Screen.Welcome_Page);
+                break;
+        }
     }
 
     private boolean findPackage(String barcode) {
@@ -741,25 +722,37 @@ public class SLC extends AppThread {
         }
     }
 
-    private void timeOutToWelcomePage(int second) {
+    private void timeOutToScreen(int second, Screen chgScreen) {
         Screen s = screen;
-        Thread t = new Thread(() -> {
-            try {
-                for (int i = 0; i < second * 2; i++) {
-                    Thread.sleep(500);
-                    if (screen != s)
-                        return;
-                }
-                updateScreen(Screen.Welcome_Page);
-            } catch (InterruptedException ignored) {}
-        });
-        addAndStartThread(t);
+        SimpleTimer timer = new SimpleTimer(second).wakeIf(() -> screen != s)
+                .afterWake(() -> {
+                    if (s == screen)
+                        updateScreen(chgScreen);
+                });
+        timer.start();
+        if (screenTimer != null)
+            screenTimer.interrupt();
+        screenTimer = timer;
     }
 
-    protected void shutDown() throws InterruptedException {
+    private void backUpLockerInfo() {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(locationID + ".db"));
+            out.writeLong(smallLockers.size());
+            smallLockers.forEach(sl -> {
+                try {
+                    out.writeObject(sl);
+                } catch (IOException e) {
+                    log.warning("Back up locker #" + sl.getLockerID() + " information fail.");
+                }
+            });
+        } catch (IOException e) {
+            log.warning("Back up locker information fail.");
+        }
+    }
 
-        // send a message to touch display to display "Shutting down ..." with a loading icon?
-        Thread.sleep(5000);
+    private void shutDown() {
+        backUpLockerInfo();
         System.exit(0);
     }
 

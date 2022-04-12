@@ -2,6 +2,7 @@ package SLSvr.Emulator;
 
 import AppKickstarter.misc.Msg;
 import Common.LockerSize;
+import SLSvr.SLSvr.Package;
 import SLSvr.SLSvrStarter;
 
 import SLSvr.SLSvr.SLSvr;
@@ -88,10 +89,13 @@ public class SLSvrEmulator extends SLSvr {
         super.requestDiagnostic();
     }
 
-    public void removePackage(Msg msg) throws LockerException {
-        slSvrEmulatorController.appendTextArea("User getting package...");
-
-
+    @Override
+    public Package findPackage(String barcode) throws PackageNotFoundException {
+        return super.findPackage(barcode);
     }
 
+    @Override
+    public void removePackage(String barcode) throws PackageNotFoundException {
+        super.removePackage(barcode);
+    }
 } // SLSvrEmulator
