@@ -63,6 +63,11 @@ public class TouchDisplayEmulatorController {
     public Text lockerFullText;
     // Payment
     public Text paymentText;
+    // Payment Failed
+    public Text insufficientAmtText;
+    public Text readCardErrorText;
+    // Sever Down
+    public Text errorMsgText;
     // Show Locker/Locker Not Close
     public Rectangle locker0Rect;
     public Rectangle locker1Rect;
@@ -108,20 +113,6 @@ public class TouchDisplayEmulatorController {
     public Rectangle locker41Rect;
     public Rectangle locker42Rect;
     public Rectangle locker43Rect;
-
-//    public static ArrayList<Rectangle> lockers = null;
-
-//    private TouchDisplayEmulatorController() {
-//        if (lockers == null) {
-//            lockers = new ArrayList<>();
-//            for (int i = 0; i < 44; i++) {
-//                lockers.add(new Rectangle());
-//            }
-//        }
-//
-//        // lockers.get(i).setColour = red;
-//    }
-
 
     //------------------------------------------------------------
     // initialize
@@ -220,10 +211,22 @@ public class TouchDisplayEmulatorController {
         // Payment
         if (paymentText != null)
             this.paymentText.setText(showMsg);
+        // Payment Failed
+        if (insufficientAmtText != null && readCardErrorText != null) {
+            if (showMsg.contains("insufficient")) {
+                insufficientAmtText.setVisible(true);
+            } else if (showMsg.contains("read card error")) {
+                readCardErrorText.setVisible(true);
+            }
+        }
         // Show Locker/Locker Not Close
         if (locker0Rect != null) {
             System.out.println("showMsg in locker0Rect: " + showMsg);
             setDisplayLocker(showMsg);
+        }
+        // Sever Down
+        if (errorMsgText != null) {
+            errorMsgText.setText(showMsg);
         }
         this.selectedScreen = screenSwitcherCBox.getValue().toString();
     } // initialize
@@ -242,6 +245,7 @@ public class TouchDisplayEmulatorController {
         return pollResp;
     } // getPollResp
 
+    //------------------------------------------------------------
     // getMbox
     public MBox getMbox() {
         return touchDisplayMBox;
@@ -258,10 +262,12 @@ public class TouchDisplayEmulatorController {
         touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_MouseClicked, x + " " + y));
     } // td_mouseClick
 
-    public void setPaymentText(String amount) {
-        paymentText.setText(amount);
-    }
+//    public void setPaymentText(String amount) {
+//        paymentText.setText(amount);
+//    }
 
+    //------------------------------------------------------------
+    // setDisplayLocker
     public void setDisplayLocker(String lockerId) {
         switch (lockerId) {
             case "0":
@@ -441,5 +447,5 @@ public class TouchDisplayEmulatorController {
                 break;
 
         }
-    }
+    } // setDisplayLocker
 } // TouchDisplayEmulatorController

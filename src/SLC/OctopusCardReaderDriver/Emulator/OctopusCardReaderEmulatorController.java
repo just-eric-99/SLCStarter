@@ -24,7 +24,8 @@ public class OctopusCardReaderEmulatorController {
     private String standbyResp;
     private String pollResp;
     public TextField octopusCardNumField;
-    public TextField octopusCardAmountField;
+    public TextField octopusCardAmountField1;
+    public TextField octopusCardAmountField2;
     public TextField octopusCardRequestAmountField;
     public TextField octopusCardReaderStatusField;
     public TextArea octopusCardReaderTextArea;
@@ -62,6 +63,29 @@ public class OctopusCardReaderEmulatorController {
                 appendTextArea("Poll Response set to " + pollRespCBox.getItems().get(newValue.intValue()).toString());
             }
         });
+        this.octopusCardNumField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*"))
+                    octopusCardNumField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        this.octopusCardAmountField1.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*"))
+                    octopusCardAmountField1.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+        this.octopusCardAmountField2.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*"))
+                    octopusCardAmountField2.setText(newValue.replaceAll("[^\\d]", ""));
+                else if (octopusCardAmountField2.getText().length() > 2)
+                    octopusCardAmountField2.setText(octopusCardAmountField2.getText(0, 2));
+            }
+        });
         this.activationResp = activationRespCBox.getValue().toString();
         this.standbyResp = standbyRespCBox.getValue().toString();
         this.pollResp = pollRespCBox.getValue().toString();
@@ -73,32 +97,37 @@ public class OctopusCardReaderEmulatorController {
     public void buttonPressed(ActionEvent actionEvent) {
         Button btn = (Button) actionEvent.getSource();
 
-        String octopusDetails = octopusCardNumField.getText() + "\t" + octopusCardAmountField.getText();
-
         switch (btn.getText()) {
             case "Octopus 1":
                 octopusCardNumField.setText(appKickstarter.getProperty("OctopusCardReader.Number1"));
-                octopusCardAmountField.setText(appKickstarter.getProperty("OctopusCardReader.Number1.amount"));
                 break;
 
             case "Octopus 2":
                 octopusCardNumField.setText(appKickstarter.getProperty("OctopusCardReader.Number2"));
-                octopusCardAmountField.setText(appKickstarter.getProperty("OctopusCardReader.Number2.amount"));
                 break;
 
             case "Octopus 3":
                 octopusCardNumField.setText(appKickstarter.getProperty("OctopusCardReader.Number3"));
-                octopusCardAmountField.setText(appKickstarter.getProperty("OctopusCardReader.Number3.amount"));
                 break;
 
             case "Reset":
                 octopusCardNumField.setText("");
-                octopusCardAmountField.setText("");
+                octopusCardAmountField1.setText("");
+                octopusCardAmountField2.setText("");
                 break;
 
             case "Send Octopus":
-                OctopusCardReaderEmulator.isCardChosen = true;
-                octopusCardReaderTextArea.appendText("Send Octopus Card " + octopusDetails + "\n");
+                sendCard();
+                break;
+
+            case "Fail: Insufficient Amount":
+                octopusCardReaderEmulator.handleCardFailed("Insufficient Amount");
+                appendTextArea("Send card fail: Insufficient Amount");
+                break;
+
+            case "Fail: Read Card Error":
+                octopusCardReaderEmulator.handleCardFailed("Read Card Error");
+                appendTextArea("Send card fail: Read Card Error");
                 break;
 
             case "Standby":
@@ -111,6 +140,19 @@ public class OctopusCardReaderEmulatorController {
                 break;
         }
     } // buttonPressed
+
+
+    private void sendCard() {
+        String cardID = octopusCardNumField.getText();
+        String amount = octopusCardAmountField1.getText().isEmpty() ? "0" : octopusCardAmountField1.getText();
+        amount += octopusCardAmountField2.getText().isEmpty() ? "" : ("." + octopusCardAmountField2.getText());
+
+        if (cardID.isEmpty() || amount.isEmpty())
+            return;
+
+        appendTextArea("Send Octopus Card #" + octopusCardNumField.getText() + ", amount: " + amount);
+        octopusCardReaderEmulator.handleCardOK(cardID, amount);
+    }
 
 
     //------------------------------------------------------------
@@ -127,12 +169,6 @@ public class OctopusCardReaderEmulatorController {
         return pollResp;
     }
 
-    public float getCardAmount(){return Float.parseFloat(octopusCardAmountField.getText()); }
-
-    public void setCardAmount(double amount){ octopusCardAmountField.setText(String.valueOf(amount));}
-
-    public String getCardID(){return  octopusCardNumField.getText();}
-
 
     //------------------------------------------------------------
     // goActive
@@ -147,18 +183,6 @@ public class OctopusCardReaderEmulatorController {
         updateOctopusCardReaderStatus("Standby");
     } // goStandby
 
-    //------------------------------------------------------------
-    // cardFailed
-    public void cardFailed() {
-        updateOctopusCardReaderStatus("Card Failed");
-    } // cardFailed
-
-    //------------------------------------------------------------
-    // cardOK
-    public void cardOK() {
-        updateOctopusCardReaderStatus("Card OK");
-    } // cardOK
-
 
     //------------------------------------------------------------
     // updateOctopusCardReaderStatus
@@ -172,6 +196,15 @@ public class OctopusCardReaderEmulatorController {
     public void appendTextArea(String status) {
         octopusCardReaderTextArea.appendText(status + "\n");
     } // appendTextArea
+
+    //------------------------------------------------------------
+    // setRequestAmount
+    public void setSendAmountField(String amount) {
+        amount = Double.parseDouble(amount) + "";
+        String[] tokens = amount.split("\\.");
+        octopusCardAmountField1.setText(tokens[0]);
+        octopusCardAmountField2.setText(tokens[1]);
+    } // setRequestAmount
 
     //------------------------------------------------------------
     // setRequestAmount

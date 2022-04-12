@@ -379,8 +379,12 @@ public class SLSvr extends AppThread {
         log.info("Receive fail from locker #" + lockerID + ": " + readString(in));
     }
 
-    protected void removePackage(String barcode) throws PackageNotFoundException {
-        packages.remove(findPackage(barcode));
+    protected boolean removePackage(String barcode) throws PackageNotFoundException {
+        Package p = findPackage(barcode);
+        if (p.isArrive() && !p.isPickUp())
+            return false;
+        packages.remove(p);
+        return true;
     }
 
     protected String readString(DataInputStream in) throws IOException {

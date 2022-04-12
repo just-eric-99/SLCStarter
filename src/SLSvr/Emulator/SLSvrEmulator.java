@@ -95,7 +95,7 @@ public class SLSvrEmulator extends SLSvr {
     }
 
     @Override
-    public void removePackage(String barcode) throws PackageNotFoundException {
-        super.removePackage(barcode);
+    public boolean removePackage(String barcode) throws PackageNotFoundException {
+        return super.removePackage(barcode);
     }
 } // SLSvrEmulator

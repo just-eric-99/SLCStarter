@@ -167,8 +167,10 @@ public class SLSvrEmulatorController {
         if (barcode.isEmpty())
             return;
         try {
-            slSvrEmulator.removePackage(barcode);
-            appendTextArea("Package #" + barcode + " is removed.");
+            if (slSvrEmulator.removePackage(barcode))
+                appendTextArea("Package #" + barcode + " is removed.");
+            else
+                appendTextArea("Package #" + barcode + " cannot remove now.");
         } catch (SLSvr.PackageNotFoundException e) {
             appendTextArea(e.getMessage());
         }

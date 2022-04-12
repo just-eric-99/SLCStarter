@@ -6,34 +6,38 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="453.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLC.OctopusCardReaderDriver.Emulator.OctopusCardReaderEmulatorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="453.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLC.OctopusCardReaderDriver.Emulator.OctopusCardReaderEmulatorController">
     <children>
         <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
             <children>
-                <Button mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="87.0" text="Octopus 1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"><font><Font size="12.0" /></font></Button>
-                <Button layoutX="97.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="83.0" text="Octopus 2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="97.0" AnchorPane.topAnchor="0.0"><font><Font size="12.0" /></font></Button>
-                <Button layoutX="192.0" layoutY="1.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="83.0" text="Octopus 3" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="192.0" AnchorPane.topAnchor="1.0"><font><Font size="12.0" /></font></Button>
+                <Button layoutY="1.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="83.0" text="Octopus 1" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="1.0"><font><Font size="12.0" /></font></Button>
+                <Button layoutX="101.0" layoutY="1.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="83.0" text="Octopus 2" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="101.0" AnchorPane.topAnchor="1.0"><font><Font size="12.0" /></font></Button>
+                <Button layoutX="202.0" layoutY="1.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="83.0" text="Octopus 3" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="202.0" AnchorPane.topAnchor="1.0"><font><Font size="12.0" /></font></Button>
                 <Button layoutX="303.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="110.0" text="Reset" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="303.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"><font><Font size="12.0" /></font></Button>
             </children>
         </AnchorPane>
-        <AnchorPane prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0">
+        <AnchorPane layoutX="20.0" layoutY="52.0" prefHeight="30.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="52.0">
             <children>
-                <Label prefWidth="100.0" text="Octopus No.: " AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                <TextField fx:id="octopusCardNumField" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <Label prefHeight="30.0" prefWidth="127.0" text="Octopus Card No.: " AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <TextField fx:id="octopusCardNumField" layoutX="127.0" prefHeight="30.0" prefWidth="286.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="127.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </children>
         </AnchorPane>
-      <AnchorPane layoutX="20.0" layoutY="88.0" prefHeight="30.0" prefWidth="413.0">
-         <children>
-            <Label prefHeight="30.0" prefWidth="100.0" text="Octopus Amount:" />
-            <TextField fx:id="octopusCardAmountField" layoutX="100.0" layoutY="4.0" prefHeight="25.0" prefWidth="313.0" />
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="20.0" layoutY="168.0" prefHeight="30.0" prefWidth="413.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="413.0" text="Send Octopus" />
-         </children>
-      </AnchorPane>
-        <TextArea fx:id="octopusCardReaderTextArea" editable="false" layoutX="20.0" layoutY="210.0" prefHeight="120.0" prefWidth="413.0" AnchorPane.bottomAnchor="140" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="210.0" />
+        <AnchorPane layoutX="20.0" layoutY="88.0" prefHeight="30.0" prefWidth="413.0">
+            <children>
+                <Label layoutY="3.0" prefHeight="30.0" prefWidth="127.0" text="Send Amount:" />
+                <TextField fx:id="octopusCardAmountField1" layoutX="127.0" layoutY="2.0" prefHeight="30.0" prefWidth="162.0" />
+            <Label alignment="BOTTOM_CENTER" layoutX="289.0" prefHeight="30.0" prefWidth="14.0" text="." />
+                <TextField fx:id="octopusCardAmountField2" layoutX="303.0" layoutY="2.0" prefHeight="30.0" prefWidth="110.0" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="20.0" layoutY="168.0" prefHeight="30.0" prefWidth="413.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="413.0" text="Send Octopus" />
+            </children>
+        </AnchorPane>
+        <Button layoutX="40.0" layoutY="205.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="37.0" prefWidth="179.0" text="Fail: Insufficient Amount" />
+        <Button layoutX="235.0" layoutY="205.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="37.0" prefWidth="179.0" text="Fail: Read Card Error" />
+        <TextArea fx:id="octopusCardReaderTextArea" editable="false" layoutX="20.0" layoutY="251.0" prefHeight="148.0" prefWidth="413.0" AnchorPane.bottomAnchor="140" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="251.0" />
         <GridPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="231.0" minWidth="10.0" prefWidth="205.0" />
@@ -80,11 +84,11 @@
                 </ChoiceBox>
             </children>
         </GridPane>
-      <AnchorPane layoutX="20.0" layoutY="127.0" prefHeight="30.0" prefWidth="413.0">
-         <children>
-            <Label layoutY="8.0" prefHeight="17.0" prefWidth="110.0" text="Requested amount:" />
-            <TextField fx:id="octopusCardRequestAmountField" editable="false" layoutX="110.0" layoutY="3.0" prefHeight="25.0" prefWidth="302.0" />
-         </children>
-      </AnchorPane>
+        <AnchorPane layoutX="20.0" layoutY="127.0" prefHeight="30.0" prefWidth="413.0">
+            <children>
+                <Label layoutY="2.0" prefHeight="30.0" prefWidth="127.0" text="Requested Amount:" />
+                <TextField fx:id="octopusCardRequestAmountField" editable="false" layoutX="127.0" layoutY="1.0" prefHeight="30.0" prefWidth="286.0" />
+            </children>
+        </AnchorPane>
     </children>
 </AnchorPane>

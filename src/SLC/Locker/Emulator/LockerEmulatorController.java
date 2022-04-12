@@ -23,7 +23,12 @@ public class LockerEmulatorController {
     private MBox lockerMBox;
 
     private String pollResp;
+    private String unlockResp;
+    private String closeResp;
+
     public ChoiceBox pollRespCBox;
+    public ChoiceBox unlockRespCBox;
+    public ChoiceBox closeRespCBox;
     public TextArea lockerTextArea;
 
 
@@ -52,6 +57,10 @@ public class LockerEmulatorController {
     public String getPollResp() {
         return pollResp;
     }
+
+    public String getUnlockResp() {return unlockResp;}
+
+    public String getCloseResp() {return closeResp;}
 
 //    public void buttonPressed(ActionEvent actionEvent) {
 //        Button btn = (Button) actionEvent.getSource();

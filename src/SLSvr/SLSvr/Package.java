@@ -48,12 +48,12 @@ public class Package implements Serializable {
         this.size = size;
     }
 
-    public int getLockerPasscode() {
-        return lockerPasscode;
-    }
-
     public void setLockerPasscode(int lockerPasscode) {
         this.lockerPasscode = lockerPasscode;
+    }
+
+    public boolean isArrive() {
+        return arriveTime != null;
     }
 
     public void setArriveTime(Date arriveTime) {
@@ -62,6 +62,10 @@ public class Package implements Serializable {
 
     public void setPickUpTime(Date pickUpTime) {
         this.pickUpTime = pickUpTime;
+    }
+
+    public boolean isPickUp() {
+        return pickUpTime != null;
     }
 
     public void addPayment(Payment p) {

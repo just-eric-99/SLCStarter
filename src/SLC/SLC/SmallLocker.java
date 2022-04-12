@@ -73,7 +73,9 @@ public class SmallLocker implements Serializable {
 
     public int getPayment(){
         // 24 hours = 86400000 milliseconds, default $15 a day
-        return (int) (Math.ceil((System.currentTimeMillis()-arriveTime)/86400000.0) - 1) * 15;
+        // fixme chg back MUST!!!!!!!!!!
+//        return (int) (Math.ceil((System.currentTimeMillis()-arriveTime)/86400000.0) - 1) * 15;
+        return (int) (Math.ceil((System.currentTimeMillis()-arriveTime)/60000.0) - 1) * 15;
     }
 
     @Override
