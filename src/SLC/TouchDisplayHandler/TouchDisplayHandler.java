@@ -65,7 +65,6 @@ public class TouchDisplayHandler extends HWHandler {
     private void sendDiagnostic() {
         Map<String, Object> information = new LinkedHashMap<>();
 
-
         information.put("Name", appKickstarter.getProperty("TouchDisplay.Name"));
         information.put("Manufacturer Name", appKickstarter.getProperty("TouchDisplay.Manufacturer"));
         information.put("Version", appKickstarter.getProperty("TouchDisplay.Version"));
