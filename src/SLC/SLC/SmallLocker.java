@@ -9,8 +9,9 @@ public class SmallLocker implements Serializable {
     private int passcode;
     private String barcode;
     private long arriveTime;
-    private boolean locked;
     private LockerSize size;
+    private boolean locked;
+    private boolean isWorkNormal;
 
     public SmallLocker(String lockerID, LockerSize size) {
         this.lockerID = lockerID;
@@ -76,6 +77,14 @@ public class SmallLocker implements Serializable {
         // fixme chg back MUST!!!!!!!!!!
 //        return (int) (Math.ceil((System.currentTimeMillis()-arriveTime)/86400000.0) - 1) * 15;
         return (int) (Math.ceil((System.currentTimeMillis()-arriveTime)/60000.0) - 1) * 15;
+    }
+
+    public boolean isWorkNormal() {
+        return isWorkNormal;
+    }
+
+    public void setWorkNormal(boolean workNormal) {
+        isWorkNormal = workNormal;
     }
 
     @Override

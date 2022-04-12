@@ -28,16 +28,15 @@ public class SLC extends AppThread {
     private Screen screen = Screen.Welcome_Page;
     private LockerFunction lockerFunction = LockerFunction.Home;
 
-    private HWStatus brStatus = HWStatus.Fail;
-    private HWStatus ocrStatus = HWStatus.Fail;
-    private HWStatus tdStatus = HWStatus.Fail;
-    private HWStatus lockerStatus = HWStatus.Fail;
-    private HWStatus serverStatus = HWStatus.Fail;
+    private HWStatus brStatus;
+    private HWStatus ocrStatus;
+    private HWStatus tdStatus;
+    private HWStatus lockerStatus;
+    private HWStatus serverStatus;
 
     private String touchScreenPasscode = "";
     private String touchScreenAdmin = "";
     private String readBarcode = "";
-    private Boolean barcodeOK = null;
     private SmallLocker openLocker = null;
 
     private final List<Msg> msgQueue = new ArrayList<>();
@@ -133,7 +132,6 @@ public class SLC extends AppThread {
                 case TD_ChangeScreen:
                     touchScreenPasscode = "";
                     readBarcode = "";
-                    barcodeOK = null;
                     openLocker = null;
                     updateScreen(Screen.valueOf(msg.getDetails()));
                     break;
@@ -167,7 +165,7 @@ public class SLC extends AppThread {
                     break;
 
                 case SLS_InvalidBarcode:
-                    updateScreen(Screen.Scan_Barcode, "Barcode is not valid.");
+                    updateScreen(Screen.Scan_Barcode, "Barcode is invalid.");
                     break;
 
                 case SLS_FailMsg:
@@ -235,12 +233,12 @@ public class SLC extends AppThread {
         String senderID = msg.getSender();
         switch (senderID) {
             case "BarcodeReaderDriver":
-                if (brStatus != HWStatus.Standby && brStatus != HWStatus.Active)
+                if (brStatus == HWStatus.Fail)
                     new Thread(this::callBRGoStandby).start();
                 break;
 
             case "OctopusCardReaderDriver":
-                if (ocrStatus != HWStatus.Standby && ocrStatus != HWStatus.Active)
+                if (ocrStatus == HWStatus.Fail)
                     new Thread(this::callOCRGoStandby).start();
                 break;
 
@@ -631,7 +629,7 @@ public class SLC extends AppThread {
     }
 
     private void barcodeVerified(Msg msg) {
-        if (screen != Screen.Scan_Barcode)
+        if (screen != Screen.Scan_Barcode || brStatus == HWStatus.Fail)
             return;
 
         // Choose an empty locker
@@ -644,7 +642,6 @@ public class SLC extends AppThread {
             return;
         }
 
-        barcodeOK = true;
         LockerSize size = LockerSize.valueOf(tokens[1].trim());
         SmallLocker sl = chooseEmptyLocker(size);
 
@@ -707,6 +704,9 @@ public class SLC extends AppThread {
     //------------------------------------------------------------
     // Barcode Reader Related functions
     private void handleBRIsActive() {
+        if (brStatus == HWStatus.Fail)
+            return;
+
         brStatus = HWStatus.Active;
 
         if (screen != Screen.Scan_Barcode) {
@@ -715,6 +715,9 @@ public class SLC extends AppThread {
     }
 
     private void handleBRIsStandby() {
+        if (brStatus == HWStatus.Fail)
+            return;
+
         brStatus = HWStatus.Standby;
 
         if (screen == Screen.Scan_Barcode) {
@@ -733,7 +736,7 @@ public class SLC extends AppThread {
         String barcode = msg.getDetails().trim();
         readBarcode = barcode;
         if (findPackage(barcode)) {
-            updateScreen(Screen.Scan_Barcode, "Invalid barcode");
+            updateScreen(Screen.Scan_Barcode, "Barcode is invalid.\nPlease contact administrator.");
             return;
         }
         readBarcode = barcode;
@@ -744,11 +747,11 @@ public class SLC extends AppThread {
             updateScreen(Screen.Server_Down);
         else {
             SimpleTimer timer = new SimpleTimer(5)
-                    .wakeIf(() -> barcodeOK != null)
+                    .wakeIf(() -> screen != Screen.Scan_Barcode)
                     .afterWake(() -> {
                         // fixme something wrong
-//                        if (barcodeOK != null && screen == Screen.Scan_Barcode)
-//                            updateScreen(Screen.Server_Down);
+                        if (screen == Screen.Scan_Barcode)
+                            updateScreen(Screen.Server_Down);
                     });
             timer.start();
         }
@@ -819,21 +822,23 @@ public class SLC extends AppThread {
     }
 
     private void callOCRChangeStatus(Msg msg) {
-        if (screen == Screen.Payment && ocrStatus == HWStatus.Active)
-            return;
+        synchronized (chgOCRStatusLock) {
+            if (screen == Screen.Payment && ocrStatus == HWStatus.Active)
+                return;
 
-        if (screen != Screen.Payment && ocrStatus == HWStatus.Standby)
-            return;
+            if (screen != Screen.Payment && ocrStatus == HWStatus.Standby)
+                return;
 
-        HWStatus hwStatus = msg.getType() == Msg.Type.OCR_TransactionRequest ? HWStatus.Active : HWStatus.Standby;
+            HWStatus hwStatus = msg.getType() == Msg.Type.OCR_TransactionRequest ? HWStatus.Active : HWStatus.Standby;
 
-        if (ocrStatus != hwStatus) {
-            log.info("Sending " + msg.getType() + " to octopus card reader.");
-            octopusCardReaderMBox.send(msg);
-            if (++octCallTime == 5) {
-                String detail = System.currentTimeMillis() + " Type: " + msg.getType() + ", Detail: " + msg.getDetails();
-                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, detail));
-                log.warning("Reported barcode go " + hwStatus.toString().toLowerCase() + " to server.");
+            if (ocrStatus != hwStatus) {
+                log.info("Sending " + msg.getType() + " to octopus card reader.");
+                octopusCardReaderMBox.send(msg);
+                if (++octCallTime == 5) {
+                    String detail = System.currentTimeMillis() + " Type: " + msg.getType() + ", Detail: " + msg.getDetails();
+                    slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, detail));
+                    log.warning("Reported barcode go " + hwStatus.toString().toLowerCase() + " to server.");
+                }
             }
         }
     }
@@ -854,7 +859,19 @@ public class SLC extends AppThread {
     }
 
     private void handleLockerOpened(Msg msg) {
+        if (lockerStatus == HWStatus.Fail)
+            return;
+
         String lockerID = msg.getDetails().trim();
+        if (screen != Screen.Enter_Passcode && screen != Screen.Payment_Succeeded && screen != Screen.Scan_Barcode){
+            slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, "Unauthorized opening for locker #" + lockerID + "."));
+            SmallLocker sl = findLocker(lockerID);
+            if (sl != null)
+                sl.setWorkNormal(false);
+            return;
+        }
+
+        openLocker.setLocked(false);
         if (openLocker.getLockerID().equals(lockerID)) {
             SimpleTimer timer = new SimpleTimer(1).afterWake(() -> updateScreen(Screen.Show_Locker, lockerID));
             timer.start();
@@ -867,27 +884,36 @@ public class SLC extends AppThread {
     }
 
     private void handleLockerClose(Msg msg) {
+        if (lockerStatus == HWStatus.Fail)
+            return;
+
         String lockerID = msg.getDetails().trim();
         if (openLocker.getLockerID().equals(lockerID)) {
+
             if (lockerFunction == LockerFunction.Check_In) {
                 handleCheckIn();
             } else if (lockerFunction == LockerFunction.Pick_Up) {
                 updateScreen(Screen.Welcome_Page);
                 lockerFunction = LockerFunction.Home;
             }
+            openLocker.setLocked(true);
             openLocker = null;    // locker is close
+        } else {
+            slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, "Unusual closing for locker #" + lockerID + "."));
+            SmallLocker sl = findLocker(lockerID);
+            sl.setLocked(true);
         }
     }
 
     private void handleReceiveFee(Msg msg) {
-        if (ocrStatus == HWStatus.Fail)
+        if (screen != Screen.Payment || ocrStatus == HWStatus.Fail)
             return;
 
         String[] tokens = msg.getDetails().split("\t");
         String cardNo = tokens[0];
         double fee = Double.parseDouble(tokens[1]);
 
-        if (openLocker.getPayment() == fee) {
+        if (openLocker != null && openLocker.getPayment() == fee) {
             updateScreen(Screen.Payment_Succeeded);
             lockerMBox.send(new Msg(id, mbox, Msg.Type.L_Unlock, openLocker.getLockerID()));
             slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_Payment, openLocker.getBarcode() + "\t" + cardNo + "\t" + fee));
@@ -899,8 +925,8 @@ public class SLC extends AppThread {
                     .afterWake(() -> octCallTime = 0);
             timer.start();
         } else {
-            updateScreen(Screen.Payment_Failed, openLocker.getPayment() + "");
-            // TODO send report to server
+            updateScreen(Screen.Server_Down, "Payment error found.");
+            slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, System.currentTimeMillis() + ": Error payment, card #" + cardNo + " amount: " + fee));
         }
     }
 
@@ -944,25 +970,19 @@ public class SLC extends AppThread {
         switch (s) {
             case Main_Menu:
             case Enter_Passcode:
-                timeOutToScreen(60, Screen.Welcome_Page);
-                break;
-
             case Scan_Barcode:
-                timeOutToScreen(60, Screen.Welcome_Page);
-                new Thread(this::callBRGoStandby).start();
-                break;
-
             case Payment:
                 timeOutToScreen(60, Screen.Welcome_Page);
-                new Thread(this::callOCRGoStandby);
+                lockerFunction = LockerFunction.Home;
                 break;
 
             case Payment_Failed:
-                timeOutToScreen(5, Screen.Payment);
+                timeOutToScreen(5, Screen.Payment, openLocker == null ? "" : (openLocker.getPayment() + ""));
                 break;
 
             case Server_Down:
                 timeOutToScreen(5, Screen.Welcome_Page);
+                lockerFunction = LockerFunction.Home;
                 break;
         }
     }
@@ -974,6 +994,12 @@ public class SLC extends AppThread {
         }
     }
 
+    private SmallLocker findLocker(String lockerID) {
+        synchronized (smallLockers) {
+            return smallLockers.stream().filter(sl -> sl.getLockerID().equals(lockerID)).findFirst().orElse(null);
+        }
+    }
+
     private SmallLocker findByPasscode(int passcode) {
         synchronized (smallLockers) {
             return smallLockers.stream().filter(sl -> sl.passcodeIsSame(passcode)).findFirst().orElse(null);
@@ -981,11 +1007,17 @@ public class SLC extends AppThread {
     }
 
     private void timeOutToScreen(int second, Screen chgScreen) {
+        timeOutToScreen(second, chgScreen, "");
+    }
+
+    private void timeOutToScreen(int second, Screen chgScreen, String msg) {
         Screen s = screen;
         SimpleTimer timer = new SimpleTimer(second).wakeIf(() -> screen != s)
                 .afterWake(() -> {
-                    if (s == screen)
-                        updateScreen(chgScreen);
+                    if (s == screen) {
+                        updateScreen(chgScreen, msg);
+                        new Thread(this::callBRGoStandby).start();
+                    }
                 });
         timer.start();
         if (screenTimer != null)
