@@ -889,7 +889,7 @@ public class SLC extends AppThread {
 
         String lockerID = msg.getDetails().trim();
         if (openLocker.getLockerID().equals(lockerID)) {
-
+            System.out.println("Fuck");
             if (lockerFunction == LockerFunction.Check_In) {
                 handleCheckIn();
             } else if (lockerFunction == LockerFunction.Pick_Up) {
@@ -973,7 +973,6 @@ public class SLC extends AppThread {
             case Scan_Barcode:
             case Payment:
                 timeOutToScreen(60, Screen.Welcome_Page);
-                lockerFunction = LockerFunction.Home;
                 break;
 
             case Payment_Failed:
@@ -1016,7 +1015,11 @@ public class SLC extends AppThread {
                 .afterWake(() -> {
                     if (s == screen) {
                         updateScreen(chgScreen, msg);
-                        new Thread(this::callBRGoStandby).start();
+                        if (chgScreen == Screen.Welcome_Page) {
+                            new Thread(this::callBRGoStandby).start();
+                            new Thread(this::callOCRGoStandby).start();
+                            lockerFunction = LockerFunction.Home;
+                        }
                     }
                 });
         timer.start();
