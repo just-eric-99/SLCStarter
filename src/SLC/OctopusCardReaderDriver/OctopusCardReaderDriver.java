@@ -3,6 +3,7 @@ package SLC.OctopusCardReaderDriver;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import SLC.SLC.HWStatus;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 //======================================================================
 // octopusCardReaderDriver
 public class OctopusCardReaderDriver extends HWHandler {
-
+    protected HWStatus ocrInner;
     //------------------------------------------------------------
     // OctopusCardReaderDriver
     public OctopusCardReaderDriver(String id, AppKickstarter appKickstarter) {
@@ -77,6 +78,7 @@ public class OctopusCardReaderDriver extends HWHandler {
     protected void sendOctopusCardReaderDiagnostic() {
         Map<String, Object> information = new LinkedHashMap<>();
 
+        information.put("Hardware status", ocrInner);
         information.put("Name", appKickstarter.getProperty("OctopusCardReader.Name"));
         information.put("Version", appKickstarter.getProperty("OctopusCardReader.Version"));
         information.put("Device Type", appKickstarter.getProperty("OctopusCardReader.Device.Type"));

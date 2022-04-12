@@ -3,6 +3,7 @@ package SLC.BarcodeReaderDriver;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import SLC.SLC.HWStatus;
 import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 //======================================================================
 // BarcodeReaderDriver
 public class BarcodeReaderDriver extends HWHandler {
+    protected HWStatus brInnerStatus;
     //------------------------------------------------------------
     // BarcodeReaderDriver
     public BarcodeReaderDriver(String id, AppKickstarter appKickstarter) {
@@ -71,9 +73,12 @@ public class BarcodeReaderDriver extends HWHandler {
     protected void sendBarcodeReaderDiagnostic() {
         Map<String, Object> information = new LinkedHashMap<>();
 
-        information.put("Name", appKickstarter.getProperty("BarcodeReader.Name"));
-        information.put("Manufacturer", appKickstarter.getProperty("BarcodeReader.Manufacturer"));
+        // put it in decending order
+        information.put("Hardware status", brInnerStatus);
+        information.put("Retrieval time", System.currentTimeMillis());
         information.put("Version", appKickstarter.getProperty("BarcodeReader.Version"));
+        information.put("Manufactured by", appKickstarter.getProperty("BarcodeReader.Manufacturer"));
+        information.put("Name", appKickstarter.getProperty("BarcodeReader.Name"));
 
         String data = new JSONObject(information).toString();
 

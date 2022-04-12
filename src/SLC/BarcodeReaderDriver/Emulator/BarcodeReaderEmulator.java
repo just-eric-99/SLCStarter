@@ -1,6 +1,7 @@
 package SLC.BarcodeReaderDriver.Emulator;
 
 import AppKickstarter.misc.Msg;
+import SLC.SLC.HWStatus;
 import SLC.SLCStarter;
 import SLC.BarcodeReaderDriver.BarcodeReaderDriver;
 
@@ -76,12 +77,14 @@ public class BarcodeReaderEmulator extends BarcodeReaderDriver {
                 barcodeReaderEmulatorController.appendTextArea("Barcode Reader Activated");
                 barcodeReaderEmulatorController.goActive();
                 slc.send(new Msg(id, mbox, Msg.Type.BR_IsActive, ""));
+                brInnerStatus = HWStatus.Active;
                 break;
 
             case "Standby":
                 barcodeReaderEmulatorController.appendTextArea("Barcode Reader Standby");
                 barcodeReaderEmulatorController.goStandby();
                 slc.send(new Msg(id, mbox, Msg.Type.BR_IsStandby, ""));
+                brInnerStatus = HWStatus.Standby;
                 break;
 
             case "Ignore":
