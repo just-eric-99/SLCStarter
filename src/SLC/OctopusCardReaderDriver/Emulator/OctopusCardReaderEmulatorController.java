@@ -129,7 +129,9 @@ public class OctopusCardReaderEmulatorController {
 
     public float getCardAmount(){return Float.parseFloat(octopusCardAmountField.getText()); }
 
-    public void setCardAmount(float amount){ octopusCardAmountField.setText(String.valueOf(amount));}
+    public void setCardAmount(double amount){ octopusCardAmountField.setText(String.valueOf(amount));}
+
+    public String getCardID(){return  octopusCardNumField.getText();}
 
 
     //------------------------------------------------------------

@@ -18,6 +18,7 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
     private Stage myStage;
     private OctopusCardReaderEmulatorController octopusCardReaderEmulatorController;
     public static volatile boolean isCardChosen = false;
+    private boolean receivedStandby = false;
 
     public OctopusCardReaderEmulator(String id, SLCStarter slcStarter) {
         super(id, slcStarter);
@@ -48,33 +49,15 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
         myStage.show();
     } // OctopusCardReaderEmulator
 
-    //------------------------------------------------------------
-    // handleGoActive
-    protected void handleGoActive() {
-        super.handleGoActive();
-        if(octopusCardReaderEmulatorController.getActivationResp().equals("Activated")) {
-            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoActive, id + " go active"));
-            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Activated");
-        }
-        else if (octopusCardReaderEmulatorController.getActivationResp().equals("Standby")){
-            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoStandby, id+ " is standby"));
-            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader is Standby");
-        }
-
-    } // handleGoActive
-
 
     //------------------------------------------------------------
     // handleGoStandby
     protected void handleGoStandby() {
         super.handleGoStandby();
+        receivedStandby = true;
         if(octopusCardReaderEmulatorController.getStandbyResp().equals("Standby")) {
-            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoActive, id + " go Standby"));
-            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Activated");
-        }
-        else if (octopusCardReaderEmulatorController.getStandbyResp().equals("Activated")){
-            slc.send(new Msg(id, mbox, Msg.Type.OCR_GoStandby, id+ " is active"));
-            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader is Standby");
+            slc.send(new Msg(id, mbox, Msg.Type.OCR_IsStandby, "" ));
+            octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Standby");
         }
     } // handleGoStandby
 
@@ -88,26 +71,38 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
 
     //------------------------------------------------------------
     // handleTransactionRequest
-    protected void handleTransactionRequest(int amount) {
+    protected void handleTransactionRequest(double amount) {
         //wait for a card to be chosen
-        slc.send(new Msg(id, mbox, Msg.Type.OCR_WaitingTransaction, amount+""));
-        while(!isCardChosen);
+        slc.send(new Msg(id, mbox, Msg.Type.OCR_WaitingTransaction, ""));
+        while(!isCardChosen || receivedStandby){
+            //Timeout condition
+            //If received a go standby message, we send IsStandBy to SLC
+            //Then stop transaction
+            if(receivedStandby){
+                slc.send(new Msg(id, mbox, Msg.Type.OCR_IsStandby, "OCR is stand by"));
+                octopusCardReaderEmulatorController.appendTextArea("Timed out, transaction canceled");
+                receivedStandby = false;
+                return;
+            }
+        };
 
+        //Card chosen, calculate if card has enough money
         super.handleTransactionRequest(amount);
         octopusCardReaderEmulatorController.setOctopusCardRequestAmountField(String.valueOf(amount));
 
-        float cardAmount = octopusCardReaderEmulatorController.getCardAmount();
+        double cardAmount = octopusCardReaderEmulatorController.getCardAmount();
 
-        float remaining = cardAmount - (float)amount;
+        double remaining = cardAmount - amount;
 
+        //If card doesn't have enough money
         if(cardAmount<=0 || remaining<=-50){
-            slc.send(new Msg(id, mbox, Msg.Type.OCR_CardFailed, "Card doesn't have enough money!"));
+            slc.send(new Msg(id, mbox, Msg.Type.OCR_CardFailed, octopusCardReaderEmulatorController.getCardID()+"\t"+amount));
             octopusCardReaderEmulatorController.appendTextArea("Octopus Card doesn't have enough money");
             isCardChosen = false;
             return;
         }
 
-        slc.send(new Msg(id, mbox, Msg.Type.OCR_CardOK, id + " Card OK"));
+        slc.send(new Msg(id, mbox, Msg.Type.OCR_CardOK, id + octopusCardReaderEmulatorController.getCardID()+"\t"+amount));
         octopusCardReaderEmulatorController.setCardAmount(remaining);
         octopusCardReaderEmulatorController.appendTextArea("Octopus Card OK, remaining amount: "+remaining);
         isCardChosen = false;

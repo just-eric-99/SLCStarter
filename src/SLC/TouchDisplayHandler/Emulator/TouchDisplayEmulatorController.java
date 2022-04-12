@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -35,9 +36,7 @@ public class TouchDisplayEmulatorController {
     // Main Menu
     public Rectangle checkInRect;
     public Rectangle pickUpRect;
-    // Enter Passcode
-    public TextArea passcodeTextArea;
-    public Rectangle enterRect;
+    // Enter Passcode/Admin Login
     public Rectangle numpad1Rect;
     public Rectangle numpad2Rect;
     public Rectangle numpad3Rect;
@@ -50,7 +49,15 @@ public class TouchDisplayEmulatorController {
     public Rectangle numpad0Rect;
     public Rectangle numpadBkspaceRect;
     public Rectangle numpadClearRect;
+    // Enter Passcode
+    public TextArea passcodeTextArea;
+    public Rectangle enterRect;
     public Text invalidPasscodeText;
+    // Admin Login
+    public TextField usernameTextField;
+    public TextField passwordTextField;
+    public Rectangle loginRect;
+    public Text invalidMsgText;
     // Scan Barcode
     public Text invalidBarcodeText;
     public Text lockerFullText;
@@ -182,11 +189,19 @@ public class TouchDisplayEmulatorController {
                     case "Server Down":
                         touchDisplayEmulator.changeScreen(Screen.Server_Down);
                         break;
+
+                    case "Admin Login":
+                        touchDisplayEmulator.changeScreen(Screen.Admin_Login);
+                        break;
                 }
             }
         });
-        if (paymentText != null)
-            this.paymentText.setText(showMsg);
+
+        // Admin Login
+        if (usernameTextField != null && passwordTextField != null) {
+            // TODO
+        }
+        // Enter Passcode
         if (passcodeTextArea != null) {
             if (showMsg.contains("Invalid passcode")) {
                 invalidPasscodeText.setVisible(true);
@@ -194,6 +209,7 @@ public class TouchDisplayEmulatorController {
                 passcodeTextArea.setText(showMsg);
             }
         }
+        // Scan Barcode
         if (lockerFullText != null && invalidBarcodeText != null) {
             if (showMsg.contains("not valid")) {
                 invalidBarcodeText.setVisible(true);
@@ -201,6 +217,10 @@ public class TouchDisplayEmulatorController {
                 lockerFullText.setVisible(true);
             }
         }
+        // Payment
+        if (paymentText != null)
+            this.paymentText.setText(showMsg);
+        // Show Locker/Locker Not Close
         if (locker0Rect != null) {
             System.out.println("showMsg in locker0Rect: " + showMsg);
             setDisplayLocker(showMsg);
@@ -222,10 +242,10 @@ public class TouchDisplayEmulatorController {
         return pollResp;
     } // getPollResp
 
-    // fixme
+    // getMbox
     public MBox getMbox() {
         return touchDisplayMBox;
-    }
+    }// getMbox
 
 
     //------------------------------------------------------------

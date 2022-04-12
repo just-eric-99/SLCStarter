@@ -16,19 +16,9 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="465.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="Time:">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
             <Text layoutX="118.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please pay the shipping fee with the following amount:">
                <font>
                   <Font size="18.0" />
-               </font>
-            </Text>
-            <Text layoutX="506.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Timer" wrappingWidth="41.0">
-               <font>
-                  <Font size="14.0" />
                </font>
             </Text>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="480.0" onMouseClicked="#td_mouseClick" stroke="BLACK" strokeType="OUTSIDE" width="640" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" />
@@ -95,6 +85,7 @@
                             <String fx:value="Show Locker" />
                             <String fx:value="Locker Not Close" />
                             <String fx:value="Server Down" />
+                            <String fx:value="Admin Login" />
                             <String fx:value="Confirmation" />
                         </FXCollections>
                     </items>

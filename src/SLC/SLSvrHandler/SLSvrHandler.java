@@ -103,6 +103,10 @@ public class SLSvrHandler extends AppThread {
                     sendDiagnosticToServer(msg);
                     break;
 
+                case SLS_ReportFail:
+                    reportFail(msg);
+                    break;
+
                 default:
                     log.warning(id + ": unknown message type: [" + msg + "]");
             }
@@ -201,6 +205,11 @@ public class SLSvrHandler extends AppThread {
     private void sendDiagnosticToServer(Msg msg) throws IOException {
         out.writeInt(msg.getType().ordinal());
         sendString(msg.getDetails());
+    }
+
+    private void reportFail(Msg msg) throws IOException {
+        out.writeInt(msg.getType().ordinal());
+        sendString(msg.getDetails().trim());
     }
 
     private String readString() throws IOException {

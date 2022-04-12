@@ -12,4 +12,5 @@ public enum Screen {
     Show_Locker,
     Locker_Not_Close,
     Server_Down,
+    Admin_Login,
 }

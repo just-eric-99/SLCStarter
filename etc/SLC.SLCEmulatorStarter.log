@@ -1,47 +1,915 @@
-220411-03:44:58 [INFO] -- 
-220411-03:44:58 [INFO] -- 
-220411-03:44:58 [INFO] -- ============================================================
-220411-03:44:58 [INFO] -- SLCStarter: Application Starting...
-220411-03:44:59 [INFO] -- timer: starting...
-220411-03:44:59 [INFO] -- OctopusCardReaderDriver: starting...
-220411-03:44:59 [INFO] -- LockerDriver: starting...
-220411-03:44:59 [INFO] -- TouchDisplayHandler: starting...
-220411-03:44:59 [INFO] -- BarcodeReaderDriver: starting...
-220411-03:44:59 [INFO] -- SLC: starting...
-220411-03:44:59 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayEmulator.fxml
-220411-03:44:59 [INFO] -- Connected to server.
-220411-03:45:00 [INFO] -- Poll: TimesUp 33440 0
-220411-03:45:00 [INFO] -- Checking for thread list (length: 0)...
-220411-03:45:00 [INFO] -- PollAck: TouchDisplayHandler is up!
-220411-03:45:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
-220411-03:45:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
-220411-03:45:00 [INFO] -- PollAck: LockerDriver is up!
-220411-03:45:00 [INFO] -- PollAck: SLSvrHandler is up!
-220411-03:45:01 [INFO] -- MouseCLicked: 634 190
-220411-03:45:01 [INFO] -- TouchDisplayHandler: update display -- Main_Menu
-220411-03:45:01 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayMainMenu.fxml
-220411-03:45:02 [INFO] -- MouseCLicked: 428 305
-220411-03:45:02 [INFO] -- TouchDisplayHandler: update display -- Enter_Passcode
-220411-03:45:02 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayEnterPasscode.fxml
-220411-03:45:03 [INFO] -- MouseCLicked: 534 143
-220411-03:45:03 [INFO] -- TouchDisplayHandler: update display -- Payment,286380
-220411-03:45:03 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayPayment.fxml
-220411-03:45:03 [INFO] -- MouseCLicked: 534 143
-220411-03:45:03 [INFO] -- MouseCLicked: 532 147
-220411-03:45:06 [INFO] -- Poll: TimesUp 49439 0
-220411-03:45:06 [INFO] -- Checking for thread list (length: 0)...
-220411-03:45:06 [INFO] -- PollAck: LockerDriver is up!
-220411-03:45:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
-220411-03:45:06 [INFO] -- PollAck: TouchDisplayHandler is up!
-220411-03:45:06 [INFO] -- PollAck: SLSvrHandler is up!
-220411-03:45:11 [INFO] -- 
-220411-03:45:11 [INFO] -- 
-220411-03:45:11 [INFO] -- ============================================================
-220411-03:45:11 [INFO] -- SLCStarter: Application Stopping...
-220411-03:45:11 [INFO] -- timer: received terminate!
-220411-03:45:11 [INFO] -- TouchDisplayHandler: terminating...
-220411-03:45:11 [INFO] -- SLSvrHandler: terminating...
-220411-03:45:11 [INFO] -- SLC: terminating...
-220411-03:45:11 [INFO] -- LockerDriver: terminating...
-220411-03:45:11 [INFO] -- BarcodeReaderDriver: terminating...
-220411-03:45:11 [INFO] -- timer: terminating...
+220412-20:43:53 [INFO] -- 
+220412-20:43:53 [INFO] -- 
+220412-20:43:53 [INFO] -- ============================================================
+220412-20:43:53 [INFO] -- SLCStarter: Application Starting...
+220412-20:43:53 [INFO] -- Initialize SLC complete (44 lockers information is found).
+220412-20:43:54 [INFO] -- OctopusCardReaderDriver: starting...
+220412-20:43:54 [INFO] -- LockerDriver: starting...
+220412-20:43:54 [INFO] -- timer: starting...
+220412-20:43:54 [INFO] -- TouchDisplayHandler: starting...
+220412-20:43:54 [INFO] -- BarcodeReaderDriver: starting...
+220412-20:43:54 [INFO] -- SLC: starting...
+220412-20:43:54 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayEmulator.fxml
+220412-20:43:54 [INFO] -- Poll: TimesUp 42631 0
+220412-20:43:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:43:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:43:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:43:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:43:54 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:43:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:43:56 [WARNING] -- SLSvrHandler is disconnected!
+220412-20:43:56 [INFO] -- Reconnecting to server...
+220412-20:43:57 [INFO] -- Connected to server.
+220412-20:44:00 [INFO] -- Poll: TimesUp 75923 0
+220412-20:44:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:06 [INFO] -- Poll: TimesUp 66863 0
+220412-20:44:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:08 [INFO] -- MouseCLicked: 320 157
+220412-20:44:08 [INFO] -- TouchDisplayHandler: update display -- Main_Menu
+220412-20:44:08 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayMainMenu.fxml
+220412-20:44:12 [INFO] -- Poll: TimesUp 99770 0
+220412-20:44:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:18 [INFO] -- Poll: TimesUp 69695 0
+220412-20:44:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:24 [INFO] -- Poll: TimesUp 64317 0
+220412-20:44:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:30 [INFO] -- Poll: TimesUp 30467 0
+220412-20:44:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:36 [INFO] -- Poll: TimesUp 78797 0
+220412-20:44:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:42 [INFO] -- Poll: TimesUp 66617 0
+220412-20:44:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:48 [INFO] -- Poll: TimesUp 95161 0
+220412-20:44:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:44:54 [INFO] -- Poll: TimesUp 92172 0
+220412-20:44:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:44:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:44:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:44:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:44:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:44:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:00 [INFO] -- Poll: TimesUp 25713 0
+220412-20:45:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:04 [INFO] -- MouseCLicked: 181 288
+220412-20:45:04 [INFO] -- TouchDisplayHandler: update display -- Scan_Barcode
+220412-20:45:04 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:04 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:04 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayScanBarcode.fxml
+220412-20:45:06 [INFO] -- Poll: TimesUp 50725 0
+220412-20:45:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:07 [INFO] -- MouseCLicked: 64 95
+220412-20:45:07 [INFO] -- TouchDisplayHandler: update display -- Main_Menu
+220412-20:45:07 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayMainMenu.fxml
+220412-20:45:07 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:45:07 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:45:10 [INFO] -- MouseCLicked: 152 301
+220412-20:45:10 [INFO] -- TouchDisplayHandler: update display -- Scan_Barcode
+220412-20:45:10 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:10 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayScanBarcode.fxml
+220412-20:45:10 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:12 [INFO] -- Poll: TimesUp 30665 0
+220412-20:45:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:12 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:12 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:14 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:14 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:16 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:16 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:18 [INFO] -- Poll: TimesUp 42707 0
+220412-20:45:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:18 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:18 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:20 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:20 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:20 [WARNING] -- Reported barcode go active to server.
+220412-20:45:22 [INFO] -- MouseCLicked: 79 89
+220412-20:45:22 [INFO] -- TouchDisplayHandler: update display -- Main_Menu
+220412-20:45:22 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayMainMenu.fxml
+220412-20:45:24 [INFO] -- Poll: TimesUp 16909 0
+220412-20:45:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:30 [INFO] -- Poll: TimesUp 84167 0
+220412-20:45:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:36 [INFO] -- Poll: TimesUp 60393 0
+220412-20:45:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:40 [INFO] -- MouseCLicked: 186 317
+220412-20:45:40 [INFO] -- TouchDisplayHandler: update display -- Scan_Barcode
+220412-20:45:40 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:40 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayScanBarcode.fxml
+220412-20:45:40 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:42 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:42 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:42 [INFO] -- Poll: TimesUp 25508 0
+220412-20:45:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:44 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:44 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:46 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:46 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:48 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:48 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:48 [INFO] -- Poll: TimesUp 48103 0
+220412-20:45:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:50 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:50 [WARNING] -- Reported barcode go active to server.
+220412-20:45:50 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:52 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:52 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:54 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:54 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:54 [INFO] -- Poll: TimesUp 19266 0
+220412-20:45:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:45:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:45:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:45:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:45:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:45:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:45:56 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:56 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:45:58 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:45:58 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:00 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:00 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:00 [INFO] -- Poll: TimesUp 66409 0
+220412-20:46:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:02 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:02 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:04 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:04 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:06 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:06 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:06 [INFO] -- Poll: TimesUp 53363 0
+220412-20:46:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:07 [INFO] -- MouseCLicked: 73 92
+220412-20:46:07 [INFO] -- TouchDisplayHandler: update display -- Main_Menu
+220412-20:46:07 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayMainMenu.fxml
+220412-20:46:08 [INFO] -- MouseCLicked: 257 326
+220412-20:46:08 [INFO] -- TouchDisplayHandler: update display -- Scan_Barcode
+220412-20:46:08 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayScanBarcode.fxml
+220412-20:46:08 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:08 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:10 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:10 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:12 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:12 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:12 [INFO] -- Poll: TimesUp 46111 0
+220412-20:46:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:14 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:14 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:16 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:16 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:18 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:18 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:18 [INFO] -- Poll: TimesUp 52652 0
+220412-20:46:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:20 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:20 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:22 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:22 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:24 [INFO] -- Sending BR_GoActive to barcode reader.
+220412-20:46:24 [INFO] -- BarcodeReaderDriver: Go Active
+220412-20:46:24 [INFO] -- Poll: TimesUp 39427 0
+220412-20:46:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:28 [INFO] -- MouseCLicked: 71 101
+220412-20:46:28 [INFO] -- TouchDisplayHandler: update display -- Main_Menu
+220412-20:46:28 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayMainMenu.fxml
+220412-20:46:28 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:28 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:30 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:30 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:30 [INFO] -- Poll: TimesUp 71922 0
+220412-20:46:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:32 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:32 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:34 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:34 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:36 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:36 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:36 [INFO] -- Poll: TimesUp 69630 0
+220412-20:46:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:38 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:38 [WARNING] -- Reported barcode go standby to server.
+220412-20:46:38 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:40 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:40 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:42 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:42 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:42 [INFO] -- Poll: TimesUp 11516 0
+220412-20:46:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:44 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:44 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:46 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:46 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:48 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:48 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:48 [INFO] -- Poll: TimesUp 11686 0
+220412-20:46:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:50 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:50 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:52 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:52 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:54 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:54 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:54 [INFO] -- Poll: TimesUp 13453 0
+220412-20:46:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:46:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:46:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:46:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:46:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:46:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:46:56 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:56 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:46:58 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:46:58 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:00 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:00 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:00 [INFO] -- Poll: TimesUp 63881 0
+220412-20:47:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:02 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:02 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:04 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:04 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:06 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:06 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:06 [INFO] -- Poll: TimesUp 30490 0
+220412-20:47:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:08 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:08 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:10 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:10 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:12 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:12 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:12 [INFO] -- Poll: TimesUp 62751 0
+220412-20:47:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:14 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:14 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:16 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:16 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:18 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:18 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:18 [INFO] -- Poll: TimesUp 19669 0
+220412-20:47:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:20 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:20 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:22 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:22 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:24 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:24 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:24 [INFO] -- Poll: TimesUp 79351 0
+220412-20:47:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:26 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:26 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:28 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:28 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:28 [INFO] -- TouchDisplayHandler: update display -- Welcome_Page
+220412-20:47:28 [INFO] -- TouchDisplayHandler: loading fxml: TouchDisplayEmulator.fxml
+220412-20:47:30 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:30 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:30 [INFO] -- Poll: TimesUp 96687 0
+220412-20:47:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:32 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:32 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:34 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:34 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:36 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:36 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:36 [INFO] -- Poll: TimesUp 76194 0
+220412-20:47:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:38 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:38 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:40 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:40 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:42 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:42 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:42 [INFO] -- Poll: TimesUp 46406 0
+220412-20:47:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:44 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:44 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:46 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:46 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:48 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:48 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:48 [INFO] -- Poll: TimesUp 70884 0
+220412-20:47:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:50 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:50 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:52 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:52 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:54 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:54 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:54 [INFO] -- Poll: TimesUp 54987 0
+220412-20:47:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:47:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:47:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:47:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:47:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:47:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:47:56 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:56 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:47:58 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:47:58 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:00 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:00 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:00 [INFO] -- Poll: TimesUp 52858 0
+220412-20:48:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:02 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:02 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:04 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:04 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:06 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:06 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:06 [INFO] -- Poll: TimesUp 72635 0
+220412-20:48:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:08 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:08 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:10 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:10 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:12 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:12 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:12 [INFO] -- Poll: TimesUp 95516 0
+220412-20:48:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:14 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:14 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:16 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:16 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:18 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:18 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:18 [INFO] -- Poll: TimesUp 19483 0
+220412-20:48:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:20 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:20 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:22 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:22 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:24 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:24 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:24 [INFO] -- Poll: TimesUp 89664 0
+220412-20:48:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:26 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:26 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:28 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:28 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:30 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:30 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:30 [INFO] -- Poll: TimesUp 75562 0
+220412-20:48:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:32 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:32 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:34 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:34 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:36 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:36 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:36 [INFO] -- Poll: TimesUp 41336 0
+220412-20:48:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:38 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:38 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:40 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:40 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:42 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:42 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:42 [INFO] -- Poll: TimesUp 19827 0
+220412-20:48:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:44 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:44 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:46 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:46 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:48 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:48 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:48 [INFO] -- Poll: TimesUp 40025 0
+220412-20:48:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:50 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:50 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:52 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:52 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:54 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:54 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:54 [INFO] -- Poll: TimesUp 76637 0
+220412-20:48:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:48:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:48:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:48:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:48:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:48:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:48:56 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:56 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:48:58 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:48:58 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:00 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:00 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:00 [INFO] -- Poll: TimesUp 58728 0
+220412-20:49:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:02 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:02 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:04 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:04 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:06 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:06 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:06 [INFO] -- Poll: TimesUp 64902 0
+220412-20:49:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:08 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:08 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:10 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:10 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:12 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:12 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:12 [INFO] -- Poll: TimesUp 51733 0
+220412-20:49:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:14 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:14 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:16 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:16 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:18 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:18 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:18 [INFO] -- Poll: TimesUp 30588 0
+220412-20:49:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:20 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:20 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:22 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:22 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:24 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:24 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:24 [INFO] -- Poll: TimesUp 59203 0
+220412-20:49:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:26 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:26 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:28 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:28 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:30 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:30 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:30 [INFO] -- Poll: TimesUp 49869 0
+220412-20:49:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:32 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:32 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:34 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:34 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:36 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:36 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:36 [INFO] -- Poll: TimesUp 92260 0
+220412-20:49:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:38 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:38 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:40 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:40 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:42 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:42 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:42 [INFO] -- Poll: TimesUp 69683 0
+220412-20:49:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:44 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:44 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:46 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:46 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:48 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:48 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:48 [INFO] -- Poll: TimesUp 58408 0
+220412-20:49:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:50 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:50 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:52 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:52 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:54 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:54 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:54 [INFO] -- Poll: TimesUp 41139 0
+220412-20:49:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:49:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:49:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:49:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:49:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:49:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:49:56 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:56 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:49:58 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:49:58 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:00 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:00 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:00 [INFO] -- Poll: TimesUp 33931 0
+220412-20:50:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:02 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:02 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:04 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:04 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:06 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:06 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:06 [INFO] -- Poll: TimesUp 54461 0
+220412-20:50:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:08 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:08 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:10 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:10 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:12 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:12 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:12 [INFO] -- Poll: TimesUp 40845 0
+220412-20:50:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:14 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:14 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:16 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:16 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:18 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:18 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:18 [INFO] -- Poll: TimesUp 65913 0
+220412-20:50:18 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:18 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:18 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:18 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:18 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:18 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:20 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:20 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:22 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:22 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:24 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:24 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:24 [INFO] -- Poll: TimesUp 91165 0
+220412-20:50:24 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:24 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:24 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:24 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:24 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:24 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:26 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:26 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:28 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:28 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:30 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:30 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:30 [INFO] -- Poll: TimesUp 72941 0
+220412-20:50:30 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:30 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:30 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:30 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:30 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:30 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:32 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:32 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:34 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:34 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:36 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:36 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:36 [INFO] -- Poll: TimesUp 64563 0
+220412-20:50:36 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:36 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:36 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:36 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:36 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:36 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:38 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:38 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:40 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:40 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:42 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:42 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:42 [INFO] -- Poll: TimesUp 79173 0
+220412-20:50:42 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:42 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:42 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:42 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:42 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:42 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:44 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:44 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:46 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:46 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:48 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:48 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:48 [INFO] -- Poll: TimesUp 97076 0
+220412-20:50:48 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:48 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:48 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:48 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:48 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:48 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:50 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:50 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:52 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:52 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:54 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:54 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:54 [INFO] -- Poll: TimesUp 91973 0
+220412-20:50:54 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:50:54 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:50:54 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:50:54 [INFO] -- PollAck: LockerDriver is up!
+220412-20:50:54 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:50:54 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:50:56 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:56 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:50:58 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:50:58 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:00 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:00 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:00 [INFO] -- Poll: TimesUp 87292 0
+220412-20:51:00 [INFO] -- PollAck: LockerDriver is up!
+220412-20:51:00 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:51:00 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:51:00 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:51:00 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:51:00 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:51:02 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:02 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:04 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:04 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:06 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:06 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:06 [INFO] -- Poll: TimesUp 52812 0
+220412-20:51:06 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:51:06 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:51:06 [INFO] -- PollAck: LockerDriver is up!
+220412-20:51:06 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:51:06 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:51:06 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:51:08 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:08 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:10 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:10 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:12 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:12 [INFO] -- BarcodeReaderDriver: Go Standby
+220412-20:51:12 [INFO] -- Poll: TimesUp 85364 0
+220412-20:51:12 [INFO] -- PollAck: BarcodeReaderDriver is up!
+220412-20:51:12 [INFO] -- PollAck: TouchDisplayHandler is up!
+220412-20:51:12 [INFO] -- PollAck: LockerDriver is up!
+220412-20:51:12 [INFO] -- PollAck: OctopusCardReaderDriver is up!
+220412-20:51:12 [INFO] -- OctopusCardReaderDriver: Go Standby
+220412-20:51:12 [INFO] -- PollAck: SLSvrHandler is up!
+220412-20:51:14 [INFO] -- Sending BR_GoStandby to barcode reader.
+220412-20:51:14 [INFO] -- BarcodeReaderDriver: Go Standby

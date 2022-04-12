@@ -16,19 +16,9 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <Label layoutX="465.0" layoutY="106.0" prefHeight="25.0" prefWidth="41.0" text="Time:">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
             <Text layoutX="163.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The following locker has not been closed...">
                <font>
                   <Font size="18.0" />
-               </font>
-            </Text>
-            <Text layoutX="506.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Timer" wrappingWidth="41.0">
-               <font>
-                  <Font size="14.0" />
                </font>
             </Text>
                 <Rectangle id="0" fx:id="locker0Rect" width="63.0" height="28.0" layoutX="131.0" layoutY="180.0" fill="WHITE" arcHeight="5.0" arcWidth="5.0" stroke="BLACK" strokeType="INSIDE" />
@@ -122,6 +112,7 @@
                             <String fx:value="Show Locker" />
                             <String fx:value="Locker Not Close" />
                             <String fx:value="Server Down" />
+                            <String fx:value="Admin Login" />
                             <String fx:value="Confirmation" />
                         </FXCollections>
                     </items>

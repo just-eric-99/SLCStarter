@@ -173,6 +173,10 @@ public class SLSvr extends AppThread {
                         receiveDiagnostic(in);
                         break;
 
+                    case SLS_ReportFail:
+                        receiveReportFail(in, lockerID);
+                        break;
+
                     default:
                         log.warning(id + ": unknown message type: [" + type + "]");
                         break;
@@ -369,6 +373,10 @@ public class SLSvr extends AppThread {
         JSONObject brReader = diagnostic.getJSONObject("Barcode Reader Driver");
         System.out.println(brReader);
         System.out.println(brReader.getString("Version"));
+    }
+
+    private void receiveReportFail(DataInputStream in, String lockerID) throws IOException {
+        log.info("Receive fail from locker #" + lockerID + ": " + readString(in));
     }
 
     protected void removePackage(String barcode) throws PackageNotFoundException {

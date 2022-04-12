@@ -230,6 +230,10 @@ public class Msg {
          */
         SLS_FailMsg,
         /**
+         * Report Fail to server
+         */
+        SLS_ReportFail,
+        /**
          * Get Opened Locker List
          */
         L_Opened,
@@ -266,6 +270,10 @@ public class Msg {
          * Octopus Card Waiting Transaction
          */
         OCR_WaitingTransaction,
+        /**
+         * Octopus Card Is Standby
+         */
+        OCR_IsStandby,
         /**
          * Locker reply diagnostic
          */
