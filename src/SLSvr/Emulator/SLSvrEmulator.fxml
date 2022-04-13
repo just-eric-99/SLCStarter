@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SLSvr.Emulator.SLSvrEmulatorController">
+    <children>
+        <AnchorPane prefHeight="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
+            <children>
+                <Button mnemonicParsing="false" onAction="#buttonPressed" prefWidth="76.0" text="Package 1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <Button layoutX="101.0" mnemonicParsing="false" onAction="#buttonPressed" prefWidth="76.0" text="Package 2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="101.0" AnchorPane.topAnchor="0.0" />
+                <Button layoutX="204.0" mnemonicParsing="false" onAction="#buttonPressed" prefWidth="76.0" text="Package 3" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="204.0" AnchorPane.topAnchor="0.0" />
+                <Button layoutX="309.0" mnemonicParsing="false" onAction="#buttonPressed" prefWidth="76.0" text="Package 4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="309.0" AnchorPane.topAnchor="0.0" />
+                <Button layoutX="414.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="76.0" text="Reset" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="414.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="21.0" layoutY="50.0" prefHeight="30.0" prefWidth="231.0">
+            <children>
+                <Label prefHeight="30.0" prefWidth="75.0" text="Barcode:" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <TextField fx:id="barcodeField" prefHeight="30.0" prefWidth="156.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="18.0" layoutY="98.0" prefHeight="30.0" prefWidth="224.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="281.0" AnchorPane.topAnchor="98.0">
+         <children>
+            <Label layoutY="6.0" prefHeight="17.0" prefWidth="71.0" text="Size:" />
+             <ChoiceBox fx:id="lockerSizeCBox" layoutX="75.0" layoutY="2.0" prefHeight="26.0" prefWidth="156.0" value="Large">
+                 <items>
+                     <FXCollections fx:factory="observableArrayList">
+                         <String fx:value="Large" />
+                         <String fx:value="Medium" />
+                         <String fx:value="Small" />
+                     </FXCollections>
+                 </items>
+             </ChoiceBox>
+         </children>
+        </AnchorPane>
+        <AnchorPane layoutX="280.0" layoutY="94.0" prefHeight="30.0" prefWidth="231.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="94.0">
+            <children>
+                <Button layoutX="259.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="231.0" text="Remove Package" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="279.0" layoutY="50.0" prefHeight="30.0" prefWidth="231.0">
+            <children>
+                <Label layoutY="6.0" prefHeight="17.0" prefWidth="71.0" text="Locker ID:" />
+                <TextField fx:id="lockerIDField" layoutX="75.0" layoutY="-1.0" prefWidth="295.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="20.0" layoutY="146.0" prefHeight="30.0" prefWidth="231.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="279.0" AnchorPane.topAnchor="146.0">
+            <children>
+                <Button layoutX="259.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="231.0" text="Find Package" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="280.0" layoutY="146.0" prefHeight="30.0" prefWidth="231.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="146.0">
+            <children>
+                <Button layoutX="259.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="30.0" prefWidth="231.0" text="Add/Edit Package" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </children>
+        </AnchorPane>
+        <TextArea fx:id="slSvrTextArea" editable="false" layoutX="20.0" layoutY="198.0" prefHeight="310.0" prefWidth="490.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="198.0" />
+      <AnchorPane layoutX="21.0" layoutY="519.0" prefHeight="27.0" prefWidth="177.0">
+         <children>
+                <Label layoutY="6.0" text="Poll Response:   " />
+                <ChoiceBox fx:id="pollRespCBox" layoutX="107.0" layoutY="2.0" value="ACK">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="ACK" />
+                            <String fx:value="NAK" />
+                            <String fx:value="Ignore" />
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="371.0" layoutY="517.0" prefHeight="30.0" prefWidth="124.0">
+        <Button layoutY="3.0" mnemonicParsing="false" onAction="#buttonPressed" prefHeight="26.0" prefWidth="138.0" text="Request Diagnostic" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0" />
+      </AnchorPane>
+    </children>
+</AnchorPane>
