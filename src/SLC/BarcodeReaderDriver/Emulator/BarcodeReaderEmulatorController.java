@@ -94,8 +94,10 @@ public class BarcodeReaderEmulatorController {
 
             case "Send Barcode":
                 //cannot send the barcode num msg if it is in "standby" mode
-                barcodeReaderMBox.send(new Msg(id, barcodeReaderMBox, Msg.Type.BR_BarcodeRead, barcodeNumField.getText()));
-                barcodeReaderTextArea.appendText("Sending barcode " + barcodeNumField.getText() + "\n");
+                if (!barcodeNumField.getText().isEmpty()) {
+                    barcodeReaderMBox.send(new Msg(id, barcodeReaderMBox, Msg.Type.BR_BarcodeRead, barcodeNumField.getText()));
+                    barcodeReaderTextArea.appendText("Sending barcode " + barcodeNumField.getText() + "\n");
+                }
                 break;
 
             case "Activate/Standby":

@@ -108,7 +108,6 @@ public class SLSvr extends AppThread {
         log.info(id + ": running...");
         while (true) {
             Socket cSocket = slSvrSocket.accept();
-            log.info(cSocket.getInetAddress().getHostAddress() + " is connected.");
 
             Thread t = new Thread(() -> {
                 Locker l = null;
@@ -116,7 +115,7 @@ public class SLSvr extends AppThread {
                     DataInputStream in = new DataInputStream(cSocket.getInputStream());
                     String lockerID = readString(in).trim();
                     l = findLocker(lockerID);
-                    log.info(cSocket.getInetAddress().getHostAddress() + " login as " + l.getID() + ".");
+                    log.info(cSocket.getRemoteSocketAddress() + " login as " + l.getID() + ".");
 
                     synchronized (l.getID()) {
                         l.setSocket(cSocket);
@@ -124,9 +123,9 @@ public class SLSvr extends AppThread {
 
                     serve(in, lockerID);
                 } catch (IOException e) {
-                    log.info(cSocket.getInetAddress().getHostAddress() + " is disconnected.");
+                    log.info(cSocket.getRemoteSocketAddress() + " is disconnected.");
                 } catch (LockerException e) {
-                    log.warning(cSocket.getInetAddress().getHostAddress() + " is disconnected: Unauthorized");
+                    log.warning(cSocket.getRemoteSocketAddress() + " connection refused: Unauthorized");
                 }
 
                 if (l != null) {

@@ -5,4 +5,6 @@ public enum HWStatus {
     Standby,
     Fail,
     Disconnected,
+    Initialize,
+    ReceiveACK
 }

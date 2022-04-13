@@ -28,9 +28,9 @@ public class SLC extends AppThread {
     private Screen screen = Screen.Welcome_Page;
     private LockerFunction lockerFunction = LockerFunction.Home;
 
-    private HWStatus brStatus;
-    private HWStatus ocrStatus;
-    private HWStatus tdStatus;
+    private HWStatus brStatus = HWStatus.Initialize;
+    private HWStatus ocrStatus = HWStatus.Initialize;
+    private HWStatus tdStatus = HWStatus.Initialize;
     private HWStatus lockerStatus;
     private HWStatus serverStatus;
 
@@ -233,30 +233,38 @@ public class SLC extends AppThread {
         String senderID = msg.getSender();
         switch (senderID) {
             case "BarcodeReaderDriver":
-                if (brStatus == HWStatus.Fail)
-                    new Thread(this::callBRGoStandby).start();
+                if (brStatus == HWStatus.Fail  || brStatus == HWStatus.Initialize) {
+                    if (screen == Screen.Scan_Barcode)
+                        new Thread(this::callBRGoActive).start();
+                    else
+                        new Thread(this::callBRGoStandby).start();
+                    brStatus = HWStatus.ReceiveACK;
+                }
                 break;
 
             case "OctopusCardReaderDriver":
-                if (ocrStatus == HWStatus.Fail)
-                    new Thread(this::callOCRGoStandby).start();
+                if (ocrStatus == HWStatus.Fail || ocrStatus == HWStatus.Initialize)
+                    if (screen == Screen.Payment) {
+                        if (openLocker == null)
+                            new Thread(this::requestOCRForTransaction).start();
+                        else
+                            new Thread(() -> requestOCRForTransaction(openLocker.getPayment())).start();
+                    } else
+                        new Thread(this::callOCRGoStandby).start();
+                ocrStatus = HWStatus.ReceiveACK;
                 break;
 
             case "TouchDisplayHandler":
-                if (tdStatus != HWStatus.Active)
-                    tdStatus = HWStatus.Active;
+                tdStatus = HWStatus.Active;
                 break;
 
             case "SLSvrHandler":
-                if (serverStatus != HWStatus.Active)
-                    serverStatus = HWStatus.Active;
                 while (!msgQueue.isEmpty())
                     slSvrHandlerMBox.send(msgQueue.remove(0));
                 break;
 
             case "LockerDriver":
-                if (lockerStatus != HWStatus.Active)
-                    lockerStatus = HWStatus.Active;
+                lockerStatus = HWStatus.Active;
                 break;
         }
     }
@@ -279,6 +287,10 @@ public class SLC extends AppThread {
 
             case "SLSvrHandler":
                 serverStatus = HWStatus.Fail;
+                break;
+
+            case "LockerDriver":
+                lockerStatus = HWStatus.Fail;
                 break;
         }
     }
@@ -629,7 +641,7 @@ public class SLC extends AppThread {
     }
 
     private void barcodeVerified(Msg msg) {
-        if (screen != Screen.Scan_Barcode || brStatus == HWStatus.Fail)
+        if (screen != Screen.Scan_Barcode)
             return;
 
         // Choose an empty locker
@@ -693,7 +705,7 @@ public class SLC extends AppThread {
         lockerFunction = LockerFunction.Check_In;
 
         SimpleTimer timer = new SimpleTimer(2)
-                .wakeIf(() -> screen != Screen.Scan_Barcode)
+                .wakeIf(() -> screen != Screen.Scan_Barcode || brStatus == HWStatus.Fail)
                 .isRepeat(true)
                 .periodAction(this::callBRGoActive)
                 .afterWake(() -> brCallTime = 0);
@@ -743,13 +755,12 @@ public class SLC extends AppThread {
         slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_VerifyBarcode, barcode));
 
         // Handle network problem
-        if (serverStatus != HWStatus.Active)
+        if (serverStatus != HWStatus.Active) {
             updateScreen(Screen.Server_Down);
-        else {
+        } else {
             SimpleTimer timer = new SimpleTimer(5)
                     .wakeIf(() -> screen != Screen.Scan_Barcode)
                     .afterWake(() -> {
-                        // fixme something wrong
                         if (screen == Screen.Scan_Barcode)
                             updateScreen(Screen.Server_Down);
                     });
@@ -799,6 +810,9 @@ public class SLC extends AppThread {
     //------------------------------------------------------------
     // Octopus Card Reader Related functions
     private void handleWaitingTransaction() {
+        if (ocrStatus == HWStatus.Fail)
+            return;
+
         ocrStatus = HWStatus.Active;
 
         if (screen != Screen.Payment)
@@ -807,10 +821,17 @@ public class SLC extends AppThread {
 
 
     private void handelOCRIsStandby() {
+        if (ocrStatus == HWStatus.Fail)
+            return;
+
         ocrStatus = HWStatus.Standby;
 
         if (screen == Screen.Payment && openLocker != null)
             new Thread(()->requestOCRForTransaction(openLocker.getPayment())).start();
+    }
+
+    private void requestOCRForTransaction() {
+        callOCRChangeStatus(new Msg(id, mbox, Msg.Type.OCR_TransactionRequest, ""));
     }
 
     private void requestOCRForTransaction(int amount) {
@@ -889,7 +910,6 @@ public class SLC extends AppThread {
 
         String lockerID = msg.getDetails().trim();
         if (openLocker.getLockerID().equals(lockerID)) {
-            System.out.println("Fuck");
             if (lockerFunction == LockerFunction.Check_In) {
                 handleCheckIn();
             } else if (lockerFunction == LockerFunction.Pick_Up) {
