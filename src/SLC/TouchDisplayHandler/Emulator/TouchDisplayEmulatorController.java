@@ -180,18 +180,10 @@ public class TouchDisplayEmulatorController {
                     case "Server Down":
                         touchDisplayEmulator.changeScreen(Screen.Server_Down);
                         break;
-
-                    case "Admin Login":
-                        touchDisplayEmulator.changeScreen(Screen.Admin_Login);
-                        break;
                 }
             }
         });
 
-        // Admin Login
-        if (usernameTextField != null && passwordTextField != null) {
-            // TODO
-        }
         // Enter Passcode
         if (passcodeTextArea != null) {
             if (showMsg.contains("Invalid passcode")) {
@@ -262,9 +254,6 @@ public class TouchDisplayEmulatorController {
         touchDisplayMBox.send(new Msg(id, touchDisplayMBox, Msg.Type.TD_MouseClicked, x + " " + y));
     } // td_mouseClick
 
-//    public void setPaymentText(String amount) {
-//        paymentText.setText(amount);
-//    }
 
     //------------------------------------------------------------
     // setDisplayLocker

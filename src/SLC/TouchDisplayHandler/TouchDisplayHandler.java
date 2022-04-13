@@ -3,6 +3,7 @@ package SLC.TouchDisplayHandler;
 import SLC.HWHandler.HWHandler;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import SLC.SLC.HWStatus;
 import SLC.SLC.Screen;
 import org.json.JSONObject;
 
@@ -13,6 +14,8 @@ import java.util.Map;
 //======================================================================
 // TouchDisplayHandler
 public class TouchDisplayHandler extends HWHandler {
+    protected HWStatus tdInnerStatus =  HWStatus.Active;
+    private Screen currentScreen = Screen.Welcome_Page;
     //------------------------------------------------------------
     // TouchDisplayHandler
     public TouchDisplayHandler(String id, AppKickstarter appKickstarter) throws Exception {
@@ -59,16 +62,18 @@ public class TouchDisplayHandler extends HWHandler {
 
     // For hacking
     protected void changeScreen(Screen s) {
+        currentScreen = s;
         slc.send(new Msg(id, mbox, Msg.Type.TD_ChangeScreen, s.toString()));
     }
 
     private void sendDiagnostic() {
         Map<String, Object> information = new LinkedHashMap<>();
 
-        information.put("Name", appKickstarter.getProperty("TouchDisplay.Name"));
-        information.put("Manufacturer Name", appKickstarter.getProperty("TouchDisplay.Manufacturer"));
-        information.put("Version", appKickstarter.getProperty("TouchDisplay.Version"));
+        information.put("Current Screen", currentScreen);
         information.put("Retrieval time", System.currentTimeMillis());
+        information.put("Version", appKickstarter.getProperty("TouchDisplay.Version"));
+        information.put("Manufacturer Name", appKickstarter.getProperty("TouchDisplay.Manufacturer"));
+        information.put("Name", appKickstarter.getProperty("TouchDisplay.Name"));
 
         String data = new JSONObject(information).toString();
 

@@ -13,7 +13,7 @@ import java.util.Map;
 //======================================================================
 // octopusCardReaderDriver
 public class OctopusCardReaderDriver extends HWHandler {
-    protected HWStatus ocrInner;
+    protected HWStatus ocrInnerStatus = HWStatus.Standby;
     //------------------------------------------------------------
     // OctopusCardReaderDriver
     public OctopusCardReaderDriver(String id, AppKickstarter appKickstarter) {
@@ -78,7 +78,7 @@ public class OctopusCardReaderDriver extends HWHandler {
     protected void sendOctopusCardReaderDiagnostic() {
         Map<String, Object> information = new LinkedHashMap<>();
 
-        information.put("Hardware status", ocrInner);
+        information.put("Hardware status", ocrInnerStatus);
         information.put("Name", appKickstarter.getProperty("OctopusCardReader.Name"));
         information.put("Version", appKickstarter.getProperty("OctopusCardReader.Version"));
         information.put("Device Type", appKickstarter.getProperty("OctopusCardReader.Device.Type"));

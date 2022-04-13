@@ -275,14 +275,17 @@ public class SLC extends AppThread {
         switch (senderID) {
             case "BarcodeReaderDriver":
                 brStatus = HWStatus.Fail;
+                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, "Received NAK: Barcode reader."));
                 break;
 
             case "OctopusCardReaderDriver":
                 ocrStatus = HWStatus.Fail;
+                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, "Received NAK: Octopus Card reader."));
                 break;
 
             case "TouchDisplayHandler":
                 tdStatus = HWStatus.Fail;
+                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, "Received NAK: Touch Display."));
                 break;
 
             case "SLSvrHandler":
@@ -291,6 +294,7 @@ public class SLC extends AppThread {
 
             case "LockerDriver":
                 lockerStatus = HWStatus.Fail;
+                slSvrHandlerMBox.send(new Msg(id, mbox, Msg.Type.SLS_ReportFail, "Received NAK: Locker."));
                 break;
         }
     }
@@ -399,10 +403,6 @@ public class SLC extends AppThread {
             case Scan_Barcode:
                 processScanBarcode(x, y);
                 break;
-
-            case Admin_Login:
-                processAdminLogin(x, y);
-                break;
         }
     } // processMouseClicked
 
@@ -432,8 +432,6 @@ public class SLC extends AppThread {
             touchScreenPasscode = "";
             updateScreen(Screen.Enter_Passcode);
             lockerFunction = LockerFunction.Pick_Up;
-        } else if (x > loginXLeft && x < loginXRight && y > loginYTop && y < loginYBottom) {
-            handleLogin();
         }
     }
 
@@ -581,34 +579,6 @@ public class SLC extends AppThread {
         }
     }
 
-    private void processAdminLogin(int x, int y) {
-        // TODO
-        int usernameXLeft = 190;
-        int usernameXRight = 478;
-        int usernameYTop = 105;
-        int usernameYBottom = 143;
-
-        int passwordXLeft = 190;
-        int passwordXRight = 478;
-        int passwordYTop = 165;
-        int passwordYBottom = 202;
-
-        if (isEnterKey(x, y)) {
-            if (!touchScreenAdmin.isEmpty())
-//                handleVerifyAdminUser(Integer.parseInt(touchScreenAdmin));
-                touchScreenAdmin = "";
-            return;
-        }
-
-        if (isRtnHome(x, y)) {
-
-        }
-    }
-
-    private void handleVerifyAdminUser(int username, int password) {
-        // TODO
-    }
-
     private void handleVerifyPasscode(int passcode) {
         SmallLocker sl = findByPasscode(passcode);
         if (sl == null)
@@ -687,11 +657,6 @@ public class SLC extends AppThread {
         log.warning("Fail to send message to server: [" + type + "] " + detail);
         if (type != Msg.Type.Poll)
             msgQueue.add(new Msg(id, mbox, type, detail));
-    }
-
-    private void handleLogin() {
-        // TODO
-        updateScreen(Screen.Admin_Login);
     }
 
     private void handleCheckIn() {
@@ -997,6 +962,10 @@ public class SLC extends AppThread {
 
             case Payment_Failed:
                 timeOutToScreen(5, Screen.Payment, openLocker == null ? "" : (openLocker.getPayment() + ""));
+                break;
+
+            case Show_Locker:
+                timeOutToScreen(60, Screen.Locker_Not_Close, openLocker.getLockerID());
                 break;
 
             case Server_Down:

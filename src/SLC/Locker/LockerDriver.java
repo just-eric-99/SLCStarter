@@ -3,6 +3,7 @@ package SLC.Locker;
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.Msg;
 import SLC.HWHandler.HWHandler;
+import SLC.SLC.HWStatus;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -11,7 +12,9 @@ import java.util.*;
 public class LockerDriver extends HWHandler {
     private final int n = Integer.parseInt(appKickstarter.getProperty("Locker.Count"));
 
-    public static HashMap<String, Boolean> lockers = new HashMap<>();
+    protected HWStatus lockerInnerState = HWStatus.Active;
+
+    protected static HashMap<String, Boolean> lockers = new LinkedHashMap<>();
 
     public LockerDriver(String id, AppKickstarter appKickstarter) {
         super(id, appKickstarter);
@@ -81,7 +84,7 @@ public class LockerDriver extends HWHandler {
         ArrayList<String> closedLocker = new ArrayList<>();
 
         lockers.entrySet()
-                .parallelStream()
+                .stream().sequential()
                 .forEach(entry -> {
                     if (entry.getValue()) {
                         closedLocker.add(entry.getKey());
@@ -90,15 +93,28 @@ public class LockerDriver extends HWHandler {
                     }
                 });
 
-        information.put("Name", appKickstarter.getProperty("Locker.Name"));
-        information.put("Manufacturer Name", appKickstarter.getProperty("Locker.Manufacturer"));
-        information.put("Version", appKickstarter.getProperty("Locker.Version"));
-        information.put("Opened lockers", openedLocker.toArray());
-        information.put("Closed lockers", closedLocker.toArray());
         information.put("Retrieval time", System.currentTimeMillis());
+        information.put("Hardware status", lockerInnerState);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("Locker", information);
+        if (closedLocker.size() == n) {
+            information.put("Closed lockers", "All lockers are closed");
+        } else if (closedLocker.size() == 0) {
+            information.put("Closed lockers", "All lockers are opened");
+        } else {
+            information.put("Closed lockers", closedLocker.toArray());
+        }
+
+        if (openedLocker.size() == n) {
+            information.put("Opened lockers", "All lockers are opened");
+        } else if (openedLocker.size() == 0) {
+            information.put("Opened lockers", "All lockers are closed");
+        } else {
+            information.put("Opened lockers", openedLocker.toArray());
+        }
+        information.put("Version", appKickstarter.getProperty("Locker.Version"));
+        information.put("Manufactured by", appKickstarter.getProperty("Locker.Manufacturer"));
+        information.put("Name", appKickstarter.getProperty("Locker.Name"));
+
 
         String data = new JSONObject(information).toString();
 //        System.out.println("================================================");

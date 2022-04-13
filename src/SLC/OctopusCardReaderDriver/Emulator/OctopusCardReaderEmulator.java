@@ -2,6 +2,7 @@ package SLC.OctopusCardReaderDriver.Emulator;
 
 import AppKickstarter.misc.Msg;
 import SLC.OctopusCardReaderDriver.OctopusCardReaderDriver;
+import SLC.SLC.HWStatus;
 import SLC.SLCStarter;
 
 import javafx.application.Platform;
@@ -91,12 +92,14 @@ public class OctopusCardReaderEmulator extends OctopusCardReaderDriver {
                 octopusCardReaderEmulatorController.setOctopusCardRequestAmountField(amount);
                 octopusCardReaderEmulatorController.goActive();
                 slc.send(new Msg(id, mbox, Msg.Type.OCR_WaitingTransaction, ""));
+                ocrInnerStatus = HWStatus.Active;
                 break;
 
             case "Standby":
                 octopusCardReaderEmulatorController.appendTextArea("Octopus Card Reader Standby");
                 octopusCardReaderEmulatorController.goStandby();
                 slc.send(new Msg(id, mbox, Msg.Type.OCR_IsStandby, ""));
+                ocrInnerStatus = HWStatus.Standby;
                 break;
 
             case "Ignore":

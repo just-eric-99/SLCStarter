@@ -2,6 +2,7 @@ package SLC.Locker.Emulator;
 
 import AppKickstarter.misc.Msg;
 import SLC.Locker.LockerDriver;
+import SLC.SLC.HWStatus;
 import SLC.SLCStarter;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -50,10 +51,12 @@ public class LockerEmulator extends LockerDriver {
         switch (lockerEmulatorController.getPollResp()) {
             case "ACK":
                 slc.send(new Msg(id, mbox, Msg.Type.PollAck, id + " is up!"));
+                lockerInnerState = HWStatus.Active;
                 break;
 
             case "NAK":
                 slc.send(new Msg(id, mbox, Msg.Type.PollNak, id + " is down!"));
+                lockerInnerState = HWStatus.Fail;
                 break;
 
             case "Ignore":

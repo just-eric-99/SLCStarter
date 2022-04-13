@@ -1,0 +1,38 @@
+Touch Display
+Retrieval time: 1649811106234
+Version: 1.3
+Manufacturer Name: UVC Limited
+Current Screen: Welcome_Page
+Name: COMP4107 Touch Display Model Y
+
+Smart Locker Server
+Software status: Active
+IP Address: 127.0.0.1
+Retrieval time: 1649811106234
+Version: 1.2
+Port: 60662
+Connection: Stable
+Name: COMP4107 Smart Locker Server Handler Model And I Know It
+
+Octopus Card Reader
+Version: 1.5
+Device Type: D
+Hardware status: Standby
+Name: COMP4107 Octopus Card Reader Model 3
+
+Locker
+Manufactured by: ABC Locker Limited
+Retrieval time: 1649811106236
+Version: 1.6
+Closed lockers: All lockers are closed
+Opened lockers: All lockers are closed
+Hardware status: Active
+Name: COMP4107 Locker Model S
+
+Barcode Reader Driver
+Manufactured by: CDE Scanner Limited
+Retrieval time: 1649811106234
+Version: 1.4
+Hardware status: Standby
+Name: COMP4107 Barcode Reader Model x
+

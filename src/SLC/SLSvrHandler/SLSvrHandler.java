@@ -2,6 +2,7 @@ package SLC.SLSvrHandler;
 
 import AppKickstarter.AppKickstarter;
 import AppKickstarter.misc.*;
+import SLC.SLC.HWStatus;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -26,6 +27,8 @@ public class SLSvrHandler extends AppThread {
     private DataOutputStream out;
 
     private Thread receiveThread;
+
+    private HWStatus svrStatus = HWStatus.Active;
 
     private boolean connection = false;
     private boolean quit = false;
@@ -126,10 +129,12 @@ public class SLSvrHandler extends AppThread {
                 switch (type) {
                     case PollAck:
                         slc.send(new Msg(id, mbox, type, id + " is up!"));
+                        svrStatus = HWStatus.Active;
                         break;
 
                     case PollNak:
                         slc.send(new Msg(id, mbox, type, id + " is down!"));
+                        svrStatus = HWStatus.Fail;
                         break;
 
                     case SLS_RqDiagnostic:
@@ -191,12 +196,14 @@ public class SLSvrHandler extends AppThread {
     private void sendDiagnosticToSLC() {
         Map<String, Object> information = new LinkedHashMap<>();
 
-        information.put("Name", appKickstarter.getProperty("SLSvr.Handler.Name"));
-        information.put("Version", appKickstarter.getProperty("SLSvr.Handler.Version"));
-        information.put("IP Address", slSvr.getLocalAddress().getHostAddress());
-        information.put("Port", slSvr.getLocalPort() + "");
-        information.put("Connection", connection? "Stable" : "Disconnected");
+
+        information.put("Software status", svrStatus);
         information.put("Retrieval time", System.currentTimeMillis() + "");
+        information.put("Connection", connection? "Stable" : "Disconnected");
+        information.put("Port", slSvr.getLocalPort() + "");
+        information.put("IP Address", slSvr.getLocalAddress().getHostAddress());
+        information.put("Version", appKickstarter.getProperty("SLSvr.Handler.Version"));
+        information.put("Name", appKickstarter.getProperty("SLSvr.Handler.Name"));
 
         String data = new JSONObject(information).toString();
         slc.send(new Msg(id, mbox, Msg.Type.SH_RpDiagnostic, data));

@@ -5,6 +5,7 @@ import AppKickstarter.misc.AppThread;
 import AppKickstarter.misc.Msg;
 import AppKickstarter.timer.Timer;
 import Common.LockerSize;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -365,13 +366,61 @@ public class SLSvr extends AppThread {
         }
     }
 
-    protected void receiveDiagnostic(DataInputStream in) throws IOException{
+    protected void receiveDiagnostic(DataInputStream in) throws IOException {
         String data = readString(in);
         JSONObject diagnostic = new JSONObject(data);
         System.out.println(diagnostic);
-        JSONObject brReader = diagnostic.getJSONObject("Barcode Reader Driver");
-        System.out.println(brReader);
-        System.out.println(brReader.getString("Version"));
+        generateFile(diagnostic);
+    }
+
+    private void generateFile(JSONObject diagnostic) throws IOException {
+        FileWriter fileWriter = new FileWriter(appKickstarter.getProperty("SLSvr.Diagnostic.File.Name"));
+        fileWriter.flush();
+        diagnostic.toMap().entrySet().stream().sequential().forEach(x -> {
+            try {
+                fileWriter.write((x.getKey() + "\n"));
+                JSONObject info = diagnostic.getJSONObject(x.getKey());
+                info.toMap().entrySet().stream().sequential().forEach(y-> {
+                    try {
+                        if (info.get(y.getKey()) instanceof JSONArray) {
+                            if (y.getKey().equals("Barcodes")) {
+                                List<Object> slcBarcodesList = info.getJSONArray(y.getKey()).toList();
+                                List<Object> svrBarcodesList = new ArrayList<>();
+                                packages.stream().filter(aPackage -> !aPackage.isPickUp()).forEach(d -> svrBarcodesList.add(d.getBarcode()));
+
+                                if (slcBarcodesList.equals(svrBarcodesList)) {
+                                    fileWriter.write("Status: Packages information are synchronized.\n");
+                                    // check
+                                } else {
+                                    fileWriter.write("Status: Packages information not synchronized.\n");
+                                }
+
+                            } else {
+                                JSONArray temp = info.getJSONArray(y.getKey());
+                                fileWriter.write(y.getKey() + ":\n");
+                                temp.forEach(z -> {
+                                    try {
+                                        fileWriter.write("\t" + z + "\n");
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+
+                        } else {
+                            fileWriter.write(y.getKey() + ": " + y.getValue() + "\n");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                });
+                fileWriter.write("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        fileWriter.close();
     }
 
     private void receiveReportFail(DataInputStream in, String lockerID) throws IOException {

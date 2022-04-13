@@ -76,8 +76,6 @@
                             <String fx:value="Show Locker" />
                             <String fx:value="Locker Not Close" />
                             <String fx:value="Server Down" />
-                            <String fx:value="Admin Login" />
-                            <String fx:value="Confirmation" />
                         </FXCollections>
                     </items>
                 </ChoiceBox>

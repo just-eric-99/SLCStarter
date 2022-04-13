@@ -26,12 +26,6 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="56.0" layoutX="257.0" layoutY="393.0" stroke="BLACK" strokeType="INSIDE" width="129.0" />
-                <BorderPane layoutX="259.0" layoutY="394.0" prefHeight="55.0" prefWidth="128.0">
-                    <center>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Admin Login" BorderPane.alignment="CENTER" />
-                    </center>
-                </BorderPane>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="TRANSPARENT" height="480.0" onMouseClicked="#td_mouseClick" stroke="BLACK" strokeType="OUTSIDE" width="640" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" />
             </children>
         </AnchorPane>
@@ -72,8 +66,6 @@
                             <String fx:value="Show Locker" />
                             <String fx:value="Locker Not Close" />
                             <String fx:value="Server Down" />
-                            <String fx:value="Admin Login" />
-                            <String fx:value="Confirmation" />
                         </FXCollections>
                     </items>
                 </ChoiceBox>

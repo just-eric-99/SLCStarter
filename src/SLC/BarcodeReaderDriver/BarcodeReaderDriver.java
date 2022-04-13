@@ -13,7 +13,7 @@ import java.util.Map;
 //======================================================================
 // BarcodeReaderDriver
 public class BarcodeReaderDriver extends HWHandler {
-    protected HWStatus brInnerStatus;
+    protected HWStatus brInnerStatus = HWStatus.Standby;
     //------------------------------------------------------------
     // BarcodeReaderDriver
     public BarcodeReaderDriver(String id, AppKickstarter appKickstarter) {
