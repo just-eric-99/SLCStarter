@@ -1,8 +1,26 @@
-220413-09:00:47 [INFO] -- 
-220413-09:00:47 [INFO] -- 
-220413-09:00:47 [INFO] -- ============================================================
-220413-09:00:47 [INFO] -- SLSvrStarter: Application Starting...
-220413-09:00:47 [INFO] -- Initialize package data complete.
-220413-09:00:48 [INFO] -- timer: starting...
-220413-09:00:48 [INFO] -- SLSvr: starting...
-220413-09:00:48 [INFO] -- SLSvr: running...
+220413-09:10:36 [INFO] -- 
+220413-09:10:36 [INFO] -- 
+220413-09:10:36 [INFO] -- ============================================================
+220413-09:10:36 [INFO] -- SLSvrStarter: Application Starting...
+220413-09:10:36 [INFO] -- Initialize package data complete.
+220413-09:10:37 [INFO] -- timer: starting...
+220413-09:10:37 [INFO] -- SLSvr: starting...
+220413-09:10:37 [INFO] -- SLSvr: running...
+220413-09:10:40 [INFO] -- /127.0.0.1:52781 login as HKGLK01.
+220413-09:10:40 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:10:46 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:10:52 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:10:58 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:01 [INFO] -- verifyBarcode: Success. Verified barcode #4107-7014 for locker #HKGLK01
+220413-09:11:01 [INFO] -- SetArrivalTime: Success. Received arrival time for package #4107-7014
+220413-09:11:01 [INFO] -- SetPasscode: Success. Received passcode #97220959 for package #4107-7014
+220413-09:11:04 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:05 [INFO] -- Request system diagnostic for locker #HKGLK01
+220413-09:11:05 [WARNING] -- Request system diagnostic fail. Locker #HKGLK02 is disconnected.
+220413-09:11:05 [WARNING] -- Request system diagnostic fail. Locker #HKGLK03 is disconnected.
+220413-09:11:10 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:16 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:22 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:28 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:34 [INFO] -- Handle Poll for locker #HKGLK01.
+220413-09:11:40 [INFO] -- Handle Poll for locker #HKGLK01.

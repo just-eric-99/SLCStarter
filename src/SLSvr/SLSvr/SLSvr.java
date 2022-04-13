@@ -369,7 +369,6 @@ public class SLSvr extends AppThread {
     protected void receiveDiagnostic(DataInputStream in) throws IOException {
         String data = readString(in);
         JSONObject diagnostic = new JSONObject(data);
-        System.out.println(diagnostic);
         generateFile(diagnostic);
     }
 
